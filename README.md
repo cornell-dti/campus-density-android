@@ -1,6 +1,5 @@
 # Campus Density Android v1.0
-_See [here](https://github.com/cornell-dti/o-week-android/blob/master/README.md) for an example of what a good README.md looks like._
-​
+
 #### Contents
   - [About](#about)
   - [Getting Started](#getting-started)
@@ -10,7 +9,7 @@ _See [here](https://github.com/cornell-dti/o-week-android/blob/master/README.md)
   - [Contributors](#contributors)
 ​
 ## About
-A(n) **[Android, iOS, backend, web]** app for **purpose**. **additional related repository links**.
+A(n) **[Android, iOS]** app for **purpose**. **additional related repository links**.
 ​
 ## Getting Started
 You will need **required IDE or platform, version number** to run the latest version of this app, which uses the following **SDKs, extensions, packages**:
