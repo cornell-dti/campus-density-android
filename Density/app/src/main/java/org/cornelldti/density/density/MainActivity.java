@@ -13,26 +13,46 @@ public class MainActivity extends AppCompatActivity {
 
     private FacilitiesListAdapter adapter;
 
-    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        facilities = (RecyclerView) findViewById(R.id.facilities);
+        facilities = findViewById(R.id.facilities);
 
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
         facilities.setHasFixedSize(true);
 
-        // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(this);
-        facilities.setLayoutManager(mLayoutManager);
+        layoutManager = new LinearLayoutManager(this);
+        facilities.setLayoutManager(layoutManager);
 
-        // specify an adapter (see also next example)
-//        adapter = new FacilitiesListAdapter(myDataset);
+
+//        adapter = new FacilitiesListAdapter(fetchFacilities());
+        Facility[] fac = new Facility[4];
+        fac[0] = new Facility("Keeton Dining","id", "opensAt",
+                "closesAt", "address",
+        20, 100, true);
+        fac[1] = new Facility("Libe Cafe","id", "opensAt",
+                "closesAt", "address",
+                45, 100, true);
+        fac[2] = new Facility("Jansen's Market","id", "opensAt",
+                "closesAt", "address",
+                65, 100, true);
+        fac[3] = new Facility("Bethe Dining","id", "opensAt",
+                "closesAt", "address",
+                80, 100, true);
+        adapter = new FacilitiesListAdapter(fac);
         facilities.setAdapter(adapter);
+    }
+
+    /**
+     * Implement this TODO
+     * @return
+     */
+    private Facility[] fetchFacilities()
+    {
+        return null;
     }
 
     @Override
