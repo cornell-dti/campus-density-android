@@ -11,9 +11,12 @@ public class Facility {
     private boolean isFavorite;
     private double occupancy_percentage;
     public enum Occupancy_Rating {VERY_CROWDED, PRETTY_CROWDED, PRETTY_EMPTY, VERY_EMPTY};
+    public enum campus_location {NORTH, WEST, CENTRAL};
+    private campus_location loc;
 
     public Facility (String name, String id, String opensAt, String closesAt, String address,
-                     double currentCapacity, double totalCapacity, boolean isFavorite)
+                     double currentCapacity, double totalCapacity, boolean isFavorite,
+                     campus_location location)
     {
         this.name = name;
         this.id = id;
@@ -24,6 +27,7 @@ public class Facility {
         this.totalCapacity = totalCapacity;
         this.isFavorite = isFavorite;
         this.occupancy_percentage = currentCapacity / totalCapacity;
+        this.loc = location;
     }
 
     public String getName()
@@ -115,6 +119,11 @@ public class Facility {
                 break;
         }
         return description;
+    }
+
+    public campus_location getLocation()
+    {
+        return this.loc;
     }
 
 }

@@ -3,16 +3,23 @@ package org.cornelldti.density.density;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAdapter.MyViewHolder> {
+import java.util.ArrayList;
 
-    private Facility [] facilities;
+import androidx.recyclerview.widget.RecyclerView;
+
+public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAdapter.MyViewHolder> implements Filterable {
+
+    private ArrayList<Facility> facilities;
+
+    private ArrayList<Facility> filtered_facilities;
 
     private ImageView firstBar, secondBar, thirdBar, fourthBar;
 
@@ -29,8 +36,9 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
         }
     }
 
-    public FacilitiesListAdapter(Facility[] data) {
+    public FacilitiesListAdapter(ArrayList<Facility> data) {
         facilities = data;
+        filtered_facilities = facilities;
     }
 
     @Override
@@ -52,9 +60,9 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.name.setText(facilities[position].getName());
-        holder.description.setText(facilities[position].getDescription());
-        setBars(facilities[position].get_occupancy_rating());
+        holder.name.setText(filtered_facilities.get(position).getName());
+        holder.description.setText(filtered_facilities.get(position).getDescription());
+        setBars(filtered_facilities.get(position).get_occupancy_rating());
     }
 
     private void setBars(Facility.Occupancy_Rating rating)
@@ -166,7 +174,42 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
     }
 
     @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                if (!charString.isEmpty()) {
+                    ArrayList<Facility> filteredList = new ArrayList<Facility>();
+                    for (Facility f : facilities) {
+
+                        // name match condition. this might differ depending on your requirement
+                        // here we are looking for name or phone number match
+                        if (f.getName().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(f);
+                        }
+                    }
+                    filtered_facilities = filteredList;
+                }
+                else
+                {
+                    filtered_facilities = facilities;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filtered_facilities;
+                return filterResults;
+            }
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                filtered_facilities = (ArrayList<Facility>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    @Override
     public int getItemCount() {
-        return facilities.length;
+        return filtered_facilities.size();
     }
 }
