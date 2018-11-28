@@ -15,7 +15,10 @@ import java.util.ArrayList;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAdapter.MyViewHolder> implements Filterable {
+public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAdapter.ViewHolder>
+        implements Filterable {
+
+    private static ClickListener clickListener;
 
     private ArrayList<Facility> facilities;
 
@@ -26,14 +29,26 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
     private Context c;
 
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView name, description;
-        public MyViewHolder(View v) {
+        public ViewHolder(View v) {
             super(v);
-
+            v.setOnClickListener(this);
             name = v.findViewById(R.id.facility_name);
             description = v.findViewById(R.id.description_phrase);
         }
+        @Override
+        public void onClick(View v) {
+            clickListener.onItemClick(getAdapterPosition(), v);
+        }
+    }
+
+    public void setOnItemClickListener(ClickListener clickListener) {
+        FacilitiesListAdapter.clickListener = clickListener;
+    }
+
+    public interface ClickListener {
+        void onItemClick(int position, View v);
     }
 
     public FacilitiesListAdapter(ArrayList<Facility> data) {
@@ -42,7 +57,7 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
     }
 
     @Override
-    public FacilitiesListAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
+    public FacilitiesListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                      int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.facility_card_layout, parent, false);
@@ -54,31 +69,31 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
         thirdBar = v.findViewById(R.id.third_bar);
         fourthBar = v.findViewById(R.id.fourth_bar);
 
-        MyViewHolder vh = new MyViewHolder(v);
+        ViewHolder vh = new ViewHolder(v);
         return vh;
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         holder.name.setText(filtered_facilities.get(position).getName());
         holder.description.setText(filtered_facilities.get(position).getDescription());
-        setBars(filtered_facilities.get(position).get_occupancy_rating());
+        setBars(filtered_facilities.get(position).getOccupancy_rating());
     }
 
-    private void setBars(Facility.Occupancy_Rating rating)
+    private void setBars(int rating)
     {
         switch (rating)
         {
-            case VERY_EMPTY:
+            case 0:
                 setVeryEmpty();
                 break;
-            case PRETTY_EMPTY:
+            case 1:
                 setPrettyEmpty();
                 break;
-            case PRETTY_CROWDED:
+            case 2:
                 setPrettyCrowded();
                 break;
-            case VERY_CROWDED:
+            case 3:
                 setVeryCrowded();
                 break;
         }

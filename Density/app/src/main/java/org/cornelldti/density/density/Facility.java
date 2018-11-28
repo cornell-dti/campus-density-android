@@ -1,33 +1,36 @@
 package org.cornelldti.density.density;
 
-public class Facility {
+import java.io.Serializable;
+
+public class Facility implements Serializable {
     private String name;
     private String id;
     private String opensAt;
     private String closesAt;
     private String address;
-    private double currentCapacity;
-    private double totalCapacity;
     private boolean isFavorite;
-    private double occupancy_percentage;
-    public enum Occupancy_Rating {VERY_CROWDED, PRETTY_CROWDED, PRETTY_EMPTY, VERY_EMPTY};
+    public int occupancy_rating;
     public enum campus_location {NORTH, WEST, CENTRAL};
     private campus_location loc;
 
-    public Facility (String name, String id, String opensAt, String closesAt, String address,
-                     double currentCapacity, double totalCapacity, boolean isFavorite,
-                     campus_location location)
+    public Facility(String name, String id)
+    {
+        this.name = name;
+        this.id = id;
+    }
+
+    public Facility (String name, String id, String opensAt, String closesAt,
+                     String address, boolean isFavorite,
+                     campus_location location, int occupancy_rating)
     {
         this.name = name;
         this.id = id;
         this.opensAt = opensAt;
         this.closesAt = closesAt;
         this.address = address;
-        this.currentCapacity = currentCapacity;
-        this.totalCapacity = totalCapacity;
         this.isFavorite = isFavorite;
-        this.occupancy_percentage = currentCapacity / totalCapacity;
         this.loc = location;
+        this.occupancy_rating = occupancy_rating;
     }
 
     public String getName()
@@ -35,9 +38,19 @@ public class Facility {
         return this.name;
     }
 
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
     public String getId()
     {
         return this.id;
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
     }
 
     public String getOpensAt()
@@ -45,9 +58,19 @@ public class Facility {
         return this.opensAt;
     }
 
+    public void setOpensAt(String opensAt)
+    {
+        this.opensAt = opensAt;
+    }
+
     public String getClosesAt()
     {
         return this.closesAt;
+    }
+
+    public void setClosesAt(String closesAt)
+    {
+        this.closesAt = closesAt;
     }
 
     public String getAddress()
@@ -55,14 +78,8 @@ public class Facility {
         return this.address;
     }
 
-    public double getCurrentCapacity()
-    {
-        return this.currentCapacity;
-    }
-
-    public double getTotalCapacity()
-    {
-        return this.totalCapacity;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public boolean isFavorite()
@@ -70,60 +87,53 @@ public class Facility {
         return this.isFavorite;
     }
 
-    public double getOccupancy_percentage()
+    public void setFavorite(boolean fav)
     {
-        return occupancy_percentage;
-    }
-
-    public Occupancy_Rating get_occupancy_rating()
-    {
-        double percent_occupancy = occupancy_percentage;
-        Occupancy_Rating rating;
-
-        if(percent_occupancy >= 0.75)
-        {
-            rating = Occupancy_Rating.VERY_CROWDED;
-        }
-        else if(percent_occupancy >= 0.5)
-        {
-            rating = Occupancy_Rating.PRETTY_CROWDED;
-        }
-        else if(percent_occupancy >= 0.25)
-        {
-            rating = Occupancy_Rating.PRETTY_EMPTY;
-        }
-        else
-        {
-            rating = Occupancy_Rating.VERY_EMPTY;
-        }
-        return rating;
+        this.isFavorite = fav;
     }
 
     public String getDescription()
     {
         String description = "";
-        Occupancy_Rating rating = get_occupancy_rating();
-        switch (rating)
+        switch (this.occupancy_rating)
         {
-            case VERY_EMPTY:
+            case 0:
                 description = "Very Empty";
                 break;
-            case PRETTY_EMPTY:
+            case 1:
                 description = "Pretty Empty";
                 break;
-            case PRETTY_CROWDED:
+            case 2:
                 description = "Pretty Crowded";
                 break;
-            case VERY_CROWDED:
+            case 3:
                 description = "Very Crowded";
                 break;
         }
         return description;
     }
 
+    public int getOccupancy_rating()
+    {
+        return occupancy_rating;
+    }
+
+    public Facility setOccupancy_rating(int i)
+    {
+        if(i >= 0 && i <= 3) {
+            this.occupancy_rating = i;
+        }
+        return this;
+    }
+
     public campus_location getLocation()
     {
         return this.loc;
+    }
+
+    public void setLocation(campus_location loc)
+    {
+        this.loc = loc;
     }
 
 }
