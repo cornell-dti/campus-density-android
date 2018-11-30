@@ -9,19 +9,10 @@
     android:background="@android:color/white"
     tools:context=".Facility_Page">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/f_name"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="17dp"
-        android:text="Facility Name"
-        android:textColor="#B5B5B5"
-        android:textSize="20dp" />
-
+        android:id="@+id/topView">
     <ImageButton
         android:id="@+id/backButton"
         android:layout_width="wrap_content"
@@ -33,15 +24,35 @@
         android:background="@null"
         android:src="@drawable/back_button" />
 
-    <ImageButton
-        android:id="@+id/favoriteFacility"
+    <TextView
+        android:id="@+id/f_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="17dp"
-        android:background="@null"
-        android:src="@drawable/unfilled_heart" />
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="17dp"
+        android:text="Facility Name"
+        android:textColor="#B5B5B5"
+        android:textSize="20dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottomView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/topView"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="134dp">
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/densityChart"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_alignStart="@+id/bottomView"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
+    </LinearLayout>
 
 </RelativeLayout>

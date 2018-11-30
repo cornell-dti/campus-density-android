@@ -36,9 +36,9 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            app:chipSpacing="15dp">
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            app:chipSpacing="30dp">
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/all"
@@ -49,18 +49,6 @@
                 android:textAppearance="@style/ChipTextStyle"
                 android:text="All"
                 app:chipBackgroundColor="@drawable/chip_color_toggle" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/favorites"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:foregroundGravity="center"
-                android:gravity="center"
-                app:chipBackgroundColor="@drawable/chip_color_toggle"
-                app:chipIcon="@drawable/heart"
-                app:chipIconVisible="true"
-                app:chipStartPadding="20dp" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/north"

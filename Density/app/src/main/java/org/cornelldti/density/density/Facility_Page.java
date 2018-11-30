@@ -1,6 +1,7 @@
 package org.cornelldti.density.density;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,18 +10,28 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.fragment.app.Fragment;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+
+import org.cornelldti.density.density.util.ColorBarDataSet;
+import org.cornelldti.density.density.util.ValueFormatter;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Facility_Page.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Facility_Page#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class Facility_Page extends Fragment {
+public class Facility_Page extends DialogFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM = "Facility_Object";
@@ -29,13 +40,13 @@ public class Facility_Page extends Fragment {
 
     private ImageButton backButton;
 
-    private ImageButton favoriteButton;
-
-    private boolean favorite;
-
     private Facility facility;
 
     private OnFragmentInteractionListener mListener;
+
+    private ArrayList<Double> densities = new ArrayList<Double>();
+
+    private BarChart densityChart;
 
     public Facility_Page() {
         // Required empty public constructor
@@ -60,8 +71,84 @@ public class Facility_Page extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.FullScreenDialog);
         if (getArguments() != null) {
             facility = (Facility)getArguments().getSerializable(ARG_PARAM);
+            loadHistoricalData();
+        }
+    }
+
+    private String getDayString()
+    {
+        String dayString = "";
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        switch (day) {
+            case Calendar.SUNDAY:
+                dayString = getString(R.string.Sun);
+                break;
+            case Calendar.MONDAY:
+                dayString = getString(R.string.Mon);
+                break;
+            case Calendar.TUESDAY:
+                dayString = getString(R.string.Tue);
+                break;
+            case Calendar.WEDNESDAY:
+                dayString = getString(R.string.Wed);
+                break;
+            case Calendar.THURSDAY:
+                dayString = getString(R.string.Thu);
+                break;
+            case Calendar.FRIDAY:
+                dayString = getString(R.string.Fri);
+                break;
+            case Calendar.SATURDAY:
+                dayString = getString(R.string.Sat);
+                break;
+
+        }
+        return dayString;
+    }
+
+    private String loadJSONFile() {
+        String json = "";
+        try {
+            InputStream is = getActivity().getAssets().open("historical_data.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
+    }
+
+    private void loadHistoricalData()
+    {
+        try
+        {
+            String day = getDayString();
+            JSONObject jsonObject = new JSONObject(loadJSONFile());
+            JSONArray facilities = jsonObject.getJSONArray("Facilities");
+            for(int i = 0; i < facilities.length(); i++)
+            {
+                if(facilities.getJSONObject(i).getString("id").equals(facility.getId()))
+                {
+                    JSONObject fac_on_day = facilities.getJSONObject(i).getJSONObject(day);
+                    for(int hour = 7; hour <= 23; hour++)
+                    {
+                        densities.add(fac_on_day.getDouble(String.valueOf(hour)));
+                    }
+                }
+            }
+
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
         }
     }
 
@@ -73,45 +160,89 @@ public class Facility_Page extends Fragment {
 
         facility_name = v.findViewById(R.id.f_name);
         backButton = v.findViewById(R.id.backButton);
-        favoriteButton = v.findViewById(R.id.favoriteFacility);
+        densityChart = v.findViewById(R.id.densityChart);
 
         initializeView();
+        setupBarChart();
         return v;
+    }
+
+    private void setupBarChart()
+    {
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        for(int i = 0; i < densities.size(); i++)
+        {
+            if(densities.get(i).doubleValue() != -1)
+            {
+                entries.add(new BarEntry(i, (float) densities.get(i).doubleValue()));
+            }
+            else
+            {
+                entries.add(new BarEntry(i, 0));
+            }
+        }
+        ColorBarDataSet dataSet = new ColorBarDataSet(entries, "Results");
+
+        dataSet.setDrawValues(false);
+
+        ArrayList<Integer> colors = new ArrayList<>();
+        colors.add(ContextCompat.getColor(densityChart.getContext(), R.color.very_empty));
+        colors.add(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.pretty_empty));
+        colors.add(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.pretty_crowded));
+        colors.add(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.very_crowded));
+        dataSet.setColors(colors);
+        dataSet.setValueTextColor(Color.DKGRAY);
+        dataSet.setValueFormatter(new ValueFormatter());
+
+        BarData data = new BarData(dataSet);
+        data.setValueTextSize(13f);
+        data.setBarWidth(0.6f);
+
+        ArrayList<String> xAxis = new ArrayList<>();
+        xAxis.add("");
+        xAxis.add("");
+        xAxis.add("9 AM");
+        xAxis.add("");
+        xAxis.add("");
+        xAxis.add("12 PM");
+        xAxis.add("");
+        xAxis.add("");
+        xAxis.add("3 PM");
+        xAxis.add("");
+        xAxis.add("");
+        xAxis.add("6 PM");
+        xAxis.add("");
+        xAxis.add("");
+        xAxis.add("9 PM");
+        xAxis.add("");
+        xAxis.add("");
+
+        densityChart.getDescription().setEnabled(false);
+        densityChart.getLegend().setEnabled(false);
+        densityChart.setScaleEnabled(false);
+        densityChart.setTouchEnabled(true);
+
+        densityChart.getAxisLeft().setEnabled(false);
+        densityChart.getAxisRight().setEnabled(false);
+        densityChart.getXAxis().setDrawGridLines(false);
+        densityChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        densityChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xAxis));
+        densityChart.getXAxis().setLabelCount(xAxis.size());
+        densityChart.setData(data);
+        densityChart.invalidate();
+        densityChart.animateY(500);
+
     }
 
     private void initializeView()
     {
         facility_name.setText(facility.getName());
-        favorite = facility.isFavorite();
-        if(favorite)
-        {
-            favoriteButton.setImageDrawable(getResources().getDrawable(R.drawable.filled_heart));
-        }
-        else
-        {
-            favoriteButton.setImageDrawable(getResources().getDrawable(R.drawable.unfilled_heart));
-        }
-        favoriteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(favorite)
-                {
-                    favoriteButton.setImageDrawable(getResources().getDrawable(R.drawable.unfilled_heart));
-                    favorite = false;
-                }
-                else
-                {
-                    favoriteButton.setImageDrawable(getResources().getDrawable(R.drawable.filled_heart));
-                    favorite = true;
-                }
-            }
-        });
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // MAKE REQUEST TO API TO UPLOAD NEW USER FAVORITES DATA TODO
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .remove(Facility_Page.this).commit();
+                dismiss();
             }
         });
     }
@@ -142,5 +273,9 @@ public class Facility_Page extends Fragment {
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+    }
+    @Override
+    public void dismiss() {
+        super.dismiss();
     }
 }

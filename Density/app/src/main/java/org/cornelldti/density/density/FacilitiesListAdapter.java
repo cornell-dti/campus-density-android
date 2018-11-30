@@ -24,8 +24,6 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
 
     private ArrayList<Facility> filtered_facilities;
 
-    private ImageView firstBar, secondBar, thirdBar, fourthBar;
-
     private Context c;
 
 
@@ -64,11 +62,6 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
 
         c = parent.getContext();
 
-        firstBar = v.findViewById(R.id.first_bar);
-        secondBar = v.findViewById(R.id.second_bar);
-        thirdBar = v.findViewById(R.id.third_bar);
-        fourthBar = v.findViewById(R.id.fourth_bar);
-
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }
@@ -77,29 +70,29 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.name.setText(filtered_facilities.get(position).getName());
         holder.description.setText(filtered_facilities.get(position).getDescription());
-        setBars(filtered_facilities.get(position).getOccupancy_rating());
+        setBars(filtered_facilities.get(position).getOccupancy_rating(), holder);
     }
 
-    private void setBars(int rating)
+    private void setBars(int rating, ViewHolder holder)
     {
         switch (rating)
         {
             case 0:
-                setVeryEmpty();
+                setVeryEmpty(holder);
                 break;
             case 1:
-                setPrettyEmpty();
+                setPrettyEmpty(holder);
                 break;
             case 2:
-                setPrettyCrowded();
+                setPrettyCrowded(holder);
                 break;
             case 3:
-                setVeryCrowded();
+                setVeryCrowded(holder);
                 break;
         }
     }
 
-    private void setVeryCrowded()
+    private void setVeryCrowded(ViewHolder holder)
     {
         GradientDrawable firstDrawable = (GradientDrawable) c.getDrawable(R.drawable.rounded_box);
         GradientDrawable secondDrawable = (GradientDrawable) c.getDrawable(R.drawable.rounded_box);
@@ -115,6 +108,11 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
         fourthDrawable.setColorFilter(c.getResources().getColor(R.color.very_crowded),
                 PorterDuff.Mode.MULTIPLY);
 
+        ImageView firstBar = holder.itemView.findViewById(R.id.first_bar);
+        ImageView secondBar = holder.itemView.findViewById(R.id.second_bar);
+        ImageView thirdBar = holder.itemView.findViewById(R.id.third_bar);
+        ImageView fourthBar = holder.itemView.findViewById(R.id.fourth_bar);
+
         firstBar.setImageDrawable(firstDrawable);
         secondBar.setImageDrawable(secondDrawable);
         thirdBar.setImageDrawable(thirdDrawable);
@@ -122,7 +120,7 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
 
     }
 
-    private void setPrettyCrowded()
+    private void setPrettyCrowded(ViewHolder holder)
     {
         GradientDrawable firstDrawable = (GradientDrawable) c.getDrawable(R.drawable.rounded_box);
         GradientDrawable secondDrawable = (GradientDrawable) c.getDrawable(R.drawable.rounded_box);
@@ -138,13 +136,18 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
         fourthDrawable.setColorFilter(c.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
 
+        ImageView firstBar = holder.itemView.findViewById(R.id.first_bar);
+        ImageView secondBar = holder.itemView.findViewById(R.id.second_bar);
+        ImageView thirdBar = holder.itemView.findViewById(R.id.third_bar);
+        ImageView fourthBar = holder.itemView.findViewById(R.id.fourth_bar);
+
         firstBar.setImageDrawable(firstDrawable);
         secondBar.setImageDrawable(secondDrawable);
         thirdBar.setImageDrawable(thirdDrawable);
         fourthBar.setImageDrawable(fourthDrawable);
     }
 
-    private void setPrettyEmpty()
+    private void setPrettyEmpty(ViewHolder holder)
     {
         GradientDrawable firstDrawable = (GradientDrawable) c.getDrawable(R.drawable.rounded_box);
         GradientDrawable secondDrawable = (GradientDrawable) c.getDrawable(R.drawable.rounded_box);
@@ -160,13 +163,18 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
         fourthDrawable.setColorFilter(c.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
 
+        ImageView firstBar = holder.itemView.findViewById(R.id.first_bar);
+        ImageView secondBar = holder.itemView.findViewById(R.id.second_bar);
+        ImageView thirdBar = holder.itemView.findViewById(R.id.third_bar);
+        ImageView fourthBar = holder.itemView.findViewById(R.id.fourth_bar);
+
         firstBar.setImageDrawable(firstDrawable);
         secondBar.setImageDrawable(secondDrawable);
         thirdBar.setImageDrawable(thirdDrawable);
         fourthBar.setImageDrawable(fourthDrawable);
     }
 
-    private void setVeryEmpty()
+    private void setVeryEmpty(ViewHolder holder)
     {
         GradientDrawable firstDrawable = (GradientDrawable) c.getDrawable(R.drawable.rounded_box);
         GradientDrawable secondDrawable = (GradientDrawable) c.getDrawable(R.drawable.rounded_box);
@@ -181,6 +189,11 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
                 PorterDuff.Mode.MULTIPLY);
         fourthDrawable.setColorFilter(c.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
+
+        ImageView firstBar = holder.itemView.findViewById(R.id.first_bar);
+        ImageView secondBar = holder.itemView.findViewById(R.id.second_bar);
+        ImageView thirdBar = holder.itemView.findViewById(R.id.third_bar);
+        ImageView fourthBar = holder.itemView.findViewById(R.id.fourth_bar);
 
         firstBar.setImageDrawable(firstDrawable);
         secondBar.setImageDrawable(secondDrawable);

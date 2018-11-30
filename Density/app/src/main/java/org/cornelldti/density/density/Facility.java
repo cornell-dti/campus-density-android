@@ -8,7 +8,6 @@ public class Facility implements Serializable {
     private String opensAt;
     private String closesAt;
     private String address;
-    private boolean isFavorite;
     public int occupancy_rating;
     public enum campus_location {NORTH, WEST, CENTRAL};
     private campus_location loc;
@@ -20,7 +19,7 @@ public class Facility implements Serializable {
     }
 
     public Facility (String name, String id, String opensAt, String closesAt,
-                     String address, boolean isFavorite,
+                     String address,
                      campus_location location, int occupancy_rating)
     {
         this.name = name;
@@ -28,7 +27,6 @@ public class Facility implements Serializable {
         this.opensAt = opensAt;
         this.closesAt = closesAt;
         this.address = address;
-        this.isFavorite = isFavorite;
         this.loc = location;
         this.occupancy_rating = occupancy_rating;
     }
@@ -80,16 +78,6 @@ public class Facility implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public boolean isFavorite()
-    {
-        return this.isFavorite;
-    }
-
-    public void setFavorite(boolean fav)
-    {
-        this.isFavorite = fav;
     }
 
     public String getDescription()

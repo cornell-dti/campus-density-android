@@ -2,6 +2,26 @@
     <string name="app_name">Density</string>
     <string name="search_title"></string>
 
+    <string name="Libe">Libe</string>
+    <string name="Jenny">Jenny</string>
+    <string name="Okenshields">Okenshields</string>
+    <string name="Becker">Becker</string>
+    <string name="West104">104West</string>
+    <string name="Bethe">Bethe</string>
+    <string name="RPME">RPME</string>
+    <string name="Risley">Risley</string>
+    <string name="Cook">Cook</string>
+    <string name="Keeton">Keeton</string>
+
+    <string name="Sun">SUN</string>
+    <string name="Mon">MON</string>
+    <string name="Tue">TUE</string>
+    <string name="Wed">WED</string>
+    <string name="Thu">THU</string>
+    <string name="Fri">FRI</string>
+    <string name="Sat">SAT</string>
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

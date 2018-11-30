@@ -29,7 +29,6 @@ import java.util.Map;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -83,11 +82,13 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
         adapter.setOnItemClickListener(new FacilitiesListAdapter.ClickListener() {
             @Override
             public void onItemClick(int position, View v) {
-                Fragment facility_page = Facility_Page.newInstance(filtered_fac.get(position));
+//                Fragment facility_page = Facility_Page.newInstance(filtered_fac.get(position));
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.replace(R.id.main_container, facility_page);
-                ft.commit();
+//                ft.replace(R.id.main_container, facility_page);
+//                ft.commit();
+                Facility_Page dialog = Facility_Page.newInstance(filtered_fac.get(position));
+                dialog.show(ft, "facility page");
             }
         });
         facilities.setAdapter(adapter);
@@ -123,18 +124,6 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
         switch (checkedId) {
             case R.id.all:
                 filtered_fac = all_facilities;
-                adapter = new FacilitiesListAdapter(filtered_fac);
-                facilities.setAdapter(adapter);
-                break;
-
-            case R.id.favorites:
-                ArrayList<Facility> filteredList = new ArrayList<Facility>();
-                for (Facility f : all_facilities) {
-                    if (f.isFavorite()) {
-                        filteredList.add(f);
-                    }
-                }
-                filtered_fac = filteredList;
                 adapter = new FacilitiesListAdapter(filtered_fac);
                 facilities.setAdapter(adapter);
                 break;
@@ -201,18 +190,18 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
      */
     private void fetchFacilities() {
         ArrayList<Facility> f = new ArrayList<Facility>();
-        f.add(new Facility("Keeton Dining", "id", "9:00 AM",
+        f.add(new Facility("Keeton Dining", getString(R.string.Keeton), "9:00 AM",
                 "9:00 PM", "address",
-                true, Facility.campus_location.WEST, 1));
-        f.add(new Facility("Libe Cafe", "id", "10:00 AM",
+                Facility.campus_location.WEST, 3));
+        f.add(new Facility("Libe Cafe", getString(R.string.Libe), "10:00 AM",
                 "9:00 PM", "address",
-                false, Facility.campus_location.CENTRAL, 2));
-        f.add(new Facility("Jansen's Market", "id", "9:00 AM",
-                "12:00 PM", "address",
-                true, Facility.campus_location.WEST, 2));
-        f.add(new Facility("Bethe Dining", "id", "9:30 AM",
+                Facility.campus_location.CENTRAL, 0));
+        f.add(new Facility("Bethe Dining", getString(R.string.Bethe), "9:30 AM",
                 "11:00 PM", "address",
-                true, Facility.campus_location.WEST, 3));
+                Facility.campus_location.WEST, 1));
+        f.add(new Facility("RPCC Dining", getString(R.string.RPME), "9:30 AM",
+                "11:00 PM", "address",
+                Facility.campus_location.NORTH, 2));
         all_facilities = f;
         filtered_fac = all_facilities;
 //        JsonArrayRequest firstJsonArrayRequest = new JsonArrayRequest
