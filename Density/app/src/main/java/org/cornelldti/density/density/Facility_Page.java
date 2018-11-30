@@ -36,7 +36,7 @@ public class Facility_Page extends DialogFragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM = "Facility_Object";
 
-    private TextView facility_name;
+    private TextView facility_name, facility_hours;
 
     private ImageButton backButton;
 
@@ -159,6 +159,7 @@ public class Facility_Page extends DialogFragment {
         View v = inflater.inflate(R.layout.fragment_facility__page, container, false);
 
         facility_name = v.findViewById(R.id.f_name);
+        facility_hours = v.findViewById(R.id.f_hours);
         backButton = v.findViewById(R.id.backButton);
         densityChart = v.findViewById(R.id.densityChart);
 
@@ -238,6 +239,7 @@ public class Facility_Page extends DialogFragment {
     private void initializeView()
     {
         facility_name.setText(facility.getName());
+        facility_hours.setText(operatingHours());
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -247,7 +249,230 @@ public class Facility_Page extends DialogFragment {
         });
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    private String operatingHours() {
+        switch (facility.getName()) {
+            case "Rose Dining Hall":
+                switch (getDayString()) {
+                case "SUN":
+                    return "8:00 AM - 9:30 AM\n10:00 AM - 2:00 PM\n5:00 PM - 8:00 PM";
+                case "MON":
+                    return "7:30 AM - 10:00 AM\n5:00 PM - 8:00 PM";
+                case "TUE":
+                    return "7:30 AM - 10:00 AM\n5:00 PM - 8:00 PM";
+                case "WED":
+                    return "7:30 AM - 10:00 AM\n6:00 PM - 8:00 PM";
+                case "THU":
+                    return "7:30 AM - 10:00 AM\n5:00 PM - 8:00 PM";
+                case "FRI":
+                    return "7:30 AM - 10:00 AM\n5:00 PM - 8:00 PM";
+                case "SAT":
+                    return "8:00 AM - 10:00 AM\n10:30 AM - 2:00 PM\n5:00 PM - 8:00 PM";
+                default:
+                    return "Closed";
+            }
+            case "Risley":
+                switch (getDayString()) {
+                case "SUN":
+                    return "Closed";
+                case "MON":
+                    return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
+                case "TUE":
+                    return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
+                case "WED":
+                    return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
+                case "THU":
+                    return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
+                case "FRI":
+                    return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
+                case "SAT":
+                    return "Closed";
+                default:
+                    return "Closed";
+            }
+            case "RPCC Dining Hall":
+                switch (getDayString()) {
+                case "SUN":
+                    return "10:00 AM - 2:00 PM\n5:30 PM - 8:30 PM";
+                case "MON":
+                    return "5:30 PM - 9:00 PM";
+                case "TUE":
+                    return "5:30 PM - 9:00 PM";
+                case "WED":
+                    return "5:30 PM - 9:00 PM";
+                case "THU":
+                    return "5:30 PM - 9:00 PM";
+                case "FRI":
+                    return "5:30 PM - 8:30 PM";
+                case "SAT":
+                    return "5:30 PM - 8:30 PM";
+                default:
+                    return "Closed";
+            }
+            case "Olin Libe Cafe":
+                switch (getDayString()) {
+                case "SUN":
+                    return "10:00 AM - 12:00 AM";
+                case "MON":
+                    return "8:00 AM - 12:00 AM";
+                case "TUE":
+                    return "8:00 AM - 12:00 AM";
+                case "WED":
+                    return "8:00 AM - 12:00 AM";
+                case "THU":
+                    return "8:00 AM - 12:00 AM";
+                case "FRI":
+                    return "8:00 AM - 6:00 PM";
+                case "SAT":
+                    return "10:00 AM - 8:00 PM";
+                default:
+                    return "Closed";
+            }
+            case "Okenshields":
+                if (getDayString().equals("FRI")) {
+                return "11:00 AM - 2:30 PM";
+            } else if (getDayString().equals("SUN") || getDayString().equals("SAT")) {
+                return "Closed";
+            } else {
+                return "11:00 AM - 2:30 PM\n4:30 PM - 7:30 PM";
+            }
+            case "North Star at Appel":
+                switch (getDayString()) {
+                case "SUN":
+                    return "10:00 AM - 2:00 PM\n2:00 PM - 4:00 PM\n5:00 PM - 8:00 PM";
+                case "MON":
+                    return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n2:00 PM - 4:00 PM\n5:00 PM - 8:00 PM";
+                case "TUE":
+                    return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n2:00 PM - 4:00 PM\n5:00 PM - 8:00 PM";
+                case "WED":
+                    return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n2:00 PM - 4:00 PM\n5:00 PM - 8:00 PM";
+                case "THU":
+                    return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n2:00 PM - 4:00 PM\n5:00 PM - 8:00 PM";
+                case "FRI":
+                    return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n2:00 PM - 4:00 PM\n5:00 PM - 8:00 PM";
+                case "SAT":
+                    return "8:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n2:00 PM - 4:00 PM\n5:00 PM - 8:00 PM";
+                default:
+                    return "Closed";
+            }
+            case "104West!":
+                switch (getDayString()) {
+                case "SUN":
+                    return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
+                case "MON":
+                    return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
+                case "TUE":
+                    return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
+                case "WED":
+                    return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
+                case "THU":
+                    return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
+                case "FRI":
+                    return "11:00 AM - 3:00 PM\n6:00 PM - 8:00 PM";
+                case "SAT":
+                    return "12:30 PM - 2:00 PM\n6:00 PM - 8:00 PM";
+                default:
+                    return "Closed";
+            }
+            case "Keeton House":
+                switch (getDayString()) {
+                case "SUN":
+                    return "10:00 AM - 2:00 PM\n5:00 PM - 8:00 PM";
+                case "MON":
+                    return "7:30 AM - 10:00 AM\n5:00 PM - 8:00 PM";
+                case "TUE":
+                    return "11:00 AM - 2:00 PM\n5:00 PM - 8:00 PM";
+                case "WED":
+                    return "6:00 PM - 8:00 PM";
+                case "THU":
+                    return "7:30 AM - 10:00 AM\n5:00 PM - 8:00 PM";
+                case "FRI":
+                    return "7:30 AM - 10:00 AM\n5:00 PM - 8:00 PM";
+                case "SAT":
+                    return "10:30 AM - 2:00 PM\n5:00 PM - 8:00 PM";
+                default:
+                    return "Closed";
+            }
+            case "Jansen's at Bethe House":
+                switch (getDayString()) {
+                case "SUN":
+                    return "10:00 AM - 2:00 PM\n4:30 PM - 7:30 PM";
+                case "MON":
+                    return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n4:30 PM - 7:30 PM";
+                case "TUE":
+                    return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n4:30 PM - 7:30 PM";
+                case "WED":
+                    return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n6:00 PM - 7:30 PM";
+                case "THU":
+                    return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n4:30 PM - 7:30 PM";
+                case "FRI":
+                    return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n4:30 PM - 7:30 PM";
+                case "SAT":
+                    return "10:30 AM - 2:00 PM\n4:30 PM - 7:30 PM";
+                default:
+                    return "Closed";
+            }
+            case "Carl Becker House":
+                switch (getDayString()) {
+                case "SUN":
+                    return "10:00 AM - 2:00 PM\n5:00 PM - 8:00 PM";
+                case "MON":
+                    return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n5:00 PM - 8:00 PM";
+                case "TUE":
+                    return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n5:00 PM - 8:00 PM";
+                case "WED":
+                    return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n6:00 PM - 8:00 PM";
+                case "THU":
+                    return "7:00 AM - 10:30 AM\n10:30 AM - 3:30 PM\n5:00 PM - 8:00 PM";
+                case "FRI":
+                    return "7:00 AM - 10:30 AM\n10:30 AM - 3:30 PM\n5:00 PM - 8:00 PM";
+                case "SAT":
+                    return "10:30 AM - 2:00 PM\n5:00 PM - 8:00 PM";
+                default:
+                    return "Closed";
+            }
+            case "Cafe Jennie":
+                switch (getDayString()) {
+                case "SUN":
+                    return "Closed";
+                case "MON":
+                    return "8:00 AM - 6:00 PM";
+                case "TUE":
+                    return "8:00 AM - 6:00 PM";
+                case "WED":
+                    return "8:00 AM - 6:00 PM";
+                case "THU":
+                    return "8:00 AM - 6:00 PM";
+                case "FRI":
+                    return "8:00 AM - 6:00 PM";
+                case "SAT":
+                    return "10:00 AM - 5:00 PM";
+                default:
+                    return "Closed";
+            }
+            case "Alice Cook House":
+                switch (getDayString()) {
+                case "SUN":
+                    return "10:00 AM - 2:00 PM\n5:00 PM - 9:00 PM";
+                case "MON":
+                    return "7:30 AM - 10:00 AM\n5:00 PM - 9:00 PM";
+                case "TUE":
+                    return "7:30 AM - 10:00 AM\n5:00 PM - 9:00 PM";
+                case "WED":
+                    return "6:00 PM - 9:00 PM";
+                case "THU":
+                    return "7:30 AM - 10:00 AM\n5:00 PM - 9:00 PM";
+                case "FRI":
+                    return "7:30 AM - 10:00 AM\n5:00 PM - 9:00 PM";
+                case "SAT":
+                    return "10:30 AM - 2:00 PM\n5:00 PM - 9:00 PM";
+                default:
+                    return "Closed";
+            }
+            default:
+                return "";
+        }
+    }
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);

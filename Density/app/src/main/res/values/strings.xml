@@ -2,16 +2,18 @@
     <string name="app_name">Density</string>
     <string name="search_title"></string>
 
-    <string name="Libe">Libe</string>
-    <string name="Jenny">Jenny</string>
-    <string name="Okenshields">Okenshields</string>
-    <string name="Becker">Becker</string>
-    <string name="West104">104West</string>
-    <string name="Bethe">Bethe</string>
-    <string name="RPME">RPME</string>
-    <string name="Risley">Risley</string>
-    <string name="Cook">Cook</string>
-    <string name="Keeton">Keeton</string>
+    <string name="Libe">libe</string>
+    <string name="Jenny">cafejennie</string>
+    <string name="Okenshields">okies</string>
+    <string name="Becker">becker</string>
+    <string name="West104">west104</string>
+    <string name="Bethe">bethe</string>
+    <string name="RPME">rpcc</string>
+    <string name="Risley">risley</string>
+    <string name="Cook">cook</string>
+    <string name="Keeton">keeton</string>
+
+    <string name="auth_key"></string>
 
     <string name="Sun">SUN</string>
     <string name="Mon">MON</string>

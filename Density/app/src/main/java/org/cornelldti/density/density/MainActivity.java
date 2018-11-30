@@ -2,6 +2,7 @@ package org.cornelldti.density.density;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,6 +36,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class MainActivity extends AppCompatActivity implements Facility_Page.OnFragmentInteractionListener {
+
+    private SharedPreferences pref;
 
     private RecyclerView facilities;
 
@@ -82,16 +85,34 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
         adapter.setOnItemClickListener(new FacilitiesListAdapter.ClickListener() {
             @Override
             public void onItemClick(int position, View v) {
-//                Fragment facility_page = Facility_Page.newInstance(filtered_fac.get(position));
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-//                ft.replace(R.id.main_container, facility_page);
-//                ft.commit();
                 Facility_Page dialog = Facility_Page.newInstance(filtered_fac.get(position));
                 dialog.show(ft, "facility page");
             }
         });
+        Log.d("BEFORE", "MSG");
+        if (filtered_fac.equals(null)) {
+            Log.d("NULL", "LIST");
+        }
+        else
+        {
+            Log.d("NOTNULL", "LIST");
+        }
+        Log.d("SIZE", String.valueOf(filtered_fac.size()));
         facilities.setAdapter(adapter);
+        Log.d("AFTER", "MSG");
+
+        pref = getPreferences(Context.MODE_PRIVATE);
+        if(! pref.contains("auth_token"))
+        {
+            requestToken();
+        }
+    }
+
+    private void requestToken()
+    {
+        // REQUEST TOKEN USE AUTH KEY!
     }
 
     private void setOnRefreshListener() {
@@ -189,29 +210,29 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
      * @return
      */
     private void fetchFacilities() {
-        ArrayList<Facility> f = new ArrayList<Facility>();
-        f.add(new Facility("Keeton Dining", getString(R.string.Keeton), "9:00 AM",
+        ArrayList<Facility> f_test = new ArrayList<Facility>();
+        f_test.add(new Facility("Keeton House", getString(R.string.Keeton), "9:00 AM",
                 "9:00 PM", "address",
                 Facility.campus_location.WEST, 3));
-        f.add(new Facility("Libe Cafe", getString(R.string.Libe), "10:00 AM",
+        f_test.add(new Facility("Olin Libe Cafe", getString(R.string.Libe), "10:00 AM",
                 "9:00 PM", "address",
                 Facility.campus_location.CENTRAL, 0));
-        f.add(new Facility("Bethe Dining", getString(R.string.Bethe), "9:30 AM",
+        f_test.add(new Facility("Jansen's at Bethe House", getString(R.string.Bethe), "9:30 AM",
                 "11:00 PM", "address",
                 Facility.campus_location.WEST, 1));
-        f.add(new Facility("RPCC Dining", getString(R.string.RPME), "9:30 AM",
+        f_test.add(new Facility("RPCC Dining Hall", getString(R.string.RPME), "9:30 AM",
                 "11:00 PM", "address",
                 Facility.campus_location.NORTH, 2));
-        all_facilities = f;
+        all_facilities = f_test;
         filtered_fac = all_facilities;
+
 //        JsonArrayRequest firstJsonArrayRequest = new JsonArrayRequest
 //                (Request.Method.GET, FACILITY_LIST_ENDPOINT, null, new Response.Listener<JSONArray>() {
 //                    @Override
 //                    public void onResponse(JSONArray response) {
 //                        try {
 //                            ArrayList<Facility> f = new ArrayList<Facility>();
-//                            for(int i = 0; i < response.length();i++)
-//                            {
+//                            for (int i = 0; i < response.length(); i++) {
 //                                JSONObject facility = response.getJSONObject(i);
 //                                f.add(new Facility(facility.getString("displayName"), facility.getString("id")));
 //                            }
@@ -246,8 +267,13 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
                         try {
                             ArrayList<Facility> f_list = list;
                             for (int i = 0; i < f_list.size(); i++) {
-                                JSONObject obj = response.getJSONObject(i);
-                                f_list.set(i, f_list.get(i).setOccupancy_rating(obj.getInt("density")));
+                                for (int x = 0; x < response.length(); x++) {
+                                    JSONObject obj = response.getJSONObject(x);
+                                    if (obj.getString("id")
+                                            .equals(f_list.get(i).getId())) {
+                                        f_list.set(i, f_list.get(i).setOccupancy_rating(obj.getInt("density")));
+                                    }
+                                }
                             }
                             all_facilities = f_list;
                             filtered_fac = all_facilities;

@@ -10,31 +10,34 @@
     tools:context=".Facility_Page">
 
     <LinearLayout
+        android:id="@+id/topView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/topView">
-    <ImageButton
-        android:id="@+id/backButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="14dp"
-        android:background="@null"
-        android:src="@drawable/back_button" />
+        android:layout_alignParentTop="true">
 
-    <TextView
-        android:id="@+id/f_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="17dp"
-        android:text="Facility Name"
-        android:textColor="#B5B5B5"
-        android:textSize="20dp" />
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="14dp"
+            android:background="@null"
+            android:src="@drawable/back_button" />
+
+        <TextView
+            android:id="@+id/f_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="17dp"
+            android:layout_marginRight="20dp"
+            android:text="Facility Name"
+            android:textColor="#B5B5B5"
+            android:textSize="20dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -44,7 +47,7 @@
         android:layout_below="@+id/topView"
         android:layout_alignParentStart="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="134dp">
+        android:layout_marginTop="54dp">
 
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/densityChart"
@@ -53,6 +56,21 @@
             android:layout_alignStart="@+id/bottomView"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bottomView"
+        android:gravity="center"
+        android:layout_marginTop="60dp">
+
+        <TextView
+            android:id="@+id/f_hours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HOURS" />
+
     </LinearLayout>
 
 </RelativeLayout>
