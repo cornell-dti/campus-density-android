@@ -13,8 +13,6 @@
     <string name="Cook">cook</string>
     <string name="Keeton">keeton</string>
 
-    <string name="auth_key"></string>
-
     <string name="Sun">SUN</string>
     <string name="Mon">MON</string>
     <string name="Tue">TUE</string>
@@ -23,7 +21,4 @@
     <string name="Fri">FRI</string>
     <string name="Sat">SAT</string>
 
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -5,9 +5,6 @@ import java.io.Serializable;
 public class Facility implements Serializable {
     private String name;
     private String id;
-    private String opensAt;
-    private String closesAt;
-    private String address;
     public int occupancy_rating;
     public enum campus_location {NORTH, WEST, CENTRAL};
     private campus_location loc;
@@ -24,9 +21,6 @@ public class Facility implements Serializable {
     {
         this.name = name;
         this.id = id;
-        this.opensAt = opensAt;
-        this.closesAt = closesAt;
-        this.address = address;
         this.loc = location;
         this.occupancy_rating = occupancy_rating;
     }
@@ -49,35 +43,6 @@ public class Facility implements Serializable {
     public void setId(String id)
     {
         this.id = id;
-    }
-
-    public String getOpensAt()
-    {
-        return this.opensAt;
-    }
-
-    public void setOpensAt(String opensAt)
-    {
-        this.opensAt = opensAt;
-    }
-
-    public String getClosesAt()
-    {
-        return this.closesAt;
-    }
-
-    public void setClosesAt(String closesAt)
-    {
-        this.closesAt = closesAt;
-    }
-
-    public String getAddress()
-    {
-        return this.address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getDescription()
@@ -119,9 +84,39 @@ public class Facility implements Serializable {
         return this.loc;
     }
 
-    public void setLocation(campus_location loc)
+    public String getLocationString()
     {
-        this.loc = loc;
+        String l = "";
+        switch (this.loc)
+        {
+            case NORTH:
+                l = "NORTH";
+                break;
+            case CENTRAL:
+                l = "CENTRAL";
+                break;
+            case WEST:
+                l = "WEST";
+                break;
+        }
+        return l;
+    }
+
+    public Facility setLocation(String loc)
+    {
+        switch (loc)
+        {
+            case "north":
+                this.loc = campus_location.NORTH;
+                break;
+            case "central":
+                this.loc = campus_location.CENTRAL;
+                break;
+            case "west":
+                this.loc = campus_location.WEST;
+                break;
+        }
+        return this;
     }
 
 }

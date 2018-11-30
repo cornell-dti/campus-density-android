@@ -16,7 +16,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.iid.InstanceID;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -59,9 +61,15 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
 
     private RequestQueue queue;
 
+    private static final String TOKEN_REQUEST_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/authv1";
+
     private static final String FACILITY_LIST_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/facilityList";
 
+    private static final String FACILITY_INFO_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/facilityInfo";
+
     private static final String HOW_DENSE_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/howDense";
+
+    private boolean dataLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,39 +88,50 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
 
         layoutManager = new LinearLayoutManager(this);
         facilities.setLayoutManager(layoutManager);
-        fetchFacilities();
-        adapter = new FacilitiesListAdapter(filtered_fac);
-        adapter.setOnItemClickListener(new FacilitiesListAdapter.ClickListener() {
-            @Override
-            public void onItemClick(int position, View v) {
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                Facility_Page dialog = Facility_Page.newInstance(filtered_fac.get(position));
-                dialog.show(ft, "facility page");
-            }
-        });
-        Log.d("BEFORE", "MSG");
-        if (filtered_fac.equals(null)) {
-            Log.d("NULL", "LIST");
-        }
-        else
-        {
-            Log.d("NOTNULL", "LIST");
-        }
-        Log.d("SIZE", String.valueOf(filtered_fac.size()));
-        facilities.setAdapter(adapter);
-        Log.d("AFTER", "MSG");
 
         pref = getPreferences(Context.MODE_PRIVATE);
-        if(! pref.contains("auth_token"))
-        {
+
+        if (!pref.contains("auth_token")) {
             requestToken();
         }
+        else {
+            fetchFacilities(false);
+        }
+
     }
 
-    private void requestToken()
-    {
-        // REQUEST TOKEN USE AUTH KEY!
+    private void requestToken() {
+        JsonObjectRequest tokenRequest = new JsonObjectRequest
+                (Request.Method.PUT, TOKEN_REQUEST_ENDPOINT, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String token = response.getString("token");
+                            Log.d("TOKEN", token);
+                            pref.edit().putString("auth_token", token).commit();
+                            fetchFacilities(false);
+                        }
+                        catch (JSONException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_LONG).show();
+                        Log.d("ERROR MESSAGE", error.toString());
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + getString(R.string.auth_key));
+                headers.put("x-api-key", InstanceID.getInstance(MainActivity.this).getId());
+                return headers;
+            }
+        };
+        queue.add(tokenRequest);
     }
 
     private void setOnRefreshListener() {
@@ -121,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
             @Override
             public void onRefresh() {
                 swipeRefresh.setRefreshing(true);
-                fetchFacilities();
+                fetchFacilities(true);
                 handleCheckChange(filterChips.getCheckedChipId());
                 swipeRefresh.setRefreshing(false);
             }
@@ -209,58 +228,99 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
      *
      * @return
      */
-    private void fetchFacilities() {
-        ArrayList<Facility> f_test = new ArrayList<Facility>();
-        f_test.add(new Facility("Keeton House", getString(R.string.Keeton), "9:00 AM",
-                "9:00 PM", "address",
-                Facility.campus_location.WEST, 3));
-        f_test.add(new Facility("Olin Libe Cafe", getString(R.string.Libe), "10:00 AM",
-                "9:00 PM", "address",
-                Facility.campus_location.CENTRAL, 0));
-        f_test.add(new Facility("Jansen's at Bethe House", getString(R.string.Bethe), "9:30 AM",
-                "11:00 PM", "address",
-                Facility.campus_location.WEST, 1));
-        f_test.add(new Facility("RPCC Dining Hall", getString(R.string.RPME), "9:30 AM",
-                "11:00 PM", "address",
-                Facility.campus_location.NORTH, 2));
-        all_facilities = f_test;
-        filtered_fac = all_facilities;
+    private void fetchFacilities(final boolean refresh) {
+        Log.d("FETCH", "FAC");
+//        ArrayList<Facility> f_test = new ArrayList<Facility>();
+//        f_test.add(new Facility("Keeton House", getString(R.string.Keeton), "9:00 AM",
+//                "9:00 PM", "address",
+//                Facility.campus_location.WEST, 3));
+//        f_test.add(new Facility("Olin Libe Cafe", getString(R.string.Libe), "10:00 AM",
+//                "9:00 PM", "address",
+//                Facility.campus_location.CENTRAL, 0));
+//        f_test.add(new Facility("Jansen's at Bethe House", getString(R.string.Bethe), "9:30 AM",
+//                "11:00 PM", "address",
+//                Facility.campus_location.WEST, 1));
+//        f_test.add(new Facility("RPCC Dining Hall", getString(R.string.RPME), "9:30 AM",
+//                "11:00 PM", "address",
+//                Facility.campus_location.NORTH, 2));
+//        all_facilities = f_test;
+//        filtered_fac = all_facilities;
 
-//        JsonArrayRequest firstJsonArrayRequest = new JsonArrayRequest
-//                (Request.Method.GET, FACILITY_LIST_ENDPOINT, null, new Response.Listener<JSONArray>() {
-//                    @Override
-//                    public void onResponse(JSONArray response) {
-//                        try {
-//                            ArrayList<Facility> f = new ArrayList<Facility>();
-//                            for (int i = 0; i < response.length(); i++) {
-//                                JSONObject facility = response.getJSONObject(i);
-//                                f.add(new Facility(facility.getString("displayName"), facility.getString("id")));
-//                            }
-//                            fetchOccupancies(f);
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        // NEVER SHOWS THIS
-//                        Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_LONG).show();
-//                        Log.d("ERROR MESSAGE", error.toString());
-//                    }
-//                }) {
-//            @Override
-//            public Map<String, String> getHeaders() {
-//                HashMap<String, String> headers = new HashMap<String, String>();
-//                headers.put("Content-Type", "application/json; charset=utf-8");
-//                return headers;
-//            }
-//        };
-//        queue.add(firstJsonArrayRequest);
+        JsonArrayRequest facilityListRequest = new JsonArrayRequest
+                (Request.Method.GET, FACILITY_LIST_ENDPOINT, null, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            ArrayList<Facility> f = new ArrayList<Facility>();
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject facility = response.getJSONObject(i);
+                                f.add(new Facility(facility.getString("displayName"), facility.getString("id")));
+                            }
+                            fetchFacilityInfo(f, refresh);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_LONG).show();
+                        Log.d("ERROR MESSAGE", error.toString());
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + getString(R.string.auth_key));
+                headers.put("x-api-key", pref.getString("auth_token", ""));
+                return headers;
+            }
+        };
+        queue.add(facilityListRequest);
     }
 
-    private void fetchOccupancies(final ArrayList<Facility> list) {
-        JsonArrayRequest secondJsonArrayRequest = new JsonArrayRequest
+    private void fetchFacilityInfo(final ArrayList<Facility> list, final boolean refresh) {
+        JsonArrayRequest facilityInfoRequest = new JsonArrayRequest
+                (Request.Method.GET, FACILITY_INFO_ENDPOINT, null, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            ArrayList<Facility> f_list = list;
+                            for (int i = 0; i < f_list.size(); i++) {
+                                for (int x = 0; x < response.length(); x++) {
+                                    JSONObject obj = response.getJSONObject(x);
+                                    if (obj.getString("id")
+                                            .equals(f_list.get(i).getId())) {
+                                        f_list.set(i, f_list.get(i).setLocation(obj.getString("campusLocation")));
+                                    }
+                                }
+                            }
+                            fetchFacilityOccupancy(f_list, refresh);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_LONG).show();
+                        Log.d("ERROR MESSAGE", error.toString());
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + getString(R.string.auth_key));
+                headers.put("x-api-key", pref.getString("auth_token", ""));
+                return headers;
+            }
+        };
+        queue.add(facilityInfoRequest);
+    }
+
+    private void fetchFacilityOccupancy(final ArrayList<Facility> list, final boolean refresh)
+    {
+        JsonArrayRequest facilityOccupancyRequest = new JsonArrayRequest
                 (Request.Method.GET, HOW_DENSE_ENDPOINT, null, new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -275,8 +335,25 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
                                     }
                                 }
                             }
+
                             all_facilities = f_list;
                             filtered_fac = all_facilities;
+
+                            if(!refresh) {
+                                MainActivity.this.adapter = new FacilitiesListAdapter(MainActivity.this.filtered_fac);
+                                MainActivity.this.adapter.setOnItemClickListener(new FacilitiesListAdapter.ClickListener() {
+                                    @Override
+                                    public void onItemClick(int position, View v) {
+                                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                                        Facility_Page dialog = Facility_Page.newInstance(filtered_fac.get(position));
+                                        dialog.show(ft, "facility page");
+                                    }
+                                });
+
+                                MainActivity.this.facilities.setAdapter(adapter);
+                            }
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -284,7 +361,6 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // NEVER SHOWS THIS
                         Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_LONG).show();
                         Log.d("ERROR MESSAGE", error.toString());
                     }
@@ -292,11 +368,12 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
             @Override
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("Authorization", "Bearer " + getString(R.string.auth_key));
+                headers.put("x-api-key", pref.getString("auth_token", ""));
                 return headers;
             }
         };
-        queue.add(secondJsonArrayRequest);
+        queue.add(facilityOccupancyRequest);
     }
 
     @Override
