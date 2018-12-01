@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
 
     private RecyclerView facilities;
 
+    private ProgressBar spinner;
+
     private SwipeRefreshLayout swipeRefresh;
 
     private FacilitiesListAdapter adapter;
@@ -69,17 +72,14 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
 
     private static final String HOW_DENSE_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/howDense";
 
-    private boolean dataLoaded = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         facilities = findViewById(R.id.facilities);
+        spinner = findViewById(R.id.progressBar);
 
-        setOnRefreshListener();
-        setChipOnClickListener();
         setupSearchQuery();
 
         queue = Volley.newRequestQueue(this);
@@ -229,23 +229,6 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
      * @return
      */
     private void fetchFacilities(final boolean refresh) {
-        Log.d("FETCH", "FAC");
-//        ArrayList<Facility> f_test = new ArrayList<Facility>();
-//        f_test.add(new Facility("Keeton House", getString(R.string.Keeton), "9:00 AM",
-//                "9:00 PM", "address",
-//                Facility.campus_location.WEST, 3));
-//        f_test.add(new Facility("Olin Libe Cafe", getString(R.string.Libe), "10:00 AM",
-//                "9:00 PM", "address",
-//                Facility.campus_location.CENTRAL, 0));
-//        f_test.add(new Facility("Jansen's at Bethe House", getString(R.string.Bethe), "9:30 AM",
-//                "11:00 PM", "address",
-//                Facility.campus_location.WEST, 1));
-//        f_test.add(new Facility("RPCC Dining Hall", getString(R.string.RPME), "9:30 AM",
-//                "11:00 PM", "address",
-//                Facility.campus_location.NORTH, 2));
-//        all_facilities = f_test;
-//        filtered_fac = all_facilities;
-
         JsonArrayRequest facilityListRequest = new JsonArrayRequest
                 (Request.Method.GET, FACILITY_LIST_ENDPOINT, null, new Response.Listener<JSONArray>() {
                     @Override
@@ -352,6 +335,10 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
                                 });
 
                                 MainActivity.this.facilities.setAdapter(adapter);
+                                MainActivity.this.spinner.setVisibility(View.GONE);
+                                MainActivity.this.facilities.setVisibility(View.VISIBLE);
+                                setChipOnClickListener();
+                                setOnRefreshListener();
                             }
 
                         } catch (JSONException e) {
