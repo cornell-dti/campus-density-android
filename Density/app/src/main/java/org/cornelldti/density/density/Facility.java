@@ -8,6 +8,7 @@ public class Facility implements Serializable {
     public int occupancy_rating;
     public enum campus_location {NORTH, WEST, CENTRAL};
     private campus_location loc;
+    private boolean open;
 
     public Facility(String name, String id)
     {
@@ -23,6 +24,17 @@ public class Facility implements Serializable {
         this.id = id;
         this.loc = location;
         this.occupancy_rating = occupancy_rating;
+    }
+
+    public Facility setOpen(boolean open)
+    {
+        this.open = open;
+        return this;
+    }
+
+    public boolean isOpen()
+    {
+        return this.open;
     }
 
     public String getName()

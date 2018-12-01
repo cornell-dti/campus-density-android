@@ -267,6 +267,7 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
                 (Request.Method.GET, FACILITY_INFO_ENDPOINT, null, new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
+                        Log.d("RESP", response.toString());
                         try {
                             ArrayList<Facility> f_list = list;
                             for (int i = 0; i < f_list.size(); i++) {
@@ -274,11 +275,20 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
                                     JSONObject obj = response.getJSONObject(x);
                                     if (obj.getString("id")
                                             .equals(f_list.get(i).getId())) {
-                                        f_list.set(i, f_list.get(i).setLocation(obj.getString("campusLocation")));
+                                        f_list.set(i, f_list.get(i).setLocation(obj.getString("campusLocation")).setOpen(isOpen(obj)));
                                     }
                                 }
                             }
-                            fetchFacilityOccupancy(f_list, refresh);
+                            ArrayList<Facility> f_list_updated = new ArrayList<Facility>();
+                            for(int i = 0; i < f_list.size(); i++)
+                            {
+                                Facility f = f_list.get(i);
+                                if(f.isOpen())
+                                {
+                                    f_list_updated.add(f);
+                                }
+                            }
+                            fetchFacilityOccupancy(f_list_updated, refresh);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -299,6 +309,27 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
             }
         };
         queue.add(facilityInfoRequest);
+    }
+
+    private boolean isOpen(JSONObject facility)
+    {
+        long currentTime = System.currentTimeMillis() / 1000L;
+        try {
+            JSONArray dailyHours = facility.getJSONArray("dailyHours");
+            for(int i = 0; i < dailyHours.length(); i++)
+            {
+                if(currentTime >= dailyHours.getJSONObject(i).getLong("startTimestamp")
+                        && currentTime < dailyHours.getJSONObject(i).getLong("endTimestamp"))
+                {
+                    return true;
+                }
+            }
+        }
+        catch(JSONException e)
+        {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private void fetchFacilityOccupancy(final ArrayList<Facility> list, final boolean refresh)
