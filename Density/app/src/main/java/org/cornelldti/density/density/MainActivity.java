@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -43,6 +44,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.ViewCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -77,10 +79,13 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
     private ArrayList<Facility> filtered_fac;
     private RequestQueue queue;
 
+    private float facilitiesScroll;
+
     private static final String TOKEN_REQUEST_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/authv1";
     private static final String FACILITY_LIST_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/facilityList";
     private static final String FACILITY_INFO_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/facilityInfo";
     private static final String HOW_DENSE_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/howDense";
+    private NestedScrollView nestedScrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,12 +93,46 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
         setContentView(R.layout.activity_main);
 
         facilities = findViewById(R.id.facilities);
+
         spinner = findViewById(R.id.progressBar);
 
         swipeRefresh = findViewById(R.id.swipe_refresh);
 
         appBarLayout = findViewById(R.id.appbar);
         mToolbar = findViewById(R.id.toolbar);
+
+        nestedScrollView = findViewById(R.id.nestedScrollView);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            nestedScrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+                @Override
+                public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                    Resources r = getResources();
+
+                    // TODO Don't recalculate
+                    float offset =
+                            TypedValue.applyDimension(
+                                    TypedValue.COMPLEX_UNIT_DIP,
+                                    5f,
+                                    r.getDisplayMetrics()
+                            );
+
+                    if (scrollY > offset) {
+                        float dip = 4f;
+
+                        float elevation =
+                                TypedValue.applyDimension(
+                                        TypedValue.COMPLEX_UNIT_DIP,
+                                        dip,
+                                        r.getDisplayMetrics()
+                                );
+                        appBarLayout.setElevation(elevation);
+                    } else {
+                        appBarLayout.setElevation(0);
+                    }
+                }
+            });
+        }
 
         collapsingToolbarLayout = findViewById(R.id.collapsingToolbar);
         swipeRefresh.setNestedScrollingEnabled(true);
@@ -104,22 +143,26 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 verticalOffset = Math.abs(verticalOffset);
-                int difference = appBarLayout.getTotalScrollRange() - mToolbar.getHeight();
 
-                if (verticalOffset >= difference) {
-                    float flexibleSpace = appBarLayout.getTotalScrollRange() - verticalOffset;
-                    float ratio = 1 - (flexibleSpace / mToolbar.getHeight());
+                Resources r = getResources();
 
-                    // TODO Don't calculate every time
+                // TODO Don't recalculate
+                float offset =
+                        TypedValue.applyDimension(
+                                TypedValue.COMPLEX_UNIT_DIP,
+                                5f,
+                                r.getDisplayMetrics()
+                        );
+
+                if (verticalOffset > offset) {
                     float dip = 4f;
-                    Resources r = getResources();
-                    float px = TypedValue.applyDimension(
-                            TypedValue.COMPLEX_UNIT_DIP,
-                            dip,
-                            r.getDisplayMetrics()
-                    );
 
-                    float elevation = ratio * px;
+                    float elevation =
+                            TypedValue.applyDimension(
+                                    TypedValue.COMPLEX_UNIT_DIP,
+                                    dip,
+                                    r.getDisplayMetrics()
+                            );
                     appBarLayout.setElevation(elevation);
                 } else {
                     appBarLayout.setElevation(0);
