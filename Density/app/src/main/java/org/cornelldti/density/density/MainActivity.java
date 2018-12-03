@@ -101,8 +101,19 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
     }
 
     private void requestToken() {
+        final String instanceId = InstanceID.getInstance(MainActivity.this).getId();
+        JSONObject requestBody = new JSONObject();
+        try {
+            requestBody.put("platform", "android");
+            requestBody.put("receipt", "");
+            requestBody.put("instanceId", instanceId);
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
         JsonObjectRequest tokenRequest = new JsonObjectRequest
-                (Request.Method.PUT, TOKEN_REQUEST_ENDPOINT, null, new Response.Listener<JSONObject>() {
+                (Request.Method.PUT, TOKEN_REQUEST_ENDPOINT, requestBody, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
@@ -127,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + getString(R.string.auth_key));
-                headers.put("x-api-key", InstanceID.getInstance(MainActivity.this).getId());
+                headers.put("x-api-key", instanceId);
                 return headers;
             }
         };
@@ -275,20 +286,22 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
                                     JSONObject obj = response.getJSONObject(x);
                                     if (obj.getString("id")
                                             .equals(f_list.get(i).getId())) {
-                                        f_list.set(i, f_list.get(i).setLocation(obj.getString("campusLocation")).setOpen(isOpen(obj)));
+//                                        f_list.set(i, f_list.get(i).setLocation(obj.getString("campusLocation")).setOpen(isOpen(obj)));
+                                        f_list.set(i, f_list.get(i).setLocation(obj.getString("campusLocation")));
                                     }
                                 }
                             }
-                            ArrayList<Facility> f_list_updated = new ArrayList<Facility>();
-                            for(int i = 0; i < f_list.size(); i++)
-                            {
-                                Facility f = f_list.get(i);
-                                if(f.isOpen())
-                                {
-                                    f_list_updated.add(f);
-                                }
-                            }
-                            fetchFacilityOccupancy(f_list_updated, refresh);
+//                            ArrayList<Facility> f_list_updated = new ArrayList<Facility>();
+//                            for(int i = 0; i < f_list.size(); i++)
+//                            {
+//                                Facility f = f_list.get(i);
+//                                if(f.isOpen())
+//                                {
+//                                    f_list_updated.add(f);
+//                                }
+//                            }
+//                            fetchFacilityOccupancy(f_list_updated, refresh);
+                            fetchFacilityOccupancy(f_list, refresh);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -311,26 +324,26 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
         queue.add(facilityInfoRequest);
     }
 
-    private boolean isOpen(JSONObject facility)
-    {
-        long currentTime = System.currentTimeMillis() / 1000L;
-        try {
-            JSONArray dailyHours = facility.getJSONArray("dailyHours");
-            for(int i = 0; i < dailyHours.length(); i++)
-            {
-                if(currentTime >= dailyHours.getJSONObject(i).getLong("startTimestamp")
-                        && currentTime < dailyHours.getJSONObject(i).getLong("endTimestamp"))
-                {
-                    return true;
-                }
-            }
-        }
-        catch(JSONException e)
-        {
-            e.printStackTrace();
-        }
-        return false;
-    }
+//    private boolean isOpen(JSONObject facility)
+//    {
+//        long currentTime = System.currentTimeMillis() / 1000L;
+//        try {
+//            JSONArray dailyHours = facility.getJSONArray("dailyHours");
+//            for(int i = 0; i < dailyHours.length(); i++)
+//            {
+//                if(currentTime >= dailyHours.getJSONObject(i).getLong("startTimestamp")
+//                        && currentTime < dailyHours.getJSONObject(i).getLong("endTimestamp"))
+//                {
+//                    return true;
+//                }
+//            }
+//        }
+//        catch(JSONException e)
+//        {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
 
     private void fetchFacilityOccupancy(final ArrayList<Facility> list, final boolean refresh)
     {
