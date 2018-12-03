@@ -105,12 +105,12 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 verticalOffset = Math.abs(verticalOffset);
                 int difference = appBarLayout.getTotalScrollRange() - mToolbar.getHeight();
-                System.out.println("difference: " + difference);
-                System.out.println("verticalOffset: " + verticalOffset);
+
                 if (verticalOffset >= difference) {
                     float flexibleSpace = appBarLayout.getTotalScrollRange() - verticalOffset;
                     float ratio = 1 - (flexibleSpace / mToolbar.getHeight());
 
+                    // TODO Don't calculate every time
                     float dip = 4f;
                     Resources r = getResources();
                     float px = TypedValue.applyDimension(
@@ -120,9 +120,6 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
                     );
 
                     float elevation = ratio * px;
-                    System.out.println("fs: " + flexibleSpace);
-                    System.out.println("ratio: " + ratio);
-                    System.out.println("elevation: " + elevation);
                     appBarLayout.setElevation(elevation);
                 } else {
                     appBarLayout.setElevation(0);
