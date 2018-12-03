@@ -125,7 +125,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="184dp" />
+                    android:layout_gravity="center" />
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
