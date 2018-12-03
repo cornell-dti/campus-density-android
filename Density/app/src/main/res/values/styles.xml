@@ -6,12 +6,10 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:fontFamily">@font/helvetica_font</item>
     </style>
 
     <style name="ChipTextStyle">
         <item name="android:textSize">13sp</item>
-        <item name="android:fontFamily">@font/helvetica_font</item>
     </style>
 
     <style name="FullScreenDialog" parent="Theme.AppCompat.Light.Dialog">
