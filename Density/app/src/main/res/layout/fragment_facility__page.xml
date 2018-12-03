@@ -62,13 +62,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/bottomView"
+        android:orientation="vertical"
         android:gravity="center"
         android:layout_marginTop="60dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:gravity="center"
+            android:text="@string/todaysHours"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/f_hours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:gravity="center"
             android:text="HOURS" />
 
     </LinearLayout>

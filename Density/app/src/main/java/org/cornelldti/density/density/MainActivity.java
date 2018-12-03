@@ -432,7 +432,6 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
                                     @Override
                                     public void onItemClick(int position, View v) {
                                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                                         Facility_Page dialog = Facility_Page.newInstance(filtered_fac.get(position));
                                         dialog.show(ft, "facility page");
                                     }

@@ -21,5 +21,6 @@
     <string name="Fri">FRI</string>
     <string name="Sat">SAT</string>
     <string name="search_hint">Search</string>
+    <string name="todaysHours">Today\'s Hours</string>
 
 </resources>

@@ -239,7 +239,7 @@ public class Facility_Page extends DialogFragment {
     private void initializeView()
     {
         facility_name.setText(facility.getName());
-        facility_hours.setText("Today's hours: \n\n" + operatingHours());
+        facility_hours.setText(operatingHours());
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
