@@ -3,11 +3,15 @@ package org.cornelldti.density.density;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -20,6 +24,8 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.iid.InstanceID;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -31,8 +37,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,7 +60,13 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
 
     private FacilitiesListAdapter adapter;
 
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+    private AppBarLayout appBarLayout;
+
+    private Toolbar mToolbar;
+
     private RecyclerView.LayoutManager layoutManager;
+
 
     private ChipGroup filterChips;
 
@@ -59,17 +75,11 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
     private ArrayList<Facility> all_facilities;
 
     private ArrayList<Facility> filtered_fac;
-
-    private SearchView searchBar;
-
     private RequestQueue queue;
 
     private static final String TOKEN_REQUEST_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/authv1";
-
     private static final String FACILITY_LIST_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/facilityList";
-
     private static final String FACILITY_INFO_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/facilityInfo";
-
     private static final String HOW_DENSE_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/howDense";
 
     @Override
@@ -80,7 +90,45 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
         facilities = findViewById(R.id.facilities);
         spinner = findViewById(R.id.progressBar);
 
-        setupSearchQuery();
+        swipeRefresh = findViewById(R.id.swipe_refresh);
+
+        appBarLayout = findViewById(R.id.appbar);
+        mToolbar = findViewById(R.id.toolbar);
+
+        collapsingToolbarLayout = findViewById(R.id.collapsingToolbar);
+        swipeRefresh.setNestedScrollingEnabled(true);
+
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                verticalOffset = Math.abs(verticalOffset);
+                int difference = appBarLayout.getTotalScrollRange() - mToolbar.getHeight();
+                System.out.println("difference: " + difference);
+                System.out.println("verticalOffset: " + verticalOffset);
+                if (verticalOffset >= difference) {
+                    float flexibleSpace = appBarLayout.getTotalScrollRange() - verticalOffset;
+                    float ratio = 1 - (flexibleSpace / mToolbar.getHeight());
+
+                    float dip = 4f;
+                    Resources r = getResources();
+                    float px = TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            dip,
+                            r.getDisplayMetrics()
+                    );
+
+                    float elevation = ratio * px;
+                    System.out.println("fs: " + flexibleSpace);
+                    System.out.println("ratio: " + ratio);
+                    System.out.println("elevation: " + elevation);
+                    appBarLayout.setElevation(elevation);
+                } else {
+                    appBarLayout.setElevation(0);
+                }
+            }
+        });
 
         queue = Volley.newRequestQueue(this);
 
@@ -93,8 +141,7 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
 
         if (!pref.contains("auth_token")) {
             requestToken();
-        }
-        else {
+        } else {
             fetchFacilities(false);
         }
 
@@ -107,9 +154,7 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
             requestBody.put("platform", "android");
             requestBody.put("receipt", "");
             requestBody.put("instanceId", instanceId);
-        }
-        catch (JSONException e)
-        {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         JsonObjectRequest tokenRequest = new JsonObjectRequest
@@ -121,9 +166,7 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
                             Log.d("TOKEN", token);
                             pref.edit().putString("auth_token", token).commit();
                             fetchFacilities(false);
-                        }
-                        catch (JSONException e)
-                        {
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
@@ -210,28 +253,6 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
             }
         }
         return filtered_list;
-    }
-
-    private void setupSearchQuery() {
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchBar = findViewById(R.id.search);
-        searchBar.setSearchableInfo(searchManager
-                .getSearchableInfo(getComponentName()));
-        searchBar.setMaxWidth(Integer.MAX_VALUE);
-
-        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                adapter.getFilter().filter(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-                adapter.getFilter().filter(query);
-                return false;
-            }
-        });
     }
 
     /**
@@ -345,8 +366,7 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
 //        return false;
 //    }
 
-    private void fetchFacilityOccupancy(final ArrayList<Facility> list, final boolean refresh)
-    {
+    private void fetchFacilityOccupancy(final ArrayList<Facility> list, final boolean refresh) {
         JsonArrayRequest facilityOccupancyRequest = new JsonArrayRequest
                 (Request.Method.GET, HOW_DENSE_ENDPOINT, null, new Response.Listener<JSONArray>() {
                     @Override
@@ -366,7 +386,7 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
                             all_facilities = f_list;
                             filtered_fac = all_facilities;
 
-                            if(!refresh) {
+                            if (!refresh) {
                                 MainActivity.this.adapter = new FacilitiesListAdapter(MainActivity.this.filtered_fac);
                                 MainActivity.this.adapter.setOnItemClickListener(new FacilitiesListAdapter.ClickListener() {
                                     @Override
@@ -409,10 +429,52 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu, menu);
-        return true;
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.toolbar_search, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+
+        SearchView searchView = (SearchView) searchItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
+        });
+
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                if (appBarLayout != null) {
+                    appBarLayout.setExpanded(false);
+                    CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+                    ((LockableAppBarLayoutBehavior) layoutParams.getBehavior()).lockScroll();
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                if (appBarLayout != null) {
+                    appBarLayout.setExpanded(false);
+                    CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+                    ((LockableAppBarLayoutBehavior) layoutParams.getBehavior()).unlockScroll();
+                }
+                return true;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
     }
+
 
     @Override
     public void onFragmentInteraction(Uri uri) {

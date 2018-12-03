@@ -10,7 +10,7 @@
     </style>
 
     <style name="ChipTextStyle">
-        <item name="android:textSize">13dp</item>
+        <item name="android:textSize">13sp</item>
         <item name="android:fontFamily">@font/helvetica_font</item>
     </style>
 
@@ -31,6 +31,10 @@
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
         <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+    </style>
+
+    <style name="expandedTitleAppearance">
+        <item name="android:textSize">30sp</item>
     </style>
 
 </resources>

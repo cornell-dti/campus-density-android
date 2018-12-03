@@ -20,5 +20,6 @@
     <string name="Thu">THU</string>
     <string name="Fri">FRI</string>
     <string name="Sat">SAT</string>
+    <string name="search_hint">Search</string>
 
 </resources>

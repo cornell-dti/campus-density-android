@@ -14,6 +14,7 @@
         android:id="@+id/facility_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
         android:text="Facility Name"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="20sp"
@@ -24,8 +25,8 @@
         android:id="@+id/description_phrase"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/facility_name"
         android:layout_alignEnd="@+id/linearLayout"
+        android:layout_alignBottom="@+id/facility_name"
         android:text="Description"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#B5B5B5"
@@ -39,37 +40,61 @@
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
         android:layout_marginTop="30dp"
-        android:gravity="center"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        android:gravity="left|center"
         android:orientation="horizontal"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="61dp">
 
         <ImageView
             android:id="@+id/first_bar"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="2.5dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:paddingLeft="0dp"
             android:src="@drawable/rounded_box" />
 
         <ImageView
             android:id="@+id/second_bar"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="2.5dp"
+            android:layout_marginRight="2.5dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
             android:src="@drawable/rounded_box" />
 
         <ImageView
             android:id="@+id/third_bar"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="2.5dp"
+            android:layout_marginRight="2.5dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
             android:src="@drawable/rounded_box" />
 
         <ImageView
             android:id="@+id/fourth_bar"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="2.5dp"
+            android:layout_marginRight="0dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:paddingRight="0dp"
             android:src="@drawable/rounded_box" />
     </LinearLayout>
 
