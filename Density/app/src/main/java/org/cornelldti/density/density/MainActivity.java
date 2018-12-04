@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
     private static final String FACILITY_INFO_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/facilityInfo";
     private static final String HOW_DENSE_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/howDense";
     private NestedScrollView nestedScrollView;
+    private SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -451,20 +452,20 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
 
-        SearchView searchView = (SearchView) searchItem.getActionView();
+        mSearchView = (SearchView) searchItem.getActionView();
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 adapter.getFilter().filter(query);
-                Log.d("SIZEE", String.valueOf(adapter.getItemCount()));
+                Log.d("Size of search results:", String.valueOf(adapter.getItemCount()));
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String query) {
                 adapter.getFilter().filter(query);
-                Log.d("SIZEE", String.valueOf(adapter.getItemCount()));
+                Log.d("Size of search results:", String.valueOf(adapter.getItemCount()));
                 return false;
             }
         });
@@ -477,6 +478,7 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
                     CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
                     ((LockableAppBarLayoutBehavior) layoutParams.getBehavior()).lockScroll();
                 }
+
                 return true;
             }
 
@@ -487,6 +489,7 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
                     CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
                     ((LockableAppBarLayoutBehavior) layoutParams.getBehavior()).unlockScroll();
                 }
+
                 return true;
             }
         });

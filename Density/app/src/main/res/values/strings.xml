@@ -22,5 +22,6 @@
     <string name="Sat">SAT</string>
     <string name="search_hint">Search</string>
     <string name="todaysHours">Today\'s Hours</string>
+    <string name="searchTitle">Search</string>
 
 </resources>
