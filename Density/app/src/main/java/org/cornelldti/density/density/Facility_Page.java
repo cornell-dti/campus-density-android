@@ -9,12 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import org.cornelldti.density.density.util.ColorBarDataSet;
 import org.cornelldti.density.density.util.ValueFormatter;
@@ -222,6 +226,31 @@ public class Facility_Page extends DialogFragment {
         densityChart.getLegend().setEnabled(false);
         densityChart.setScaleEnabled(false);
         densityChart.setTouchEnabled(true);
+        densityChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                String msg = "";
+                if(e.getY() >= 0.75) {
+                    msg = "Very Crowded";
+                }
+                else if(e.getY() >= 0.5 ) {
+                    msg = "Pretty Crowded";
+                }
+                else if(e.getY() >= 0.25) {
+                    msg = "Pretty Empty";
+                }
+                else {
+                    msg = "Very Empty";
+                }
+                Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected() {
+                // DO NOTHING
+            }
+        });
+
 
         densityChart.getAxisLeft().setEnabled(false);
         densityChart.getAxisRight().setEnabled(false);
