@@ -255,6 +255,12 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
         return this.filtered_facilities;
     }
 
+    public void setDataSet(ArrayList <Facility> f)
+    {
+        this.facilities = f;
+        this.filtered_facilities = this.facilities;
+    }
+
     @Override
     public int getItemCount() {
         return filtered_facilities.size();

@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
 
     private ArrayList<Facility> all_facilities;
 
-    private ArrayList<Facility> filtered_fac;
     private RequestQueue queue;
 
     private float facilitiesScroll;
@@ -377,10 +376,9 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
                             }
 
                             all_facilities = f_list;
-                            filtered_fac = all_facilities;
 
                             if (!refresh) {
-                                MainActivity.this.adapter = new FacilitiesListAdapter(MainActivity.this.filtered_fac);
+                                MainActivity.this.adapter = new FacilitiesListAdapter(MainActivity.this.all_facilities);
                                 MainActivity.this.adapter.setOnItemClickListener(new FacilitiesListAdapter.ClickListener() {
                                     @Override
                                     public void onItemClick(int position, View v) {
@@ -395,6 +393,33 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
                                 MainActivity.this.facilities.setVisibility(View.VISIBLE);
                                 setChipOnClickListener();
                                 setOnRefreshListener();
+                            }
+                            else {
+                                MainActivity.this.adapter.setDataSet(all_facilities);
+                                switch (filterChips.getCheckedChipId()) {
+                                    case R.id.all:
+                                        adapter.showAllLocations();
+                                        adapter.notifyDataSetChanged();
+                                        break;
+
+                                    case R.id.north:
+                                        adapter.filterFacilitiesByLocation(Facility.campus_location.NORTH);
+                                        adapter.notifyDataSetChanged();
+                                        break;
+
+                                    case R.id.west:
+                                        adapter.filterFacilitiesByLocation(Facility.campus_location.WEST);
+                                        adapter.notifyDataSetChanged();
+                                        break;
+
+                                    case R.id.central:
+                                        adapter.filterFacilitiesByLocation(Facility.campus_location.CENTRAL);
+                                        adapter.notifyDataSetChanged();
+                                        break;
+
+                                    case -1:
+                                        all.setChecked(true);
+                                }
                             }
 
                         } catch (JSONException e) {
