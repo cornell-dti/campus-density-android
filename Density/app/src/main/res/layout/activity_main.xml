@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleGravity="center"
+            app:expandedTitleGravity="center_vertical|start"
             app:expandedTitleTextAppearance="@style/ExpandedTitleAppearance"
             app:layout_scrollFlags="scroll|snap|enterAlways|exitUntilCollapsed"
             app:title="Places"
@@ -109,6 +109,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="0dp"
+                    android:animateLayoutChanges="false"
+                    android:animationCache="false"
                     android:clickable="true"
                     android:scrollbars="vertical"
                     android:visibility="invisible" />
