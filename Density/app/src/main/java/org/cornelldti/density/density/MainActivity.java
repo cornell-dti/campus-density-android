@@ -1,13 +1,11 @@
 package org.cornelldti.density.density;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -38,12 +36,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.view.ViewCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -257,27 +253,27 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
     private void handleCheckChange(int checkedId) {
         switch (checkedId) {
             case R.id.all:
-                filtered_fac = all_facilities;
-                adapter = new FacilitiesListAdapter(filtered_fac);
-                facilities.setAdapter(adapter);
+                adapter.showAllLocations();
+                adapter.notifyDataSetChanged();
+                Log.d("SIZEALL", String.valueOf(adapter.getItemCount()));
                 break;
 
             case R.id.north:
-                filtered_fac = getFiltered_fac(Facility.campus_location.NORTH);
-                adapter = new FacilitiesListAdapter(filtered_fac);
-                facilities.setAdapter(adapter);
+                adapter.filterFacilitiesByLocation(Facility.campus_location.NORTH);
+                adapter.notifyDataSetChanged();
+                Log.d("SIZENORTH", String.valueOf(adapter.getItemCount()));
                 break;
 
             case R.id.west:
-                filtered_fac = getFiltered_fac(Facility.campus_location.WEST);
-                adapter = new FacilitiesListAdapter(filtered_fac);
-                facilities.setAdapter(adapter);
+                adapter.filterFacilitiesByLocation(Facility.campus_location.WEST);
+                adapter.notifyDataSetChanged();
+                Log.d("SIZEWEST", String.valueOf(adapter.getItemCount()));
                 break;
 
             case R.id.central:
-                filtered_fac = getFiltered_fac(Facility.campus_location.CENTRAL);
-                adapter = new FacilitiesListAdapter(filtered_fac);
-                facilities.setAdapter(adapter);
+                adapter.filterFacilitiesByLocation(Facility.campus_location.CENTRAL);
+                adapter.notifyDataSetChanged();
+                Log.d("SIZECENTRAL", String.valueOf(adapter.getItemCount()));
                 break;
 
             case -1:
@@ -285,18 +281,7 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
         }
     }
 
-    private ArrayList<Facility> getFiltered_fac(Facility.campus_location location) {
-        ArrayList<Facility> filtered_list = new ArrayList<>();
-        for (Facility f : all_facilities) {
-            if (f.getLocation().equals(location)) {
-                filtered_list.add(f);
-            }
-        }
-        return filtered_list;
-    }
-
     /**
-     * Implement this TODO
      *
      * @return
      */
@@ -347,21 +332,10 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
                                     JSONObject obj = response.getJSONObject(x);
                                     if (obj.getString("id")
                                             .equals(f_list.get(i).getId())) {
-//                                        f_list.set(i, f_list.get(i).setLocation(obj.getString("campusLocation")).setOpen(isOpen(obj)));
                                         f_list.set(i, f_list.get(i).setLocation(obj.getString("campusLocation")));
                                     }
                                 }
                             }
-//                            ArrayList<Facility> f_list_updated = new ArrayList<Facility>();
-//                            for(int i = 0; i < f_list.size(); i++)
-//                            {
-//                                Facility f = f_list.get(i);
-//                                if(f.isOpen())
-//                                {
-//                                    f_list_updated.add(f);
-//                                }
-//                            }
-//                            fetchFacilityOccupancy(f_list_updated, refresh);
                             fetchFacilityOccupancy(f_list, refresh);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -384,27 +358,6 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
         };
         queue.add(facilityInfoRequest);
     }
-
-//    private boolean isOpen(JSONObject facility)
-//    {
-//        long currentTime = System.currentTimeMillis() / 1000L;
-//        try {
-//            JSONArray dailyHours = facility.getJSONArray("dailyHours");
-//            for(int i = 0; i < dailyHours.length(); i++)
-//            {
-//                if(currentTime >= dailyHours.getJSONObject(i).getLong("startTimestamp")
-//                        && currentTime < dailyHours.getJSONObject(i).getLong("endTimestamp"))
-//                {
-//                    return true;
-//                }
-//            }
-//        }
-//        catch(JSONException e)
-//        {
-//            e.printStackTrace();
-//        }
-//        return false;
-//    }
 
     private void fetchFacilityOccupancy(final ArrayList<Facility> list, final boolean refresh) {
         JsonArrayRequest facilityOccupancyRequest = new JsonArrayRequest
@@ -432,7 +385,7 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
                                     @Override
                                     public void onItemClick(int position, View v) {
                                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                                        Facility_Page dialog = Facility_Page.newInstance(filtered_fac.get(position));
+                                        Facility_Page dialog = Facility_Page.newInstance(adapter.getDataSet().get(position));
                                         dialog.show(ft, "facility page");
                                     }
                                 });
@@ -479,12 +432,14 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
             @Override
             public boolean onQueryTextSubmit(String query) {
                 adapter.getFilter().filter(query);
+                Log.d("SIZEE", String.valueOf(adapter.getItemCount()));
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String query) {
                 adapter.getFilter().filter(query);
+                Log.d("SIZEE", String.valueOf(adapter.getItemCount()));
                 return false;
             }
         });

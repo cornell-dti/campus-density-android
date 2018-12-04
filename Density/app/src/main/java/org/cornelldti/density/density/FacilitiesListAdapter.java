@@ -223,7 +223,6 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
                 {
                     filtered_facilities = facilities;
                 }
-
                 FilterResults filterResults = new FilterResults();
                 filterResults.values = filtered_facilities;
                 return filterResults;
@@ -234,6 +233,26 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
                 notifyDataSetChanged();
             }
         };
+    }
+
+    public void filterFacilitiesByLocation(Facility.campus_location location) {
+        ArrayList<Facility> filtered_list = new ArrayList<>();
+        for (Facility f : facilities ) {
+            if (f.getLocation().equals(location)) {
+                filtered_list.add(f);
+            }
+        }
+        this.filtered_facilities = filtered_list;
+    }
+
+    public void showAllLocations()
+    {
+        this.filtered_facilities = facilities;
+    }
+
+    public ArrayList<Facility> getDataSet()
+    {
+        return this.filtered_facilities;
     }
 
     @Override
