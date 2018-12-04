@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleGravity="center"
-            app:expandedTitleTextAppearance="@style/expandedTitleAppearance"
+            app:expandedTitleTextAppearance="@style/ExpandedTitleAppearance"
             app:layout_scrollFlags="scroll|snap|enterAlways|exitUntilCollapsed"
             app:title="Places"
             app:titleEnabled="true"

@@ -6,6 +6,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="searchViewStyle">@style/SearchViewStyle</item>
+    </style>
+
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView.ActionBar">
+        <item name="queryBackground">@android:color/transparent</item>
     </style>
 
     <style name="ChipTextStyle">
@@ -31,7 +36,7 @@
         <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
     </style>
 
-    <style name="expandedTitleAppearance">
+    <style name="ExpandedTitleAppearance">
         <item name="android:textSize">30sp</item>
     </style>
 
