@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -174,7 +175,7 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
-                String charString = charSequence.toString();
+                final String charString = charSequence.toString().toLowerCase();
                 if (!charString.isEmpty()) {
                     ArrayList<Facility> filteredList = new ArrayList<Facility>();
                     for (Facility f : facilities) {
@@ -185,7 +186,37 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
                             filteredList.add(f);
                         }
                     }
-                    Collections.sort(filteredList);
+                    Collections.sort(filteredList, new Comparator<Facility>() {
+                        @Override
+                        public int compare(Facility a, Facility b) {
+                            String lowerA = a.getName().toLowerCase();
+                            String lowerB = b.getName().toLowerCase();
+                            if (lowerA.startsWith(charString) && !lowerB.startsWith(charString)) {
+                                return -1;
+                            }
+
+                            if (lowerB.startsWith(charString) && !lowerA.startsWith(charString)) {
+                                return 1;
+                            }
+
+                            String[] partsA = lowerA.split(" ");
+                            String[] partsB = lowerB.split(" ");
+
+                            for (String as : partsA) {
+                                for (String bs : partsB) {
+                                    if (as.startsWith(charString) && !bs.startsWith(charString)) {
+                                        return -1;
+                                    }
+
+                                    if (bs.startsWith(charString) && !as.startsWith(charString)) {
+                                        return 1;
+                                    }
+                                }
+                            }
+
+                            return a.getName().compareTo(b.getName());
+                        }
+                    });
                     filtered_facilities = filteredList;
                 } else {
                     Collections.sort(facilities);
