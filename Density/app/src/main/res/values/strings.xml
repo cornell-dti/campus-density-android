@@ -23,5 +23,12 @@
     <string name="search_hint">Search</string>
     <string name="todaysHours">Today\'s Hours</string>
     <string name="searchTitle">Search</string>
+    <string name="open">Open</string>
+    <string name="closed">Closed</string>
+    <string name="very_empty">Very Empty</string>
+    <string name="pretty_empty">Pretty Empty</string>
+    <string name="pretty_crowded">Pretty Crowded</string>
+    <string name="very_crowded">Very Crowded</string>
+    <string name="unknown">Unknown</string>
 
 </resources>

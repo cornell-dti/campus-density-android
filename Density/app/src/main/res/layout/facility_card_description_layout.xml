@@ -29,9 +29,16 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
-            android:singleLine="false"
             android:text="Facility Name" />
+
+        <TextView
+            android:id="@+id/description_phrase"
+            style="@style/DTI.Subtitle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/facility_name"
+            android:layout_alignParentStart="true"
+            android:text="Description" />
 
         <TextView
             android:id="@+id/openStatusDescription"
@@ -46,7 +53,7 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_below="@+id/facility_name"
+            android:layout_below="@+id/description_phrase"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="8dp"
             android:gravity="left|center"

@@ -259,19 +259,19 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
                 break;
 
             case R.id.north:
-                adapter.filterFacilitiesByLocation(Facility.campus_location.NORTH);
+                adapter.filterFacilitiesByLocation(Facility.CampusLocation.NORTH);
                 adapter.notifyDataSetChanged();
                 Log.d("SIZENORTH", String.valueOf(adapter.getItemCount()));
                 break;
 
             case R.id.west:
-                adapter.filterFacilitiesByLocation(Facility.campus_location.WEST);
+                adapter.filterFacilitiesByLocation(Facility.CampusLocation.WEST);
                 adapter.notifyDataSetChanged();
                 Log.d("SIZEWEST", String.valueOf(adapter.getItemCount()));
                 break;
 
             case R.id.central:
-                adapter.filterFacilitiesByLocation(Facility.campus_location.CENTRAL);
+                adapter.filterFacilitiesByLocation(Facility.CampusLocation.CENTRAL);
                 adapter.notifyDataSetChanged();
                 Log.d("SIZECENTRAL", String.valueOf(adapter.getItemCount()));
                 break;
@@ -282,7 +282,6 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
     }
 
     /**
-     *
      * @return
      */
     private void fetchFacilities(final boolean refresh) {
@@ -330,9 +329,21 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
                             for (int i = 0; i < f_list.size(); i++) {
                                 for (int x = 0; x < response.length(); x++) {
                                     JSONObject obj = response.getJSONObject(x);
-                                    if (obj.getString("id")
-                                            .equals(f_list.get(i).getId())) {
-                                        f_list.set(i, f_list.get(i).setLocation(obj.getString("campusLocation")));
+                                    if (obj.getString("id").equals(f_list.get(i).getId())) {
+                                        Facility f = f_list.get(i);
+                                        if (obj.has("campusLocation")) {
+                                            f.setLocation(obj.getString("campusLocation"));
+                                        }
+
+                                        if (obj.has("description")) {
+                                            f.setDescription(obj.getString("description"));
+                                        }
+
+                                        if (obj.has("closingAt")) {
+                                            f.setClosingAt(obj.getLong("closingAt"));
+                                        }
+
+                                        f_list.set(i, f);
                                     }
                                 }
                             }
@@ -394,8 +405,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
                                 MainActivity.this.facilities.setVisibility(View.VISIBLE);
                                 setChipOnClickListener();
                                 setOnRefreshListener();
-                            }
-                            else {
+                            } else {
                                 MainActivity.this.adapter.setDataSet(all_facilities);
                                 switch (filterChips.getCheckedChipId()) {
                                     case R.id.all:
@@ -404,17 +414,17 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
                                         break;
 
                                     case R.id.north:
-                                        adapter.filterFacilitiesByLocation(Facility.campus_location.NORTH);
+                                        adapter.filterFacilitiesByLocation(Facility.CampusLocation.NORTH);
                                         adapter.notifyDataSetChanged();
                                         break;
 
                                     case R.id.west:
-                                        adapter.filterFacilitiesByLocation(Facility.campus_location.WEST);
+                                        adapter.filterFacilitiesByLocation(Facility.CampusLocation.WEST);
                                         adapter.notifyDataSetChanged();
                                         break;
 
                                     case R.id.central:
-                                        adapter.filterFacilitiesByLocation(Facility.campus_location.CENTRAL);
+                                        adapter.filterFacilitiesByLocation(Facility.CampusLocation.CENTRAL);
                                         adapter.notifyDataSetChanged();
                                         break;
 
