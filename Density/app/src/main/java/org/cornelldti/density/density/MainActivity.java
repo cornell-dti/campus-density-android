@@ -39,6 +39,7 @@ import java.util.Map;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.arch.core.util.Function;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.FragmentTransaction;
@@ -178,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
         if (!pref.contains("auth_token")) {
             requestToken();
         } else {
-            fetchFacilities(false);
+            fetchFacilities(false, success -> null);
         }
 
     }
@@ -201,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
                             String token = response.getString("token");
                             Log.d("TOKEN", token);
                             pref.edit().putString("auth_token", token).commit();
-                            fetchFacilities(false);
+                            fetchFacilities(false, (success) -> null);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -230,9 +231,11 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
             @Override
             public void onRefresh() {
                 swipeRefresh.setRefreshing(true);
-                fetchFacilities(true);
+                fetchFacilities(true, (success) -> {
+                    swipeRefresh.setRefreshing(false);
+                    return null;
+                });
                 handleCheckChange(filterChips.getCheckedChipId());
-                swipeRefresh.setRefreshing(false);
             }
         });
     }
@@ -254,25 +257,21 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
         switch (checkedId) {
             case R.id.all:
                 adapter.showAllLocations();
-                adapter.notifyDataSetChanged();
                 Log.d("SIZEALL", String.valueOf(adapter.getItemCount()));
                 break;
 
             case R.id.north:
                 adapter.filterFacilitiesByLocation(Facility.CampusLocation.NORTH);
-                adapter.notifyDataSetChanged();
                 Log.d("SIZENORTH", String.valueOf(adapter.getItemCount()));
                 break;
 
             case R.id.west:
                 adapter.filterFacilitiesByLocation(Facility.CampusLocation.WEST);
-                adapter.notifyDataSetChanged();
                 Log.d("SIZEWEST", String.valueOf(adapter.getItemCount()));
                 break;
 
             case R.id.central:
                 adapter.filterFacilitiesByLocation(Facility.CampusLocation.CENTRAL);
-                adapter.notifyDataSetChanged();
                 Log.d("SIZECENTRAL", String.valueOf(adapter.getItemCount()));
                 break;
 
@@ -284,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
     /**
      * @return
      */
-    private void fetchFacilities(final boolean refresh) {
+    private void fetchFacilities(final boolean refresh, Function<Boolean, Void> success) {
         JsonArrayRequest facilityListRequest = new JsonArrayRequest
                 (Request.Method.GET, FACILITY_LIST_ENDPOINT, null, new Response.Listener<JSONArray>() {
                     @Override
@@ -295,8 +294,9 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
                                 JSONObject facility = response.getJSONObject(i);
                                 f.add(new Facility(facility.getString("displayName"), facility.getString("id")));
                             }
-                            fetchFacilityInfo(f, refresh);
+                            fetchFacilityInfo(f, refresh, success);
                         } catch (JSONException e) {
+                            success.apply(false);
                             e.printStackTrace();
                         }
                     }
@@ -305,6 +305,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_LONG).show();
                         Log.d("ERROR MESSAGE", error.toString());
+                        success.apply(false);
                     }
                 }) {
             @Override
@@ -318,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
         queue.add(facilityListRequest);
     }
 
-    private void fetchFacilityInfo(final ArrayList<Facility> list, final boolean refresh) {
+    private void fetchFacilityInfo(final ArrayList<Facility> list, final boolean refresh, Function<Boolean, Void> success) {
         JsonArrayRequest facilityInfoRequest = new JsonArrayRequest
                 (Request.Method.GET, FACILITY_INFO_ENDPOINT, null, new Response.Listener<JSONArray>() {
                     @Override
@@ -347,8 +348,9 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
                                     }
                                 }
                             }
-                            fetchFacilityOccupancy(f_list, refresh);
+                            fetchFacilityOccupancy(f_list, refresh, success);
                         } catch (JSONException e) {
+                            success.apply(false);
                             e.printStackTrace();
                         }
                     }
@@ -357,6 +359,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_LONG).show();
                         Log.d("ERROR MESSAGE", error.toString());
+                        success.apply(false);
                     }
                 }) {
             @Override
@@ -370,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
         queue.add(facilityInfoRequest);
     }
 
-    private void fetchFacilityOccupancy(final ArrayList<Facility> list, final boolean refresh) {
+    private void fetchFacilityOccupancy(final ArrayList<Facility> list, final boolean refresh, Function<Boolean, Void> success) {
         JsonArrayRequest facilityOccupancyRequest = new JsonArrayRequest
                 (Request.Method.GET, HOW_DENSE_ENDPOINT, null, new Response.Listener<JSONArray>() {
                     @Override
@@ -407,25 +410,22 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
                                 setOnRefreshListener();
                             } else {
                                 MainActivity.this.adapter.setDataSet(all_facilities);
+                                success.apply(true);
                                 switch (filterChips.getCheckedChipId()) {
                                     case R.id.all:
                                         adapter.showAllLocations();
-                                        adapter.notifyDataSetChanged();
                                         break;
 
                                     case R.id.north:
                                         adapter.filterFacilitiesByLocation(Facility.CampusLocation.NORTH);
-                                        adapter.notifyDataSetChanged();
                                         break;
 
                                     case R.id.west:
                                         adapter.filterFacilitiesByLocation(Facility.CampusLocation.WEST);
-                                        adapter.notifyDataSetChanged();
                                         break;
 
                                     case R.id.central:
                                         adapter.filterFacilitiesByLocation(Facility.CampusLocation.CENTRAL);
-                                        adapter.notifyDataSetChanged();
                                         break;
 
                                     case -1:
@@ -434,12 +434,14 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
                             }
 
                         } catch (JSONException e) {
+                            success.apply(false);
                             e.printStackTrace();
                         }
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        success.apply(false);
                         Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_LONG).show();
                         Log.d("ERROR MESSAGE", error.toString());
                     }
@@ -484,6 +486,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 if (appBarLayout != null) {
+                    swipeRefresh.setEnabled(false);
                     appBarLayout.setExpanded(false);
                     CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
                     ((LockableAppBarLayoutBehavior) layoutParams.getBehavior()).lockScroll();
@@ -495,6 +498,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 if (appBarLayout != null) {
+                    swipeRefresh.setEnabled(true);
                     appBarLayout.setExpanded(false);
                     CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
                     ((LockableAppBarLayoutBehavior) layoutParams.getBehavior()).unlockScroll();

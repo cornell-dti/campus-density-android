@@ -13,22 +13,22 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
+import androidx.arch.core.util.Function;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAdapter.ViewHolder>
         implements Filterable {
 
-    private static ClickListener clickListener;
+    private List<Facility> facilities, filteredFacilities;
 
-    private ArrayList<Facility> facilities;
+    private ClickListener mClickListener;
+    private Context mContext;
 
-    private ArrayList<Facility> filtered_facilities;
+    private static final Function<String, Comparator<Facility>> SEARCH_SORT;
 
-    private Context c;
-
-
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView name, openStatus;
         ImageView firstBar, secondBar, thirdBar, fourthBar;
 
@@ -45,11 +45,11 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
 
         @Override
         public void onClick(View v) {
-            clickListener.onItemClick(getAdapterPosition(), v);
+            mClickListener.onItemClick(getAdapterPosition(), v);
         }
     }
 
-    public static class DescriptionViewHolder extends FacilitiesListAdapter.ViewHolder {
+    public class DescriptionViewHolder extends FacilitiesListAdapter.ViewHolder {
         TextView description;
 
         public DescriptionViewHolder(View v) {
@@ -59,7 +59,7 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
     }
 
     public void setOnItemClickListener(ClickListener clickListener) {
-        FacilitiesListAdapter.clickListener = clickListener;
+        this.mClickListener = clickListener;
     }
 
     public interface ClickListener {
@@ -68,8 +68,8 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
 
     public FacilitiesListAdapter(ArrayList<Facility> data) {
         Collections.sort(data = new ArrayList<>(data));
-        facilities = data;
-        filtered_facilities = facilities;
+        this.facilities = data;
+        this.filteredFacilities = facilities;
     }
 
     @Override
@@ -78,21 +78,85 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.facility_card_layout, parent, false);
 
-        c = parent.getContext();
+        mContext = parent.getContext();
 
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.name.setText(filtered_facilities.get(position).getName());
-        holder.openStatus.setText(filtered_facilities.get(position).getDensityResId());
-        setBars(filtered_facilities.get(position).isOpen() ? filtered_facilities.get(position).getOccupancyRating() : -1, holder);
+        holder.name.setText(filteredFacilities.get(position).getName());
+        holder.openStatus.setText(filteredFacilities.get(position).getDensityResId());
+        setBars(filteredFacilities.get(position).isOpen() ? filteredFacilities.get(position).getOccupancyRating() : -1, holder);
 
         if (holder instanceof DescriptionViewHolder) {
-            ((DescriptionViewHolder) holder).description.setText(filtered_facilities.get(position).getDescription());
+            ((DescriptionViewHolder) holder).description.setText(filteredFacilities.get(position).getDescription());
         }
+    }
+
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                final String charString = charSequence.toString().toLowerCase();
+                if (!charString.isEmpty()) {
+                    ArrayList<Facility> filteredList = new ArrayList<Facility>();
+                    for (Facility f : facilities) {
+                        if (f.getName().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(f);
+                        }
+                    }
+                    Collections.sort(filteredList, SEARCH_SORT.apply(charString));
+                    filteredFacilities = filteredList;
+                } else {
+                    Collections.sort(facilities);
+                    filteredFacilities = facilities;
+                }
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredFacilities;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                filteredFacilities = (List<Facility>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    public void filterFacilitiesByLocation(Facility.CampusLocation location) {
+        ArrayList<Facility> filtered_list = new ArrayList<>();
+        for (Facility f : facilities) {
+            if (f.getLocation().equals(location)) {
+                filtered_list.add(f);
+            }
+        }
+        this.filteredFacilities = filtered_list;
+        notifyDataSetChanged();
+    }
+
+    public void showAllLocations() {
+        this.filteredFacilities = facilities;
+        notifyDataSetChanged();
+    }
+
+    public List<Facility> getDataSet() {
+        return this.filteredFacilities;
+    }
+
+    public void setDataSet(ArrayList<Facility> f) {
+        Collections.sort(f = new ArrayList<>(f));
+        this.facilities = f;
+        this.filteredFacilities = this.facilities;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public int getItemCount() {
+        return filteredFacilities.size();
     }
 
     private void setBars(int rating, ViewHolder holder) {
@@ -116,151 +180,88 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
     }
 
     private void setClosed(ViewHolder holder) {
-        holder.firstBar.setColorFilter(c.getResources().getColor(R.color.filler_boxes),
+        holder.firstBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
-        holder.secondBar.setColorFilter(c.getResources().getColor(R.color.filler_boxes),
+        holder.secondBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
-        holder.thirdBar.setColorFilter(c.getResources().getColor(R.color.filler_boxes),
+        holder.thirdBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
-        holder.fourthBar.setColorFilter(c.getResources().getColor(R.color.filler_boxes),
+        holder.fourthBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
     }
 
     private void setVeryCrowded(ViewHolder holder) {
-        holder.firstBar.setColorFilter(c.getResources().getColor(R.color.very_crowded),
+        holder.firstBar.setColorFilter(mContext.getResources().getColor(R.color.very_crowded),
                 PorterDuff.Mode.MULTIPLY);
-        holder.secondBar.setColorFilter(c.getResources().getColor(R.color.very_crowded),
+        holder.secondBar.setColorFilter(mContext.getResources().getColor(R.color.very_crowded),
                 PorterDuff.Mode.MULTIPLY);
-        holder.thirdBar.setColorFilter(c.getResources().getColor(R.color.very_crowded),
+        holder.thirdBar.setColorFilter(mContext.getResources().getColor(R.color.very_crowded),
                 PorterDuff.Mode.MULTIPLY);
-        holder.fourthBar.setColorFilter(c.getResources().getColor(R.color.very_crowded),
+        holder.fourthBar.setColorFilter(mContext.getResources().getColor(R.color.very_crowded),
                 PorterDuff.Mode.MULTIPLY);
     }
 
     private void setPrettyCrowded(ViewHolder holder) {
-        holder.firstBar.setColorFilter(c.getResources().getColor(R.color.pretty_crowded),
+        holder.firstBar.setColorFilter(mContext.getResources().getColor(R.color.pretty_crowded),
                 PorterDuff.Mode.MULTIPLY);
-        holder.secondBar.setColorFilter(c.getResources().getColor(R.color.pretty_crowded),
+        holder.secondBar.setColorFilter(mContext.getResources().getColor(R.color.pretty_crowded),
                 PorterDuff.Mode.MULTIPLY);
-        holder.thirdBar.setColorFilter(c.getResources().getColor(R.color.pretty_crowded),
+        holder.thirdBar.setColorFilter(mContext.getResources().getColor(R.color.pretty_crowded),
                 PorterDuff.Mode.MULTIPLY);
-        holder.fourthBar.setColorFilter(c.getResources().getColor(R.color.filler_boxes),
+        holder.fourthBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
     }
 
     private void setPrettyEmpty(ViewHolder holder) {
-        holder.firstBar.setColorFilter(c.getResources().getColor(R.color.pretty_empty),
+        holder.firstBar.setColorFilter(mContext.getResources().getColor(R.color.pretty_empty),
                 PorterDuff.Mode.MULTIPLY);
-        holder.secondBar.setColorFilter(c.getResources().getColor(R.color.pretty_empty),
+        holder.secondBar.setColorFilter(mContext.getResources().getColor(R.color.pretty_empty),
                 PorterDuff.Mode.MULTIPLY);
-        holder.thirdBar.setColorFilter(c.getResources().getColor(R.color.filler_boxes),
+        holder.thirdBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
-        holder.fourthBar.setColorFilter(c.getResources().getColor(R.color.filler_boxes),
+        holder.fourthBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
     }
 
     private void setVeryEmpty(ViewHolder holder) {
-        holder.firstBar.setColorFilter(c.getResources().getColor(R.color.very_empty),
+        holder.firstBar.setColorFilter(mContext.getResources().getColor(R.color.very_empty),
                 PorterDuff.Mode.MULTIPLY);
-        holder.secondBar.setColorFilter(c.getResources().getColor(R.color.filler_boxes),
+        holder.secondBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
-        holder.thirdBar.setColorFilter(c.getResources().getColor(R.color.filler_boxes),
+        holder.thirdBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
-        holder.fourthBar.setColorFilter(c.getResources().getColor(R.color.filler_boxes),
+        holder.fourthBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
     }
 
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence charSequence) {
-                final String charString = charSequence.toString().toLowerCase();
-                if (!charString.isEmpty()) {
-                    ArrayList<Facility> filteredList = new ArrayList<Facility>();
-                    for (Facility f : facilities) {
+    static {
+        SEARCH_SORT = (String charString) -> (Comparator<Facility>) (a, b) -> {
+            String lowerA = a.getName().toLowerCase();
+            String lowerB = b.getName().toLowerCase();
+            if (lowerA.startsWith(charString) && !lowerB.startsWith(charString)) {
+                return -1;
+            }
 
-                        // name match condition. this might differ depending on your requirement
-                        // here we are looking for name or phone number match
-                        if (f.getName().toLowerCase().contains(charString.toLowerCase())) {
-                            filteredList.add(f);
-                        }
+            if (lowerB.startsWith(charString) && !lowerA.startsWith(charString)) {
+                return 1;
+            }
+
+            String[] partsA = lowerA.split(" ");
+            String[] partsB = lowerB.split(" ");
+
+            for (String as : partsA) {
+                for (String bs : partsB) {
+                    if (as.startsWith(charString) && !bs.startsWith(charString)) {
+                        return -1;
                     }
-                    Collections.sort(filteredList, new Comparator<Facility>() {
-                        @Override
-                        public int compare(Facility a, Facility b) {
-                            String lowerA = a.getName().toLowerCase();
-                            String lowerB = b.getName().toLowerCase();
-                            if (lowerA.startsWith(charString) && !lowerB.startsWith(charString)) {
-                                return -1;
-                            }
 
-                            if (lowerB.startsWith(charString) && !lowerA.startsWith(charString)) {
-                                return 1;
-                            }
-
-                            String[] partsA = lowerA.split(" ");
-                            String[] partsB = lowerB.split(" ");
-
-                            for (String as : partsA) {
-                                for (String bs : partsB) {
-                                    if (as.startsWith(charString) && !bs.startsWith(charString)) {
-                                        return -1;
-                                    }
-
-                                    if (bs.startsWith(charString) && !as.startsWith(charString)) {
-                                        return 1;
-                                    }
-                                }
-                            }
-
-                            return a.getName().compareTo(b.getName());
-                        }
-                    });
-                    filtered_facilities = filteredList;
-                } else {
-                    Collections.sort(facilities);
-                    filtered_facilities = facilities;
+                    if (bs.startsWith(charString) && !as.startsWith(charString)) {
+                        return 1;
+                    }
                 }
-                FilterResults filterResults = new FilterResults();
-                filterResults.values = filtered_facilities;
-                return filterResults;
             }
 
-            @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                filtered_facilities = (ArrayList<Facility>) filterResults.values;
-                notifyDataSetChanged();
-            }
+            return a.getName().compareTo(b.getName());
         };
-    }
-
-    public void filterFacilitiesByLocation(Facility.CampusLocation location) {
-        ArrayList<Facility> filtered_list = new ArrayList<>();
-        for (Facility f : facilities) {
-            if (f.getLocation().equals(location)) {
-                filtered_list.add(f);
-            }
-        }
-        this.filtered_facilities = filtered_list;
-    }
-
-    public void showAllLocations() {
-        this.filtered_facilities = facilities;
-    }
-
-    public ArrayList<Facility> getDataSet() {
-        return this.filtered_facilities;
-    }
-
-    public void setDataSet(ArrayList<Facility> f) {
-        Collections.sort(f = new ArrayList<>(f));
-        this.facilities = f;
-        this.filtered_facilities = this.facilities;
-    }
-
-    @Override
-    public int getItemCount() {
-        return filtered_facilities.size();
     }
 }
