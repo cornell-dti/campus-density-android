@@ -1,4 +1,4 @@
 <resources>
-    <dimen name="chip_padding">40dp</dimen>
+    <dimen name="chip_padding">30dp</dimen>
     <dimen name="chip_group_margin">10dp</dimen>
 </resources>

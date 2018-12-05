@@ -19,6 +19,7 @@
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleGravity="center_vertical|start"
             app:expandedTitleTextAppearance="@style/ExpandedTitleAppearance"
+            app:collapsedTitleTextAppearance="@style/CollapsedTitleAppearance"
             app:layout_scrollFlags="scroll|snap|enterAlways|exitUntilCollapsed"
             app:title="Places"
             app:titleEnabled="true"
@@ -66,26 +67,27 @@
                     app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
                 <com.google.android.material.chip.Chip
-                        android:id="@+id/central"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="Central"
-                        android:textAppearance="@style/ChipTextStyle"
-                        app:chipBackgroundColor="@drawable/chip_color_toggle" />
+                    android:id="@+id/central"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Central"
+                    android:textAppearance="@style/ChipTextStyle"
+                    app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
-                </com.google.android.material.chip.ChipGroup>
+            </com.google.android.material.chip.ChipGroup>
 
 
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="@color/colorPrimary"
-                    app:layout_collapseMode="pin">
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
 
-                </androidx.appcompat.widget.Toolbar>
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary"
+                app:layout_collapseMode="pin">
+
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

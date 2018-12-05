@@ -7,6 +7,19 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="searchViewStyle">@style/SearchViewStyle</item>
+
+    </style>
+
+    <style name="DTI.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
+        
+    </style>
+
+    <style name="DTI.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+       
+    </style>
+
+    <style name="DTI.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
+       
     </style>
 
     <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView.ActionBar">
@@ -39,6 +52,12 @@
     <style name="ExpandedTitleAppearance">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">30sp</item>
+       
     </style>
+
+    <style name="CollapsedTitleAppearance">
+       
+    </style>
+
 
 </resources>
