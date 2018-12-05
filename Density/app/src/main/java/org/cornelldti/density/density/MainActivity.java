@@ -46,7 +46,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-public class MainActivity extends AppCompatActivity implements Facility_Page.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements FacilityPage.OnFragmentInteractionListener {
 
     private SharedPreferences pref;
 
@@ -384,7 +384,7 @@ public class MainActivity extends AppCompatActivity implements Facility_Page.OnF
                                     @Override
                                     public void onItemClick(int position, View v) {
                                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                                        Facility_Page dialog = Facility_Page.newInstance(adapter.getDataSet().get(position));
+                                        FacilityPage dialog = FacilityPage.newInstance(adapter.getDataSet().get(position));
                                         dialog.show(ft, "facility page");
                                     }
                                 });
