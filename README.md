@@ -9,7 +9,7 @@
   - [Contributors](#contributors)
 ​
 ## About
-A(n) **[Android, iOS]** app for **purpose**. **additional related repository links**.
+A(n) **[Android, iOS]** app designed to illustrate real-time activity levels of dining halls and eateries on campus. This is the go-to tool for avoiding peak levels of crowdedness at your favorite dining facilities on Cornell's campus.
 ​
 ## Getting Started
 You will need **required IDE or platform, version number** to run the latest version of this app, which uses the following **SDKs, extensions, packages**:
