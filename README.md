@@ -32,7 +32,7 @@ _Last updated **mm/dd/yyyy**_.
 ​
 _Screenshots showing major parts of app_
 ​
-<img src="https://raw.githubusercontent.com/cornell-dti/campus-density-android/master/app-screenshots/screenshot1.png" width="250px" style="margin: 10px; border: 1px rgba(0,0,0,0.4) solid;"> <img src="https://raw.githubusercontent.com/cornell-dti/campus-density-android/master/app-screenshots/screenshot1.png" width="250px" style="margin: 10px; border: 1px rgba(0,0,0,0.4) solid;">
+<img src="https://raw.githubusercontent.com/cornell-dti/campus-density-android/master/app-screenshots/screenshot1.png" width="250px" style="margin: 10px; border: 1px rgba(0,0,0,0.4) solid;"> <img src="https://raw.githubusercontent.com/cornell-dti/campus-density-android/master/app-screenshots/screenshot2.png" width="250px" style="margin: 10px; border: 1px rgba(0,0,0,0.4) solid;">
 ​
 ## Contributors
 ​
