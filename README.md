@@ -35,13 +35,15 @@ _Screenshots showing major parts of app_
 ## Contributors
 ​
 **School Year**
+* **2018-2019**
+
  * **Neha Rao** - Product Manager
  * **Andrew Xiao** - Product Manager
  
  * **[Evan Welsh]** (https://github.com/rockon999) - Backend Developer
  * **Raymone Radi** - Backend/iOS Developer
  * **Matthew Coufal** - iOS Developer
- * **[Kaushik Ravikumar]** (https://github.com/kaushikravikumar)  - Android Developer
+ * [Kaushik Ravikumar] (https://github.com/kaushikravikumar)  - Android Developer
  
  * **Kaitlyn Son** - Designer
  * **April Ye** - Designer
