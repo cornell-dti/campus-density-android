@@ -1,5 +1,7 @@
 # Campus Density Android v1.0
 
+* by [Cornell Design Tech Initiative] (https://www.cornelldti.org/)
+
 #### Contents
   - [About](#about)
   - [Getting Started](#getting-started)
@@ -40,10 +42,10 @@ _Screenshots showing major parts of app_
  * **Neha Rao** - Product Manager
  * **Andrew Xiao** - Product Manager
  
- * **[Evan Welsh]** (https://github.com/rockon999) - Backend Developer
+ * **Evan Welsh** - Backend Developer
  * **Raymone Radi** - Backend/iOS Developer
  * **Matthew Coufal** - iOS Developer
- * [Kaushik Ravikumar] (https://github.com/kaushikravikumar)  - Android Developer
+ * **Kaushik Ravikumar** - Android Developer
  
  * **Kaitlyn Son** - Designer
  * **April Ye** - Designer
