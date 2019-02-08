@@ -9,7 +9,7 @@
   - [Contributors](#contributors)
 ​
 ## About
-A(n) **[Android, iOS]** app for **purpose**. **additional related repository links**.
+A(n) **[Android, iOS]** app designed to illustrate real-time activity levels of dining halls and eateries on campus. This is the go-to tool for avoiding peak levels of crowdedness at your favorite dining facilities on Cornell's campus.
 ​
 ## Getting Started
 You will need **required IDE or platform, version number** to run the latest version of this app, which uses the following **SDKs, extensions, packages**:
@@ -32,7 +32,7 @@ _Last updated **mm/dd/yyyy**_.
 ​
 _Screenshots showing major parts of app_
 ​
-<img src="https://raw.githubusercontent.com/cornell-dti/o-week-android/master/Screenshots/1.png" width="250px" style="margin: 10px; border: 1px rgba(0,0,0,0.4) solid;"> <img src="https://raw.githubusercontent.com/cornell-dti/o-week-android/master/Screenshots/2.png" width="250px" style="margin: 10px; border: 1px rgba(0,0,0,0.4) solid;"> <img src="https://raw.githubusercontent.com/cornell-dti/o-week-android/master/Screenshots/3.png" width="250px" style="margin: 10px; border: 1px rgba(0,0,0,0.4) solid;">
+<img src="https://raw.githubusercontent.com/cornell-dti/campus-density-android/master/app-screenshots/screenshot1.png" width="250px" style="margin: 10px; border: 1px rgba(0,0,0,0.4) solid;"> <img src="https://raw.githubusercontent.com/cornell-dti/campus-density-android/master/app-screenshots/screenshot2.png" width="250px" style="margin: 10px; border: 1px rgba(0,0,0,0.4) solid;">
 ​
 ## Contributors
 ​
