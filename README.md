@@ -1,6 +1,6 @@
 # Campus Density Android v1.0
 
-* by [Cornell Design Tech Initiative] (https://www.cornelldti.org/)
+by [Cornell Design Tech Initiative] (https://www.cornelldti.org/)
 
 #### Contents
   - [About](#about)
@@ -37,7 +37,7 @@ _Screenshots showing major parts of app_
 ## Contributors
 ​
 **School Year**
-* **2018-2019**
+# **2018-2019**
 
  * **Neha Rao** - Product Manager
  * **Andrew Xiao** - Product Manager
