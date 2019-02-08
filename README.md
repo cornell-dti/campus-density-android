@@ -9,7 +9,7 @@
   - [Contributors](#contributors)
 ​
 ## About
-A(n) **[Android, iOS]** app designed to illustrate real-time activity levels of dining halls and eateries on campus. This is the go-to tool for avoiding peak levels of crowdedness at your favorite dining facilities on Cornell's campus.
+An Android and iOS mobile app designed to illustrate real-time activity levels of dining halls and eateries on campus. This is the go-to tool for avoiding peak levels of crowdedness at your favorite dining facilities on Cornell's campus. This repository shows the project files for the Android app.
 ​
 ## Getting Started
 You will need Android SDK Version 28 to run the latest version of this app, which uses the following. However this app is built to support a minimum Android SDK Version of 21. You will also need the Android Studio IDE to run the project.
@@ -38,10 +38,10 @@ _Screenshots showing major parts of app_
  * **Neha Rao** - Product Manager
  * **Andrew Xiao** - Product Manager
  
- * **[Evan Welsh] (https://github.com/rockon999) ** - Backend Developer
+ * **[Evan Welsh]** (https://github.com/rockon999) - Backend Developer
  * **Raymone Radi** - Backend/iOS Developer
  * **Matthew Coufal** - iOS Developer
- * **[Kaushik Ravikumar] (https://github.com/kaushikravikumar)** - Android Developer
+ * **[Kaushik Ravikumar]** (https://github.com/kaushikravikumar)  - Android Developer
  
  * **Kaitlyn Son** - Designer
  * **April Ye** - Designer
