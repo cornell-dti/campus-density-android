@@ -23,7 +23,6 @@ _Last updated **02/08/2019**_.
  * [Volley](https://developer.android.com/training/volley/) - an Android Library that allows us to make HTTP Requests in a more simplified and abstracted manner using library functions.
 ​
 ## External Documentation
-​
 * [Backend API Documentation](https://campusdensity.docs.apiary.io/) - this is an external Apiary documenting the endpoints for our application.
 ​
 ## Screenshots
