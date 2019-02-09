@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,11 +44,13 @@ public class FacilityPage extends DialogFragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM = "Facility_Object";
 
-    private TextView mFacilityName, mFacilityHours;
-    private ImageButton mBackButton;
-    private BarChart mDensityChart;
+    private Spinner daysDropdown;
+    private TextView facilityName, facilityHours;
+    private ImageButton backButton;
+    private BarChart densityChart;
     private Facility facility;
-    private OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener listener;
+
     private List<Double> densities = new ArrayList<>();
 
     public FacilityPage() {
@@ -73,7 +78,7 @@ public class FacilityPage extends DialogFragment {
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.FullScreenDialog);
         if (getArguments() != null) {
             facility = (Facility) getArguments().getSerializable(ARG_PARAM);
-            loadHistoricalData();
+            densities = loadHistoricalData(getDayString());
         }
     }
 
@@ -124,9 +129,9 @@ public class FacilityPage extends DialogFragment {
         return json;
     }
 
-    private void loadHistoricalData() {
+    private List<Double> loadHistoricalData(String day) {
+        List<Double> densities = new ArrayList<>();
         try {
-            String day = getDayString();
             JSONObject jsonObject = new JSONObject(loadJSONFile());
             JSONArray facilities = jsonObject.getJSONArray("Facilities");
             for (int i = 0; i < facilities.length(); i++) {
@@ -141,7 +146,9 @@ public class FacilityPage extends DialogFragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return densities;
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -149,10 +156,12 @@ public class FacilityPage extends DialogFragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_facility__page, container, false);
 
-        mFacilityName = v.findViewById(R.id.f_name);
-        mFacilityHours = v.findViewById(R.id.f_hours);
-        mBackButton = v.findViewById(R.id.backButton);
-        mDensityChart = v.findViewById(R.id.densityChart);
+        facilityName = v.findViewById(R.id.f_name);
+        facilityHours = v.findViewById(R.id.f_hours);
+        backButton = v.findViewById(R.id.backButton);
+        densityChart = v.findViewById(R.id.densityChart);
+
+        daysDropdown = v.findViewById(R.id.daysDropDown);
 
         initializeView();
         setupBarChart();
@@ -173,7 +182,7 @@ public class FacilityPage extends DialogFragment {
         dataSet.setDrawValues(false);
 
         ArrayList<Integer> colors = new ArrayList<>();
-        colors.add(ContextCompat.getColor(mDensityChart.getContext(), R.color.very_empty));
+        colors.add(ContextCompat.getColor(densityChart.getContext(), R.color.very_empty));
         colors.add(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.pretty_empty));
         colors.add(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.pretty_crowded));
         colors.add(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.very_crowded));
@@ -204,11 +213,11 @@ public class FacilityPage extends DialogFragment {
         xAxis.add("");
         xAxis.add("");
 
-        mDensityChart.getDescription().setEnabled(false);
-        mDensityChart.getLegend().setEnabled(false);
-        mDensityChart.setScaleEnabled(false);
-        mDensityChart.setTouchEnabled(true);
-        mDensityChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+        densityChart.getDescription().setEnabled(false);
+        densityChart.getLegend().setEnabled(false);
+        densityChart.setScaleEnabled(false);
+        densityChart.setTouchEnabled(true);
+        densityChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
                 String msg = "";
@@ -231,27 +240,75 @@ public class FacilityPage extends DialogFragment {
         });
 
 
-        mDensityChart.getAxisLeft().setEnabled(false);
-        mDensityChart.getAxisRight().setEnabled(false);
-        mDensityChart.getXAxis().setDrawGridLines(false);
-        mDensityChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        densityChart.getAxisLeft().setEnabled(false);
+        densityChart.getAxisRight().setEnabled(false);
+        densityChart.getXAxis().setDrawGridLines(false);
+        densityChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
 
-        mDensityChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xAxis));
-        mDensityChart.getXAxis().setLabelCount(xAxis.size());
-        mDensityChart.setData(data);
-        mDensityChart.invalidate();
-        mDensityChart.animateY(500);
+        densityChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xAxis));
+        densityChart.getXAxis().setLabelCount(xAxis.size());
+        densityChart.setData(data);
+        densityChart.invalidate();
+        densityChart.animateY(500);
 
     }
 
     private void initializeView() {
-        mFacilityName.setText(facility.getName());
-        mFacilityHours.setText(operatingHours());
+        facilityName.setText(facility.getName());
+        facilityHours.setText(operatingHours());
 
-        mBackButton.setOnClickListener(new View.OnClickListener() {
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dismiss();
+            }
+        });
+
+        String[] dropdownItems = new String[]{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+
+        ArrayAdapter<String> dropdownMenuAdapter =
+                new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, dropdownItems);
+
+        daysDropdown.setAdapter(dropdownMenuAdapter);
+        daysDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        // Deal with Monday
+                        densities = loadHistoricalData("MON");
+                        break;
+                    case 1:
+                        // Deal with Tuesday
+                        densities = loadHistoricalData("TUE");
+                        break;
+                    case 2:
+                        // Deal with Wednesday
+                        densities = loadHistoricalData("WED");
+                        break;
+                    case 3:
+                        // Deal with Thursday
+                        densities = loadHistoricalData("THU");
+                        break;
+                    case 4:
+                        // Deal with Friday
+                        densities = loadHistoricalData("FRI");
+                        break;
+                    case 5:
+                        // Deal with Saturday
+                        densities = loadHistoricalData("SAT");
+                        break;
+                    case 6:
+                        // Deal with Sunday
+                        densities = loadHistoricalData("SUN");
+                        break;
+                }
+                setupBarChart();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                // Do nothing
             }
         });
     }
@@ -481,8 +538,8 @@ public class FacilityPage extends DialogFragment {
     }
 
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+        if (listener != null) {
+            listener.onFragmentInteraction(uri);
         }
     }
 
@@ -490,7 +547,7 @@ public class FacilityPage extends DialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+            listener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -500,7 +557,7 @@ public class FacilityPage extends DialogFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
     }
 
     public interface OnFragmentInteractionListener {

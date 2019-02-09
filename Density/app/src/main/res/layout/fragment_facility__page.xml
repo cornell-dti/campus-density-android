@@ -84,4 +84,15 @@
 
     </LinearLayout>
 
+    <Spinner
+        android:id="@+id/daysDropDown"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="63dp"
+        android:layout_marginEnd="20dp"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown" />
+
 </RelativeLayout>

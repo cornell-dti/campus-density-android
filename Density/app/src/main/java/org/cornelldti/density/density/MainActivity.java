@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private AppBarLayout appBarLayout;
 
-    private Toolbar mToolbar;
+    private Toolbar toolbar;
 
     private RecyclerView.LayoutManager layoutManager;
 
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
     private static final String FACILITY_INFO_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/facilityInfo";
     private static final String HOW_DENSE_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/howDense";
     private NestedScrollView nestedScrollView;
-    private SearchView mSearchView;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
         swipeRefresh = findViewById(R.id.swipe_refresh);
 
         appBarLayout = findViewById(R.id.appbar);
-        mToolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
 
         nestedScrollView = findViewById(R.id.nestedScrollView);
 
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
         collapsingToolbarLayout = findViewById(R.id.collapsingToolbar);
         swipeRefresh.setNestedScrollingEnabled(true);
 
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
@@ -464,9 +464,9 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
 
-        mSearchView = (SearchView) searchItem.getActionView();
+        searchView = (SearchView) searchItem.getActionView();
 
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 adapter.getFilter().filter(query);

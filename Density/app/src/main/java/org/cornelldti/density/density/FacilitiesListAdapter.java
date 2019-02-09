@@ -23,8 +23,8 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
 
     private List<Facility> facilities, filteredFacilities;
 
-    private ClickListener mClickListener;
-    private Context mContext;
+    private ClickListener clickListener;
+    private Context context;
 
     private static final Function<String, Comparator<Facility>> SEARCH_SORT;
 
@@ -45,7 +45,7 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
 
         @Override
         public void onClick(View v) {
-            mClickListener.onItemClick(getAdapterPosition(), v);
+            clickListener.onItemClick(getAdapterPosition(), v);
         }
     }
 
@@ -59,7 +59,7 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
     }
 
     public void setOnItemClickListener(ClickListener clickListener) {
-        this.mClickListener = clickListener;
+        this.clickListener = clickListener;
     }
 
     public interface ClickListener {
@@ -78,7 +78,7 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.facility_card_layout, parent, false);
 
-        mContext = parent.getContext();
+        context = parent.getContext();
 
         return new ViewHolder(v);
     }
@@ -180,57 +180,57 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
     }
 
     private void setClosed(ViewHolder holder) {
-        holder.firstBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
+        holder.firstBar.setColorFilter(context.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
-        holder.secondBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
+        holder.secondBar.setColorFilter(context.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
-        holder.thirdBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
+        holder.thirdBar.setColorFilter(context.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
-        holder.fourthBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
+        holder.fourthBar.setColorFilter(context.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
     }
 
     private void setVeryCrowded(ViewHolder holder) {
-        holder.firstBar.setColorFilter(mContext.getResources().getColor(R.color.very_crowded),
+        holder.firstBar.setColorFilter(context.getResources().getColor(R.color.very_crowded),
                 PorterDuff.Mode.MULTIPLY);
-        holder.secondBar.setColorFilter(mContext.getResources().getColor(R.color.very_crowded),
+        holder.secondBar.setColorFilter(context.getResources().getColor(R.color.very_crowded),
                 PorterDuff.Mode.MULTIPLY);
-        holder.thirdBar.setColorFilter(mContext.getResources().getColor(R.color.very_crowded),
+        holder.thirdBar.setColorFilter(context.getResources().getColor(R.color.very_crowded),
                 PorterDuff.Mode.MULTIPLY);
-        holder.fourthBar.setColorFilter(mContext.getResources().getColor(R.color.very_crowded),
+        holder.fourthBar.setColorFilter(context.getResources().getColor(R.color.very_crowded),
                 PorterDuff.Mode.MULTIPLY);
     }
 
     private void setPrettyCrowded(ViewHolder holder) {
-        holder.firstBar.setColorFilter(mContext.getResources().getColor(R.color.pretty_crowded),
+        holder.firstBar.setColorFilter(context.getResources().getColor(R.color.pretty_crowded),
                 PorterDuff.Mode.MULTIPLY);
-        holder.secondBar.setColorFilter(mContext.getResources().getColor(R.color.pretty_crowded),
+        holder.secondBar.setColorFilter(context.getResources().getColor(R.color.pretty_crowded),
                 PorterDuff.Mode.MULTIPLY);
-        holder.thirdBar.setColorFilter(mContext.getResources().getColor(R.color.pretty_crowded),
+        holder.thirdBar.setColorFilter(context.getResources().getColor(R.color.pretty_crowded),
                 PorterDuff.Mode.MULTIPLY);
-        holder.fourthBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
+        holder.fourthBar.setColorFilter(context.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
     }
 
     private void setPrettyEmpty(ViewHolder holder) {
-        holder.firstBar.setColorFilter(mContext.getResources().getColor(R.color.pretty_empty),
+        holder.firstBar.setColorFilter(context.getResources().getColor(R.color.pretty_empty),
                 PorterDuff.Mode.MULTIPLY);
-        holder.secondBar.setColorFilter(mContext.getResources().getColor(R.color.pretty_empty),
+        holder.secondBar.setColorFilter(context.getResources().getColor(R.color.pretty_empty),
                 PorterDuff.Mode.MULTIPLY);
-        holder.thirdBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
+        holder.thirdBar.setColorFilter(context.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
-        holder.fourthBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
+        holder.fourthBar.setColorFilter(context.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
     }
 
     private void setVeryEmpty(ViewHolder holder) {
-        holder.firstBar.setColorFilter(mContext.getResources().getColor(R.color.very_empty),
+        holder.firstBar.setColorFilter(context.getResources().getColor(R.color.very_empty),
                 PorterDuff.Mode.MULTIPLY);
-        holder.secondBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
+        holder.secondBar.setColorFilter(context.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
-        holder.thirdBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
+        holder.thirdBar.setColorFilter(context.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
-        holder.fourthBar.setColorFilter(mContext.getResources().getColor(R.color.filler_boxes),
+        holder.fourthBar.setColorFilter(context.getResources().getColor(R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY);
     }
 
