@@ -115,19 +115,19 @@ public class Facility implements Serializable, Comparable<Facility> {
     }
 
     public String getLocationString() {
-        String l = "";
+        String loc_string = "";
         switch (this.loc) {
             case NORTH:
-                l = "NORTH";
+                loc_string = "NORTH";
                 break;
             case CENTRAL:
-                l = "CENTRAL";
+                loc_string = "CENTRAL";
                 break;
             case WEST:
-                l = "WEST";
+                loc_string = "WEST";
                 break;
         }
-        return l;
+        return loc_string;
     }
 
     public Facility setLocation(String loc) {
