@@ -1,4 +1,4 @@
-# Campus Density Android v1.0
+# Flux Android v1.0
 
 by [Cornell Design Tech Initiative](https://www.cornelldti.org/)
 
