@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -22,6 +20,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 
 import org.cornelldti.density.density.util.ColorBarDataSet;
 import org.cornelldti.density.density.util.ValueFormatter;
@@ -50,6 +50,9 @@ public class FacilityPage extends DialogFragment {
     private BarChart densityChart;
     private Facility facility;
     private OnFragmentInteractionListener listener;
+
+    private ChipGroup dayChips;
+    private Chip day;
 
     private List<Double> densities = new ArrayList<>();
 
@@ -88,25 +91,25 @@ public class FacilityPage extends DialogFragment {
         int day = calendar.get(Calendar.DAY_OF_WEEK);
         switch (day) {
             case Calendar.SUNDAY:
-                dayString = getString(R.string.Sun);
+                dayString = getString(R.string.SUN);
                 break;
             case Calendar.MONDAY:
-                dayString = getString(R.string.Mon);
+                dayString = getString(R.string.MON);
                 break;
             case Calendar.TUESDAY:
-                dayString = getString(R.string.Tue);
+                dayString = getString(R.string.TUE);
                 break;
             case Calendar.WEDNESDAY:
-                dayString = getString(R.string.Wed);
+                dayString = getString(R.string.WED);
                 break;
             case Calendar.THURSDAY:
-                dayString = getString(R.string.Thu);
+                dayString = getString(R.string.THU);
                 break;
             case Calendar.FRIDAY:
-                dayString = getString(R.string.Fri);
+                dayString = getString(R.string.FRI);
                 break;
             case Calendar.SATURDAY:
-                dayString = getString(R.string.Sat);
+                dayString = getString(R.string.SAT);
                 break;
 
         }
@@ -158,14 +161,87 @@ public class FacilityPage extends DialogFragment {
 
         facilityName = v.findViewById(R.id.f_name);
         facilityHours = v.findViewById(R.id.f_hours);
+        facilityHours = v.findViewById(R.id.f_hours);
         backButton = v.findViewById(R.id.backButton);
         densityChart = v.findViewById(R.id.densityChart);
 
-        daysDropdown = v.findViewById(R.id.daysDropDown);
+        // daysDropdown = v.findViewById(R.id.daysDropDown);
+        day = v.findViewById(R.id.mon);
+        dayChips = v.findViewById(R.id.dayChips);
 
         initializeView();
         setupBarChart();
         return v;
+    }
+
+    private void setChipOnClickListener() {
+        dayChips.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(ChipGroup group, int checkedId) {
+                setDay(checkedId);
+            }
+        });
+
+    }
+
+    private void setDay(int checkedId) {
+        switch (checkedId) {
+            case R.id.sun:
+                densities = loadHistoricalData("SUN");
+                break;
+            case R.id.mon:
+                densities = loadHistoricalData("MON");
+                break;
+            case R.id.tue:
+                densities = loadHistoricalData("TUE");
+                break;
+            case R.id.wed:
+                densities = loadHistoricalData("WED");
+                break;
+            case R.id.thu:
+                densities = loadHistoricalData("THU");
+                break;
+            case R.id.fri:
+                densities = loadHistoricalData("FRI");
+                break;
+            case R.id.sat:
+                densities = loadHistoricalData("SAT");
+                break;
+        }
+        setupBarChart();
+    }
+
+    private void setToday(String dayString) {
+        switch (dayString) {
+            case "SUN":
+                day = getView().findViewById(R.id.sun);
+                day.setChecked(true);
+                break;
+            case "MON":
+                day = getView().findViewById(R.id.mon);
+                day.setChecked(true);
+                break;
+            case "TUE":
+                day = getView().findViewById(R.id.tue);
+                day.setChecked(true);
+                break;
+            case "WED":
+                day = getView().findViewById(R.id.wed);
+                day.setChecked(true);
+                break;
+            case "THU":
+                day = getView().findViewById(R.id.thu);
+                day.setChecked(true);
+                break;
+            case "FRI":
+                day = getView().findViewById(R.id.fri);
+                day.setChecked(true);
+                break;
+            case "SAT":
+                day = getView().findViewById(R.id.sat);
+                day.setChecked(true);
+                break;
+        }
     }
 
     private void setupBarChart() {
@@ -264,6 +340,12 @@ public class FacilityPage extends DialogFragment {
             }
         });
 
+        densities = loadHistoricalData(getDayString());
+        setToday(getDayString());
+        setupBarChart();
+        setChipOnClickListener();
+
+        /*
         String[] dropdownItems = new String[]{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 
         ArrayAdapter<String> dropdownMenuAdapter =
@@ -311,6 +393,7 @@ public class FacilityPage extends DialogFragment {
                 // Do nothing
             }
         });
+        */
     }
 
     private String operatingHours() {

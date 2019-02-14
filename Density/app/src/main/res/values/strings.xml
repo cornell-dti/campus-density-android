@@ -13,13 +13,22 @@
     <string name="Cook">cook</string>
     <string name="Keeton">keeton</string>
 
-    <string name="Sun">SUN</string>
-    <string name="Mon">MON</string>
-    <string name="Tue">TUE</string>
-    <string name="Wed">WED</string>
-    <string name="Thu">THU</string>
-    <string name="Fri">FRI</string>
-    <string name="Sat">SAT</string>
+    <string name="SUN">SUN</string>
+    <string name="MON">MON</string>
+    <string name="TUE">TUE</string>
+    <string name="WED">WED</string>
+    <string name="THU">THU</string>
+    <string name="FRI">FRI</string>
+    <string name="SAT">SAT</string>
+
+    <string name="Sun">Sun</string>
+    <string name="Mon">Mon</string>
+    <string name="Tue">Tue</string>
+    <string name="Wed">Wed</string>
+    <string name="Thu">Thu</string>
+    <string name="Fri">Fri</string>
+    <string name="Sat">Sat</string>
+
     <string name="search_hint">Search</string>
     <string name="todaysHours">Today\'s Hours</string>
     <string name="searchTitle">Search</string>
