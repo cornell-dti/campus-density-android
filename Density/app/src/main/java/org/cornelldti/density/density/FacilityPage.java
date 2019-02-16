@@ -54,7 +54,7 @@ public class FacilityPage extends Fragment {
     private OnFragmentInteractionListener listener;
 
     private ChipGroup dayChips;
-    private Chip day;
+    private Chip mon, tue, wed, thu, fri, sat, sun;
 
     private List<Double> densities = new ArrayList<>();
 
@@ -167,6 +167,14 @@ public class FacilityPage extends Fragment {
         backButton = v.findViewById(R.id.backButton);
         densityChart = v.findViewById(R.id.densityChart);
 
+        mon = v.findViewById(R.id.mon);
+        tue = v.findViewById(R.id.tue);
+        wed = v.findViewById(R.id.wed);
+        thu = v.findViewById(R.id.thu);
+        fri = v.findViewById(R.id.fri);
+        sat = v.findViewById(R.id.sat);
+        sun = v.findViewById(R.id.sun);
+
         // daysDropdown = v.findViewById(R.id.daysDropDown);
         dayChips = v.findViewById(R.id.dayChips);
 
@@ -218,32 +226,25 @@ public class FacilityPage extends Fragment {
     private void setToday(String dayString) {
         switch (dayString) {
             case "SUN":
-                day = getView().findViewById(R.id.sun);
-                day.setChecked(true);
+                sun.setChecked(true);
                 break;
             case "MON":
-                day = getView().findViewById(R.id.mon);
-                day.setChecked(true);
+                mon.setChecked(true);
                 break;
             case "TUE":
-                day = getView().findViewById(R.id.tue);
-                day.setChecked(true);
+                tue.setChecked(true);
                 break;
             case "WED":
-                day = getView().findViewById(R.id.wed);
-                day.setChecked(true);
+                wed.setChecked(true);
                 break;
             case "THU":
-                day = getView().findViewById(R.id.thu);
-                day.setChecked(true);
+                thu.setChecked(true);
                 break;
             case "FRI":
-                day = getView().findViewById(R.id.fri);
-                day.setChecked(true);
+                fri.setChecked(true);
                 break;
             case "SAT":
-                day = getView().findViewById(R.id.sat);
-                day.setChecked(true);
+                sat.setChecked(true);
                 break;
         }
     }
@@ -341,12 +342,13 @@ public class FacilityPage extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                getActivity().onBackPressed();
                 //super.onBackPressed();
             }
         });
 
         densities = loadHistoricalData(getDayString());
-        //setToday(getDayString());
+        setToday(getDayString());
         setChipOnClickListener();
 
         /*
