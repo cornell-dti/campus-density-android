@@ -1,14 +1,10 @@
 package org.cornelldti.density.density;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,56 +31,54 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 
-public class FacilityPage extends Fragment {
+public class FacilityPage extends AppCompatActivity {
     // TODO: Rename para meter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM = "Facility_Object";
+    public static final String ARG_PARAM = "Facility_Object";
 
-    private Spinner daysDropdown;
     private TextView facilityName, facilityHours;
     private ImageButton backButton;
     private BarChart densityChart;
     private Facility facility;
-    private OnFragmentInteractionListener listener;
 
     private ChipGroup dayChips;
-    private Chip mon, tue, wed, thu, fri, sat, sun;
+    private Chip sun, mon, tue, wed, thu, fri, sat;
 
     private List<Double> densities = new ArrayList<>();
-
-    public FacilityPage() {
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param facility Parameter 1.
-     * @return A new instance of fragment FacilityPage.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FacilityPage newInstance(Facility facility) {
-        FacilityPage fragment = new FacilityPage();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_PARAM, facility);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setStyle(DialogFragment.STYLE_NO_TITLE, R.style.FullScreenDialog);
-        if (getArguments() != null) {
-            facility = (Facility) getArguments().getSerializable(ARG_PARAM);
+        setContentView(R.layout.facility_page);
+
+        Bundle b = getIntent().getExtras();
+        if(b != null) {
+            facility = (Facility) b.getSerializable(ARG_PARAM);
             densities = loadHistoricalData(getDayString());
         }
+
+        facilityName = findViewById(R.id.f_name);
+        facilityHours = findViewById(R.id.f_hours);
+        facilityHours = findViewById(R.id.f_hours);
+        backButton = findViewById(R.id.backButton);
+        densityChart = findViewById(R.id.densityChart);
+
+        sun = findViewById(R.id.sun);
+        mon = findViewById(R.id.mon);
+        tue = findViewById(R.id.tue);
+        wed = findViewById(R.id.wed);
+        thu = findViewById(R.id.thu);
+        fri = findViewById(R.id.fri);
+        sat = findViewById(R.id.sat);
+
+        dayChips = findViewById(R.id.dayChips);
+
+        initializeView();
+        setupBarChart();
     }
 
     private String getDayString() {
@@ -121,7 +115,7 @@ public class FacilityPage extends Fragment {
     private String loadJSONFile() {
         String json = "";
         try {
-            InputStream is = getActivity().getAssets().open("historical_data.json");
+            InputStream is = getAssets().open("historical_data.json");
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
@@ -154,36 +148,6 @@ public class FacilityPage extends Fragment {
         return densities;
     }
 
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_facility__page, container, false);
-
-        facilityName = v.findViewById(R.id.f_name);
-        facilityHours = v.findViewById(R.id.f_hours);
-        facilityHours = v.findViewById(R.id.f_hours);
-        backButton = v.findViewById(R.id.backButton);
-        densityChart = v.findViewById(R.id.densityChart);
-
-        mon = v.findViewById(R.id.mon);
-        tue = v.findViewById(R.id.tue);
-        wed = v.findViewById(R.id.wed);
-        thu = v.findViewById(R.id.thu);
-        fri = v.findViewById(R.id.fri);
-        sat = v.findViewById(R.id.sat);
-        sun = v.findViewById(R.id.sun);
-
-        // daysDropdown = v.findViewById(R.id.daysDropDown);
-        dayChips = v.findViewById(R.id.dayChips);
-
-        initializeView();
-        setupBarChart();
-        return v;
-    }
-
-
     private void setChipOnClickListener() {
         dayChips.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
             @Override
@@ -191,7 +155,6 @@ public class FacilityPage extends Fragment {
                 setDay(checkedId);
             }
         });
-
     }
 
 
@@ -222,34 +185,6 @@ public class FacilityPage extends Fragment {
         setupBarChart();
     }
 
-
-    private void setToday(String dayString) {
-        switch (dayString) {
-            case "SUN":
-                sun.setChecked(true);
-                break;
-            case "MON":
-                mon.setChecked(true);
-                break;
-            case "TUE":
-                tue.setChecked(true);
-                break;
-            case "WED":
-                wed.setChecked(true);
-                break;
-            case "THU":
-                thu.setChecked(true);
-                break;
-            case "FRI":
-                fri.setChecked(true);
-                break;
-            case "SAT":
-                sat.setChecked(true);
-                break;
-        }
-    }
-
-
     private void setupBarChart() {
         ArrayList<BarEntry> entries = new ArrayList<>();
         for (int i = 0; i < densities.size(); i++) {
@@ -265,9 +200,9 @@ public class FacilityPage extends Fragment {
 
         ArrayList<Integer> colors = new ArrayList<>();
         colors.add(ContextCompat.getColor(densityChart.getContext(), R.color.very_empty));
-        colors.add(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.pretty_empty));
-        colors.add(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.pretty_crowded));
-        colors.add(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.very_crowded));
+        colors.add(ContextCompat.getColor(getApplicationContext(), R.color.pretty_empty));
+        colors.add(ContextCompat.getColor(getApplicationContext(), R.color.pretty_crowded));
+        colors.add(ContextCompat.getColor(getApplicationContext(), R.color.very_crowded));
         dataSet.setColors(colors);
         dataSet.setValueTextColor(Color.DKGRAY);
         dataSet.setValueFormatter(new ValueFormatter());
@@ -312,7 +247,7 @@ public class FacilityPage extends Fragment {
                 } else {
                     msg = "Very Empty";
                 }
-                Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(FacilityPage.this, msg, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -342,64 +277,41 @@ public class FacilityPage extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().onBackPressed();
                 //super.onBackPressed();
             }
         });
 
         densities = loadHistoricalData(getDayString());
-        setToday(getDayString());
         setChipOnClickListener();
+        setToday(getDayString());
+    }
 
-        /*
-        String[] dropdownItems = new String[]{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
-
-        ArrayAdapter<String> dropdownMenuAdapter =
-                new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, dropdownItems);
-
-        daysDropdown.setAdapter(dropdownMenuAdapter);
-        daysDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        // Deal with Monday
-                        densities = loadHistoricalData("MON");
-                        break;
-                    case 1:
-                        // Deal with Tuesday
-                        densities = loadHistoricalData("TUE");
-                        break;
-                    case 2:
-                        // Deal with Wednesday
-                        densities = loadHistoricalData("WED");
-                        break;
-                    case 3:
-                        // Deal with Thursday
-                        densities = loadHistoricalData("THU");
-                        break;
-                    case 4:
-                        // Deal with Friday
-                        densities = loadHistoricalData("FRI");
-                        break;
-                    case 5:
-                        // Deal with Saturday
-                        densities = loadHistoricalData("SAT");
-                        break;
-                    case 6:
-                        // Deal with Sunday
-                        densities = loadHistoricalData("SUN");
-                        break;
-                }
-                setupBarChart();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                // Do nothing
-            }
-        });
-        */
+    private void setToday(String dayString)
+    {
+        switch(dayString)
+        {
+            case "SUN":
+                sun.setChecked(true);
+                break;
+            case "MON":
+                mon.setChecked(true);
+                break;
+            case "TUE":
+                tue.setChecked(true);
+                break;
+            case "WED":
+                sun.setChecked(true);
+                break;
+            case "THU":
+                thu.setChecked(true);
+                break;
+            case "FRI":
+                fri.setChecked(true);
+                break;
+            case "SAT":
+                sat.setChecked(true);
+                break;
+        }
     }
 
     private String operatingHours() {
@@ -626,31 +538,12 @@ public class FacilityPage extends Fragment {
         }
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (listener != null) {
-            listener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            listener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        listener = null;
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
-
 }
