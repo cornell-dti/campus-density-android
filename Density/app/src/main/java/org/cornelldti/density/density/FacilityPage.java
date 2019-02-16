@@ -1,5 +1,6 @@
 package org.cornelldti.density.density;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -277,7 +278,7 @@ public class FacilityPage extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //super.onBackPressed();
+                finish();
             }
         });
 
@@ -300,7 +301,7 @@ public class FacilityPage extends AppCompatActivity {
                 tue.setChecked(true);
                 break;
             case "WED":
-                sun.setChecked(true);
+                wed.setChecked(true);
                 break;
             case "THU":
                 thu.setChecked(true);
