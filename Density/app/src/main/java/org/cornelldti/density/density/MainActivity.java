@@ -402,7 +402,6 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
                                         b.putSerializable(FacilityPage.ARG_PARAM, adapter.getDataSet().get(position));
                                         intent.putExtras(b);
                                         startActivity(intent);
-                                        finish();
                                     }
                                 });
 
