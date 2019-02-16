@@ -9,21 +9,22 @@
     android:focusable="true"
     tools:context=".FacilityPage">
 
-    <androidx.appcompat.widget.Toolbar
+    <LinearLayout
         android:id="@+id/topView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+        android:elevation="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/backButton"
+            android:contentDescription="@string/back_button_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="16dp"
             android:background="@null"
             android:src="@drawable/ic_arrow_back" />
 
@@ -31,11 +32,13 @@
             android:id="@+id/f_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="FACILITY NAME"
+            android:layout_gravity="center_vertical|start"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="Facility Name"
             android:textColor="#B5B5B5"
-            android:textSize="16dp" />
-
-    </androidx.appcompat.widget.Toolbar>
+            android:textSize="20sp" />
+    </LinearLayout>
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/dayChips"
@@ -121,39 +124,6 @@
             app:chipBackgroundColor="@drawable/chip_color_toggle" />
     </com.google.android.material.chip.ChipGroup>
 
-    <!--
-    <LinearLayout
-        android:id="@+id/topView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true">
-
-        <ImageButton
-            android:id="@+id/backButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_margin="10dp"
-            android:background="@null"
-            android:src="@drawable/ic_navigate_before" />
-
-        <TextView
-            android:id="@+id/f_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_gravity="center_vertical|start"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="Facility Name"
-            android:textColor="#B5B5B5"
-            android:textSize="20dp" />
-    </LinearLayout>
- -->
-
     <LinearLayout
         android:id="@+id/bottomView"
         android:layout_width="match_parent"
@@ -168,10 +138,7 @@
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/densityChart"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:layout_alignStart="@+id/bottomView"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_height="400dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -204,18 +171,18 @@
 
     </LinearLayout>
 
-<!--
-    <Spinner
-        android:id="@+id/daysDropDown"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="63dp"
-        android:layout_marginEnd="20dp"
-        android:background="@android:drawable/btn_dropdown"
-        android:spinnerMode="dropdown"
-        android:visibility="gone" />
--->
+    <!--
+        <Spinner
+            android:id="@+id/daysDropDown"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="63dp"
+            android:layout_marginEnd="20dp"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown"
+            android:visibility="gone" />
+    -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -42,6 +42,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.arch.core.util.Function;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -397,9 +398,12 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
                                 MainActivity.this.adapter.setOnItemClickListener(new FacilitiesListAdapter.ClickListener() {
                                     @Override
                                     public void onItemClick(int position, View v) {
+                                        FragmentManager fragmentManager = getSupportFragmentManager();
                                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                                        FacilityPage dialog = FacilityPage.newInstance(adapter.getDataSet().get(position));
-                                        dialog.show(ft, "facility page");
+                                        FacilityPage fragment = FacilityPage.newInstance(adapter.getDataSet().get(position));
+                                        ft.add(R.id.full_layout, fragment);
+                                        ft.commit();
+                                        //FacilityPage dialog = FacilityPage.newInstance(adapter.getDataSet().get(position));
                                     }
                                 });
 

@@ -37,9 +37,11 @@ import java.util.List;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 
-public class FacilityPage extends DialogFragment {
+public class FacilityPage extends Fragment {
     // TODO: Rename para meter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM = "Facility_Object";
@@ -78,7 +80,7 @@ public class FacilityPage extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.FullScreenDialog);
+        //setStyle(DialogFragment.STYLE_NO_TITLE, R.style.FullScreenDialog);
         if (getArguments() != null) {
             facility = (Facility) getArguments().getSerializable(ARG_PARAM);
             densities = loadHistoricalData(getDayString());
@@ -166,13 +168,13 @@ public class FacilityPage extends DialogFragment {
         densityChart = v.findViewById(R.id.densityChart);
 
         // daysDropdown = v.findViewById(R.id.daysDropDown);
-        day = v.findViewById(R.id.mon);
         dayChips = v.findViewById(R.id.dayChips);
 
         initializeView();
         setupBarChart();
         return v;
     }
+
 
     private void setChipOnClickListener() {
         dayChips.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
@@ -183,6 +185,7 @@ public class FacilityPage extends DialogFragment {
         });
 
     }
+
 
     private void setDay(int checkedId) {
         switch (checkedId) {
@@ -210,6 +213,7 @@ public class FacilityPage extends DialogFragment {
         }
         setupBarChart();
     }
+
 
     private void setToday(String dayString) {
         switch (dayString) {
@@ -243,6 +247,7 @@ public class FacilityPage extends DialogFragment {
                 break;
         }
     }
+
 
     private void setupBarChart() {
         ArrayList<BarEntry> entries = new ArrayList<>();
@@ -336,13 +341,12 @@ public class FacilityPage extends DialogFragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dismiss();
+                //super.onBackPressed();
             }
         });
 
         densities = loadHistoricalData(getDayString());
-        setToday(getDayString());
-        setupBarChart();
+        //setToday(getDayString());
         setChipOnClickListener();
 
         /*
@@ -647,8 +651,4 @@ public class FacilityPage extends DialogFragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    @Override
-    public void dismiss() {
-        super.dismiss();
-    }
 }
