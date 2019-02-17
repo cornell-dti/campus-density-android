@@ -62,6 +62,7 @@ public class FacilityPage extends AppCompatActivity {
             densities = loadHistoricalData(getDayString());
         }
 
+
         facilityName = findViewById(R.id.f_name);
         facilityHours = findViewById(R.id.f_hours);
         backButton = findViewById(R.id.backButton);
@@ -552,5 +553,5 @@ public class FacilityPage extends AppCompatActivity {
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
-    
+
 }

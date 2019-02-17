@@ -13,20 +13,19 @@
         android:id="@+id/topView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#fff"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="#fff"
-        android:elevation="4dp">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/backButton"
-            android:contentDescription="@string/back_button_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="16dp"
             android:background="@null"
+            android:contentDescription="@string/back_button_desc"
             android:src="@drawable/ic_arrow_back" />
 
         <TextView
@@ -42,22 +41,47 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/current_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topView"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:clickable="false"
+        android:focusable="false">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Now"
+            android:textStyle="bold"
+            android:textColor="#000" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="Crowded"
+            android:textColor="#000" />
+
+
+    </LinearLayout>
+
+
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/dayChips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/topView"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_margin="8dp"
         app:chipSpacing="@dimen/chip_day_padding"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topView"
+        app:layout_constraintTop_toBottomOf="@+id/current_view"
         app:singleLine="true"
         app:singleSelection="true">
 
@@ -128,35 +152,27 @@
 
     <LinearLayout
         android:id="@+id/bottomView"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/dayChips"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="5dp"
+        android:layout_margin="16dp"
+        android:padding="8dp"
+        android:paddingEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dayChips">
+        app:layout_constraintTop_toBottomOf="@+id/dayChips"
+        android:background="@drawable/border">
 
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/densityChart"
             android:layout_width="match_parent"
             android:layout_height="400dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/bottomView"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottomView">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:gravity="center"
@@ -165,7 +181,7 @@
 
         <TextView
             android:id="@+id/f_hours"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="1dp"
             android:gravity="center"
