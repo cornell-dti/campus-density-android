@@ -45,20 +45,22 @@
         android:id="@+id/current_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topView"
+        android:layout_margin="16dp"
+        android:background="@drawable/border"
+        android:clickable="false"
+        android:focusable="false"
         android:orientation="horizontal"
         android:padding="16dp"
-        android:clickable="false"
-        android:focusable="false">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topView">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Now"
-            android:textStyle="bold"
-            android:textColor="#000" />
+            android:textColor="#000"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
@@ -70,114 +72,131 @@
 
     </LinearLayout>
 
-
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/dayChips"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:chipSpacing="@dimen/chip_day_padding"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/current_view"
-        app:singleLine="true"
-        app:singleSelection="true">
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/mon"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:checked="true"
-            android:text="@string/Mon"
-            android:textAppearance="@style/ChipTextStyle"
-            app:chipBackgroundColor="@drawable/chip_color_toggle" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/tue"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/Tue"
-            android:textAppearance="@style/ChipTextStyle"
-            app:chipBackgroundColor="@drawable/chip_color_toggle" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/wed"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/Wed"
-            android:textAppearance="@style/ChipTextStyle"
-            app:chipBackgroundColor="@drawable/chip_color_toggle" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/thu"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/Thu"
-            android:textAppearance="@style/ChipTextStyle"
-            app:chipBackgroundColor="@drawable/chip_color_toggle" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/fri"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/Fri"
-            android:textAppearance="@style/ChipTextStyle"
-            app:chipBackgroundColor="@drawable/chip_color_toggle" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/sat"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/Sat"
-            android:textAppearance="@style/ChipTextStyle"
-            app:chipBackgroundColor="@drawable/chip_color_toggle" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/sun"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/Sun"
-            android:textAppearance="@style/ChipTextStyle"
-            app:chipBackgroundColor="@drawable/chip_color_toggle" />
-    </com.google.android.material.chip.ChipGroup>
-
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomView"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/dayChips"
-        android:layout_alignParentStart="true"
+        android:layout_height="0dp"
         android:layout_margin="16dp"
+        android:background="@drawable/border"
+        android:orientation="vertical"
         android:padding="8dp"
-        android:paddingEnd="16dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dayChips"
-        android:background="@drawable/border">
+        app:layout_constraintTop_toBottomOf="@+id/current_view">
+
+        <TextView
+            android:id="@+id/popular_times"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Popular Times"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/dayChips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:layout_marginTop="16dp"
+            app:chipSpacing="@dimen/chip_day_padding"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/popular_times"
+            app:singleLine="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/mon"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:checked="true"
+                android:text="M"
+                android:textAppearance="@style/ChipTextStyle"
+                app:chipBackgroundColor="@drawable/chip_color_toggle" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/tue"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Tu"
+                android:textAppearance="@style/ChipTextStyle"
+                app:chipBackgroundColor="@drawable/chip_color_toggle" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/wed"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="W"
+                android:textAppearance="@style/ChipTextStyle"
+                app:chipBackgroundColor="@drawable/chip_color_toggle" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/thu"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Th"
+                android:textAppearance="@style/ChipTextStyle"
+                app:chipBackgroundColor="@drawable/chip_color_toggle" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/fri"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="F"
+                android:textAppearance="@style/ChipTextStyle"
+                app:chipBackgroundColor="@drawable/chip_color_toggle" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/sat"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Sa"
+                android:textAppearance="@style/ChipTextStyle"
+                app:chipBackgroundColor="@drawable/chip_color_toggle" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/sun"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Su"
+                android:textAppearance="@style/ChipTextStyle"
+                app:chipBackgroundColor="@drawable/chip_color_toggle" />
+        </com.google.android.material.chip.ChipGroup>
 
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/densityChart"
             android:layout_width="match_parent"
-            android:layout_height="400dp" />
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/today_hours"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dayChips" />
 
         <TextView
-            android:layout_marginTop="8dp"
+            android:id="@+id/today_hours"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
+            android:layout_marginTop="8dp"
             android:gravity="center"
             android:text="@string/todaysHours"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/f_hours"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/f_hours"
@@ -185,9 +204,12 @@
             android:layout_height="wrap_content"
             android:layout_margin="1dp"
             android:gravity="center"
-            android:text="HOURS" />
+            android:text="HOURS"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--
         <Spinner
