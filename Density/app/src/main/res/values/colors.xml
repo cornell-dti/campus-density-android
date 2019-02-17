@@ -9,4 +9,6 @@
     <color name="pretty_crowded">#FFC780</color>
     <color name="very_crowded">#FA4735</color>
     <color name="filler_boxes">#EDEDED</color>
+
+    <color name="border">#dad7d7</color>
 </resources>
