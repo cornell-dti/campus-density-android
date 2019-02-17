@@ -64,7 +64,6 @@ public class FacilityPage extends AppCompatActivity {
 
         facilityName = findViewById(R.id.f_name);
         facilityHours = findViewById(R.id.f_hours);
-        facilityHours = findViewById(R.id.f_hours);
         backButton = findViewById(R.id.backButton);
         densityChart = findViewById(R.id.densityChart);
 
@@ -158,28 +157,34 @@ public class FacilityPage extends AppCompatActivity {
         });
     }
 
-
     private void setDay(int checkedId) {
         switch (checkedId) {
             case R.id.sun:
+                facilityHours.setText(operatingHours("SUN"));
                 densities = loadHistoricalData("SUN");
                 break;
             case R.id.mon:
+                facilityHours.setText(operatingHours("MON"));
                 densities = loadHistoricalData("MON");
                 break;
             case R.id.tue:
+                facilityHours.setText(operatingHours("TUE"));
                 densities = loadHistoricalData("TUE");
                 break;
             case R.id.wed:
+                facilityHours.setText(operatingHours("WED"));
                 densities = loadHistoricalData("WED");
                 break;
             case R.id.thu:
+                facilityHours.setText(operatingHours("THU"));
                 densities = loadHistoricalData("THU");
                 break;
             case R.id.fri:
+                facilityHours.setText(operatingHours("FRI"));
                 densities = loadHistoricalData("FRI");
                 break;
             case R.id.sat:
+                facilityHours.setText(operatingHours("SAT"));
                 densities = loadHistoricalData("SAT");
                 break;
         }
@@ -273,7 +278,7 @@ public class FacilityPage extends AppCompatActivity {
 
     private void initializeView() {
         facilityName.setText(facility.getName());
-        facilityHours.setText(operatingHours());
+        facilityHours.setText(operatingHours(getDayString()));
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -315,10 +320,10 @@ public class FacilityPage extends AppCompatActivity {
         }
     }
 
-    private String operatingHours() {
+    private String operatingHours(String day) {
         switch (facility.getName()) {
             case "Rose Dining Hall":
-                switch (getDayString()) {
+                switch (day) {
                     case "SUN":
                         return "8:00 AM - 9:30 AM\n10:00 AM - 2:00 PM\n5:00 PM - 8:00 PM";
                     case "MON":
@@ -337,7 +342,7 @@ public class FacilityPage extends AppCompatActivity {
                         return "Closed";
                 }
             case "Risley":
-                switch (getDayString()) {
+                switch (day) {
                     case "SUN":
                         return "Closed";
                     case "MON":
@@ -356,7 +361,7 @@ public class FacilityPage extends AppCompatActivity {
                         return "Closed";
                 }
             case "RPCC Dining Hall":
-                switch (getDayString()) {
+                switch (day) {
                     case "SUN":
                         return "10:00 AM - 2:00 PM\n5:30 PM - 8:30 PM";
                     case "MON":
@@ -375,7 +380,7 @@ public class FacilityPage extends AppCompatActivity {
                         return "Closed";
                 }
             case "Olin Libe Cafe":
-                switch (getDayString()) {
+                switch (day) {
                     case "SUN":
                         return "10:00 AM - 12:00 AM";
                     case "MON":
@@ -394,15 +399,15 @@ public class FacilityPage extends AppCompatActivity {
                         return "Closed";
                 }
             case "Okenshields":
-                if (getDayString().equals("FRI")) {
+                if (day.equals("FRI")) {
                     return "11:00 AM - 2:30 PM";
-                } else if (getDayString().equals("SUN") || getDayString().equals("SAT")) {
+                } else if (day.equals("SUN") || day.equals("SAT")) {
                     return "Closed";
                 } else {
                     return "11:00 AM - 2:30 PM\n4:30 PM - 7:30 PM";
                 }
             case "North Star at Appel":
-                switch (getDayString()) {
+                switch (day) {
                     case "SUN":
                         return "10:00 AM - 2:00 PM\n2:00 PM - 4:00 PM\n5:00 PM - 8:00 PM";
                     case "MON":
@@ -421,7 +426,7 @@ public class FacilityPage extends AppCompatActivity {
                         return "Closed";
                 }
             case "104West!":
-                switch (getDayString()) {
+                switch (day) {
                     case "SUN":
                         return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
                     case "MON":
@@ -440,7 +445,7 @@ public class FacilityPage extends AppCompatActivity {
                         return "Closed";
                 }
             case "Keeton House":
-                switch (getDayString()) {
+                switch (day) {
                     case "SUN":
                         return "10:00 AM - 2:00 PM\n5:00 PM - 8:00 PM";
                     case "MON":
@@ -459,7 +464,7 @@ public class FacilityPage extends AppCompatActivity {
                         return "Closed";
                 }
             case "Jansen's at Bethe House":
-                switch (getDayString()) {
+                switch (day) {
                     case "SUN":
                         return "10:00 AM - 2:00 PM\n4:30 PM - 7:30 PM";
                     case "MON":
@@ -478,7 +483,7 @@ public class FacilityPage extends AppCompatActivity {
                         return "Closed";
                 }
             case "Carl Becker House":
-                switch (getDayString()) {
+                switch (day) {
                     case "SUN":
                         return "10:00 AM - 2:00 PM\n5:00 PM - 8:00 PM";
                     case "MON":
@@ -497,7 +502,7 @@ public class FacilityPage extends AppCompatActivity {
                         return "Closed";
                 }
             case "Cafe Jennie":
-                switch (getDayString()) {
+                switch (day) {
                     case "SUN":
                         return "Closed";
                     case "MON":
@@ -516,7 +521,7 @@ public class FacilityPage extends AppCompatActivity {
                         return "Closed";
                 }
             case "Alice Cook House":
-                switch (getDayString()) {
+                switch (day) {
                     case "SUN":
                         return "10:00 AM - 2:00 PM\n5:00 PM - 9:00 PM";
                     case "MON":
@@ -547,4 +552,5 @@ public class FacilityPage extends AppCompatActivity {
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
+    
 }
