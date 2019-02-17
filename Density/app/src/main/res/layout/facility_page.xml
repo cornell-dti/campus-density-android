@@ -63,10 +63,11 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/currentOccupancy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:text="Crowded"
+            android:text=""
             android:textColor="#000" />
 
 
