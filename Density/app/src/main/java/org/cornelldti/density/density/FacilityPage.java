@@ -1,6 +1,5 @@
 package org.cornelldti.density.density;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,7 +40,7 @@ public class FacilityPage extends AppCompatActivity {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String ARG_PARAM = "Facility_Object";
 
-    private TextView facilityName, facilityHours;
+    private TextView facilityName, facilityHours, currentOccupancy;
     private ImageButton backButton;
     private BarChart densityChart;
     private Facility facility;
@@ -67,6 +66,7 @@ public class FacilityPage extends AppCompatActivity {
         facilityHours = findViewById(R.id.f_hours);
         backButton = findViewById(R.id.backButton);
         densityChart = findViewById(R.id.densityChart);
+        currentOccupancy = findViewById(R.id.currentOccupancy);
 
         sun = findViewById(R.id.sun);
         mon = findViewById(R.id.mon);
@@ -280,6 +280,7 @@ public class FacilityPage extends AppCompatActivity {
     private void initializeView() {
         facilityName.setText(facility.getName());
         facilityHours.setText(operatingHours(getDayString()));
+        currentOccupancy.setText(getString(facility.getDensityResId()));
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
