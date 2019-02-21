@@ -43,4 +43,6 @@
     <!-- content descriptions -->
     <string name="back_button_desc">Back button to return list of locations</string>
 
+    <string name="accuracy"><a href="https://docs.google.com/forms/d/e/1FAIpQLSeJZ7AyVRZ8tfw-XiJqREmKn9y0wPCyreEkkysJn0QHCLDmaA/viewform">Is this accurate?</a></string>
+
 </resources>
