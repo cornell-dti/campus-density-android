@@ -3,6 +3,7 @@ package org.cornelldti.density.density;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -40,7 +41,7 @@ public class FacilityPage extends AppCompatActivity {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String ARG_PARAM = "Facility_Object";
 
-    private TextView facilityName, facilityHours, currentOccupancy;
+    private TextView facilityName, facilityHours, currentOccupancy, feedback;
     private ImageButton backButton;
     private BarChart densityChart;
     private Facility facility;
@@ -67,7 +68,9 @@ public class FacilityPage extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         densityChart = findViewById(R.id.densityChart);
         currentOccupancy = findViewById(R.id.currentOccupancy);
+        feedback = findViewById(R.id.accuracy);
 
+        dayChips = findViewById(R.id.dayChips);
         sun = findViewById(R.id.sun);
         mon = findViewById(R.id.mon);
         tue = findViewById(R.id.tue);
@@ -75,8 +78,6 @@ public class FacilityPage extends AppCompatActivity {
         thu = findViewById(R.id.thu);
         fri = findViewById(R.id.fri);
         sat = findViewById(R.id.sat);
-
-        dayChips = findViewById(R.id.dayChips);
 
         initializeView();
         setupBarChart();
@@ -281,6 +282,7 @@ public class FacilityPage extends AppCompatActivity {
         facilityName.setText(facility.getName());
         facilityHours.setText(operatingHours(getDayString()));
         currentOccupancy.setText(getString(facility.getDensityResId()));
+        feedback.setMovementMethod(LinkMovementMethod.getInstance());
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
