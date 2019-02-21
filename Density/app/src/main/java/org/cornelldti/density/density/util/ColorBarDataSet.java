@@ -25,4 +25,5 @@ public class ColorBarDataSet extends BarDataSet {
             return getColors().get(0);
         }
     }
+
 }

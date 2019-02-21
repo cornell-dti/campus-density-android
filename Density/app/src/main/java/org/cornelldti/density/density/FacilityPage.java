@@ -20,6 +20,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+import org.cornelldti.density.density.util.ColorBarChartRenderer;
 import org.cornelldti.density.density.util.ColorBarDataSet;
 import org.cornelldti.density.density.util.ValueFormatter;
 import org.json.JSONArray;
@@ -34,7 +35,6 @@ import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-
 
 public class FacilityPage extends AppCompatActivity {
     // TODO: Rename para meter arguments, choose names that match
@@ -61,7 +61,6 @@ public class FacilityPage extends AppCompatActivity {
             facility = (Facility) b.getSerializable(ARG_PARAM);
             densities = loadHistoricalData(getDayString());
         }
-
 
         facilityName = findViewById(R.id.f_name);
         facilityHours = findViewById(R.id.f_hours);
@@ -109,7 +108,6 @@ public class FacilityPage extends AppCompatActivity {
             case Calendar.SATURDAY:
                 dayString = getString(R.string.SAT);
                 break;
-
         }
         return dayString;
     }
@@ -217,7 +215,7 @@ public class FacilityPage extends AppCompatActivity {
 
         BarData data = new BarData(dataSet);
         data.setValueTextSize(13f);
-        data.setBarWidth(0.6f);
+        data.setBarWidth(0.9f);
 
         ArrayList<String> xAxis = new ArrayList<>();
         xAxis.add("");
@@ -242,6 +240,8 @@ public class FacilityPage extends AppCompatActivity {
         densityChart.getLegend().setEnabled(false);
         densityChart.setScaleEnabled(false);
         densityChart.setTouchEnabled(true);
+        densityChart.setRenderer(new ColorBarChartRenderer(densityChart, densityChart.getAnimator(), densityChart.getViewPortHandler()));
+        densityChart.getAxisLeft().setAxisMinimum(0f);
         densityChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
