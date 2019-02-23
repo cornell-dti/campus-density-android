@@ -1,5 +1,6 @@
 package org.cornelldti.density.density;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.IMarker;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarEntry;
@@ -22,6 +24,7 @@ import com.google.android.material.chip.ChipGroup;
 
 import org.cornelldti.density.density.util.ColorBarChartRenderer;
 import org.cornelldti.density.density.util.ColorBarDataSet;
+import org.cornelldti.density.density.util.ColorBarMarkerView;
 import org.cornelldti.density.density.util.ValueFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,7 +60,7 @@ public class FacilityPage extends AppCompatActivity {
         setContentView(R.layout.facility_page);
 
         Bundle b = getIntent().getExtras();
-        if(b != null) {
+        if (b != null) {
             facility = (Facility) b.getSerializable(ARG_PARAM);
             densities = loadHistoricalData(getDayString());
         }
@@ -200,21 +203,23 @@ public class FacilityPage extends AppCompatActivity {
                 entries.add(new BarEntry(i, 0));
             }
         }
-        ColorBarDataSet dataSet = new ColorBarDataSet(entries, "Results");
 
+        ColorBarDataSet dataSet = new ColorBarDataSet(entries, "Results");
         dataSet.setDrawValues(false);
 
         ArrayList<Integer> colors = new ArrayList<>();
-        colors.add(ContextCompat.getColor(densityChart.getContext(), R.color.very_empty));
+        colors.add(ContextCompat.getColor(getApplicationContext(), R.color.very_empty));
         colors.add(ContextCompat.getColor(getApplicationContext(), R.color.pretty_empty));
         colors.add(ContextCompat.getColor(getApplicationContext(), R.color.pretty_crowded));
         colors.add(ContextCompat.getColor(getApplicationContext(), R.color.very_crowded));
+
         dataSet.setColors(colors);
         dataSet.setValueTextColor(Color.DKGRAY);
         dataSet.setValueFormatter(new ValueFormatter());
 
         BarData data = new BarData(dataSet);
         data.setValueTextSize(13f);
+        // adjusts the width of the data bars
         data.setBarWidth(0.9f);
 
         ArrayList<String> xAxis = new ArrayList<>();
@@ -240,30 +245,15 @@ public class FacilityPage extends AppCompatActivity {
         densityChart.getLegend().setEnabled(false);
         densityChart.setScaleEnabled(false);
         densityChart.setTouchEnabled(true);
+
+        // allows rounded bars on graph
         densityChart.setRenderer(new ColorBarChartRenderer(densityChart, densityChart.getAnimator(), densityChart.getViewPortHandler()));
+        // removes gap between graph and the x-axis
         densityChart.getAxisLeft().setAxisMinimum(0f);
-        densityChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
-            public void onValueSelected(Entry e, Highlight h) {
-                String msg = "";
-                if (e.getY() >= 0.75) {
-                    msg = "Very Crowded";
-                } else if (e.getY() >= 0.5) {
-                    msg = "Pretty Crowded";
-                } else if (e.getY() >= 0.25) {
-                    msg = "Pretty Empty";
-                } else {
-                    msg = "Very Empty";
-                }
-                Toast.makeText(FacilityPage.this, msg, Toast.LENGTH_SHORT).show();
-            }
 
-            @Override
-            public void onNothingSelected() {
-                // DO NOTHING
-            }
-        });
-
+        // sets the marker for the graph
+        IMarker marker = new ColorBarMarkerView(getApplicationContext(), R.layout.marker_layout);
+        densityChart.setMarker(marker);
 
         densityChart.getAxisLeft().setEnabled(false);
         densityChart.getAxisRight().setEnabled(false);
@@ -296,10 +286,8 @@ public class FacilityPage extends AppCompatActivity {
         setToday(getDayString());
     }
 
-    private void setToday(String dayString)
-    {
-        switch(dayString)
-        {
+    private void setToday(String dayString) {
+        switch (dayString) {
             case "SUN":
                 sun.setChecked(true);
                 break;
