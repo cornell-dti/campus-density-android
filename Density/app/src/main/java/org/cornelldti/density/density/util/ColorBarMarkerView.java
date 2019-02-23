@@ -84,8 +84,10 @@ public class ColorBarMarkerView extends MarkerView {
             crowd = "Pretty Crowded";
         } else if (eY >= 0.25) {
             crowd = "Pretty Empty";
-        } else {
+        } else if (eY >= 0) {
             crowd = "Very Empty";
+        } else {
+            crowd = "Closed";
         }
 
         String currentStatus = time + crowd;
