@@ -69,12 +69,12 @@ public class ColorBarMarkerView extends MarkerView {
         float eY = e.getY();
 
         String time = "";
-        if (eX <= 5) {
-            time = (int) eX + 6 + " AM: ";
-        } else if (eX == 6) {
+        if (eX <= 4) {
+            time = (int) eX + 7 + " AM: ";
+        } else if (eX == 5) {
             time = "12 PM: ";
         } else {
-            time = (int) eX - 6 + " PM: ";
+            time = (int) eX - 5 + " PM: ";
         }
 
         String crowd = "";
