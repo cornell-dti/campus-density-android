@@ -2,11 +2,13 @@ package org.cornelldti.density.density;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +50,7 @@ public class FacilityPage extends AppCompatActivity {
     private ImageButton backButton;
     private BarChart densityChart;
     private Facility facility;
+    private ImageView firstBar, secondBar, thirdBar, fourthBar;
 
     private ChipGroup dayChips;
     private Chip sun, mon, tue, wed, thu, fri, sat;
@@ -65,11 +68,15 @@ public class FacilityPage extends AppCompatActivity {
             densities = loadHistoricalData(getDayString());
         }
 
-        facilityName = findViewById(R.id.f_name);
-        facilityHours = findViewById(R.id.f_hours);
         backButton = findViewById(R.id.backButton);
-        densityChart = findViewById(R.id.densityChart);
+        facilityName = findViewById(R.id.f_name);
+
         currentOccupancy = findViewById(R.id.currentOccupancy);
+        firstBar = findViewById(R.id.first_bar);
+        secondBar = findViewById(R.id.second_bar);
+        thirdBar = findViewById(R.id.third_bar);
+        fourthBar = findViewById(R.id.fourth_bar);
+
         feedback = findViewById(R.id.accuracy);
 
         dayChips = findViewById(R.id.dayChips);
@@ -80,6 +87,9 @@ public class FacilityPage extends AppCompatActivity {
         thu = findViewById(R.id.thu);
         fri = findViewById(R.id.fri);
         sat = findViewById(R.id.sat);
+
+        densityChart = findViewById(R.id.densityChart);
+        facilityHours = findViewById(R.id.f_hours);
 
         initializeView();
         setupBarChart();
@@ -284,6 +294,38 @@ public class FacilityPage extends AppCompatActivity {
         densities = loadHistoricalData(getDayString());
         setChipOnClickListener();
         setToday(getDayString());
+        setBars();
+    }
+
+    private void setBars() {
+        List<ImageView> bars = new ArrayList<>();
+        bars.add(firstBar);
+        bars.add(secondBar);
+        bars.add(thirdBar);
+        bars.add(fourthBar);
+
+        int color = R.color.filler_boxes;
+        if (facility.isOpen()) {
+            switch (facility.getOccupancyRating()) {
+                case 0:
+                    color = R.color.very_empty;
+                    break;
+                case 1:
+                    color = R.color.pretty_empty;
+                    break;
+                case 2:
+                    color = R.color.pretty_crowded;
+                    break;
+                case 3:
+                    color = R.color.very_crowded;
+                    break;
+            }
+        }
+
+        for (int i = 0; i <= facility.getOccupancyRating(); i++) {
+            bars.get(i).setColorFilter(getResources().getColor(color));
+        }
+
     }
 
     private void setToday(String dayString) {
