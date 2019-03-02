@@ -2,23 +2,17 @@ package org.cornelldti.density.density.util;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.Html;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.utils.MPPointF;
 
 import org.cornelldti.density.density.R;
-import org.w3c.dom.Text;
-
-import androidx.core.content.ContextCompat;
 
 public class ColorBarMarkerView extends MarkerView {
     private TextView markerText;
@@ -79,15 +73,15 @@ public class ColorBarMarkerView extends MarkerView {
 
         String crowd = "";
         if (eY >= 0.75) {
-            crowd = "Very Crowded";
+            crowd = getContext().getString(R.string.very_crowded);
         } else if (eY >= 0.5) {
-            crowd = "Pretty Crowded";
+            crowd = getContext().getString(R.string.pretty_crowded);
         } else if (eY >= 0.25) {
-            crowd = "Pretty Empty";
+            crowd = getContext().getString(R.string.pretty_empty);
         } else if (eY >= 0) {
-            crowd = "Very Empty";
+            crowd = getContext().getString(R.string.very_empty);
         } else {
-            crowd = "Closed";
+            crowd = getContext().getString(R.string.closed);
         }
 
         String currentStatus = time + crowd;
