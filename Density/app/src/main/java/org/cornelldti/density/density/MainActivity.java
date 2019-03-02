@@ -1,12 +1,12 @@
 package org.cornelldti.density.density;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -174,14 +174,13 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
         layoutManager = new LinearLayoutManager(this);
         facilities.setLayoutManager(layoutManager);
 
-        pref = getPreferences(Context.MODE_PRIVATE);
+        pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         if (!pref.contains("auth_token")) {
             requestToken();
         } else {
             fetchFacilities(false, success -> null);
         }
-
     }
 
     private void requestToken() {
@@ -304,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_LONG).show();
-                        Log.d("ERROR MESSAGE", error.toString());
+                        Log.d("ERROR", error.toString());
                         success.apply(false);
                     }
                 }) {
@@ -324,7 +323,6 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
                 (Request.Method.GET, FACILITY_INFO_ENDPOINT, null, new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.d("RESP", response.toString());
                         try {
                             ArrayList<Facility> f_list = list;
                             for (int i = 0; i < f_list.size(); i++) {
