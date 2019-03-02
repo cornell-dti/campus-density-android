@@ -1,26 +1,30 @@
 package org.cornelldti.density.density;
 
-import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.IMarker;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -32,13 +36,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.arch.core.util.Function;
 import androidx.core.content.ContextCompat;
 
 public class FacilityPage extends AppCompatActivity {
@@ -55,18 +60,27 @@ public class FacilityPage extends AppCompatActivity {
     private ChipGroup dayChips;
     private Chip sun, mon, tue, wed, thu, fri, sat;
 
-    private List<Double> densities = new ArrayList<>();
+    private ArrayList<Double> densities = new ArrayList<>();
+
+    private RequestQueue queue;
+    private SharedPreferences pref;
+
+    public static final String HISTORICAL_DATA_ENDPOINT =
+            "https://us-central1-campus-density-backend.cloudfunctions.net/historicalData";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.facility_page);
 
+        queue = Volley.newRequestQueue(this);
+
         Bundle b = getIntent().getExtras();
         if (b != null) {
             facility = (Facility) b.getSerializable(ARG_PARAM);
-            densities = loadHistoricalData(getDayString());
         }
+
+        pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         backButton = findViewById(R.id.backButton);
         facilityName = findViewById(R.id.f_name);
@@ -92,7 +106,6 @@ public class FacilityPage extends AppCompatActivity {
         facilityHours = findViewById(R.id.f_hours);
 
         initializeView();
-        setupBarChart();
     }
 
     private String getDayString() {
@@ -125,41 +138,67 @@ public class FacilityPage extends AppCompatActivity {
         return dayString;
     }
 
-    private String loadJSONFile() {
-        String json = "";
-        try {
-            InputStream is = getAssets().open("historical_data.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
-
-    private List<Double> loadHistoricalData(String day) {
-        List<Double> densities = new ArrayList<>();
-        try {
-            JSONObject jsonObject = new JSONObject(loadJSONFile());
-            JSONArray facilities = jsonObject.getJSONArray("Facilities");
-            for (int i = 0; i < facilities.length(); i++) {
-                if (facilities.getJSONObject(i).getString("id").equals(facility.getId())) {
-                    JSONObject fac_on_day = facilities.getJSONObject(i).getJSONObject(day);
-                    for (int hour = 7; hour <= 23; hour++) {
-                        densities.add(fac_on_day.getDouble(String.valueOf(hour)));
+    private void fetchHistoricalJSON(Function<Boolean, Void> success, String day) {
+        Log.d("URL", HISTORICAL_DATA_ENDPOINT + "?id=" + facility.getId());
+        JsonArrayRequest historicalDataRequest = new JsonArrayRequest
+                (Request.Method.GET, HISTORICAL_DATA_ENDPOINT + "?id=" + facility.getId(), null, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        ArrayList<Double> historicalDensities = new ArrayList<Double>();
+                        try {
+                            JSONObject facilityHistory = response.getJSONObject(0).getJSONObject("history");
+                            JSONObject fac_on_day = facilityHistory.getJSONObject(day);
+                            for (int hour = 7; hour <= 23; hour++) {
+                                historicalDensities.add(fac_on_day.getDouble(String.valueOf(hour)));
+                            }
+                            Log.d("historicalSiz", String.valueOf(historicalDensities.size()));
+                            densities = historicalDensities;
+                            setupBarChart();
+                        }
+                        catch(JSONException e)
+                        {
+                            e.printStackTrace();
+                        }
+                        success.apply(true);
                     }
-                }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
+                        Log.d("ERROR MESSAGE", error.toString());
+                        success.apply(false);
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + getString(R.string.auth_key));
+                headers.put("x-api-key", pref.getString("auth_token", ""));
+                return headers;
             }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return densities;
+        };
+        queue.add(historicalDataRequest);
     }
+
+//    private List<Double> loadHistoricalData(String day) {
+//        List<Double> densities = new ArrayList<>();
+//        try {
+//            JSONObject jsonObject = new JSONObject(loadJSONFile());
+//            JSONArray facilities = jsonObject.getJSONArray("Facilities");
+//            for (int i = 0; i < facilities.length(); i++) {
+//                if (facilities.getJSONObject(i).getString("id").equals(facility.getId())) {
+//                    JSONObject fac_on_day = facilities.getJSONObject(i).getJSONObject(day);
+//                    for (int hour = 7; hour <= 23; hour++) {
+//                        densities.add(fac_on_day.getDouble(String.valueOf(hour)));
+//                    }
+//                }
+//            }
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        return densities;
+//    }
 
     private void setChipOnClickListener() {
         dayChips.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
@@ -174,38 +213,38 @@ public class FacilityPage extends AppCompatActivity {
         switch (checkedId) {
             case R.id.sun:
                 facilityHours.setText(operatingHours("SUN"));
-                densities = loadHistoricalData("SUN");
+                fetchHistoricalJSON(success -> null, "SUN");
                 break;
             case R.id.mon:
                 facilityHours.setText(operatingHours("MON"));
-                densities = loadHistoricalData("MON");
+                fetchHistoricalJSON(success -> null, "MON");
                 break;
             case R.id.tue:
                 facilityHours.setText(operatingHours("TUE"));
-                densities = loadHistoricalData("TUE");
+                fetchHistoricalJSON(success -> null, "TUE");
                 break;
             case R.id.wed:
                 facilityHours.setText(operatingHours("WED"));
-                densities = loadHistoricalData("WED");
+                fetchHistoricalJSON(success -> null, "WED");
                 break;
             case R.id.thu:
                 facilityHours.setText(operatingHours("THU"));
-                densities = loadHistoricalData("THU");
+                fetchHistoricalJSON(success -> null, "THU");
                 break;
             case R.id.fri:
                 facilityHours.setText(operatingHours("FRI"));
-                densities = loadHistoricalData("FRI");
+                fetchHistoricalJSON(success -> null, "FRI");
                 break;
             case R.id.sat:
                 facilityHours.setText(operatingHours("SAT"));
-                densities = loadHistoricalData("SAT");
+                fetchHistoricalJSON(success -> null, "SAT");
                 break;
         }
-        setupBarChart();
     }
 
     private void setupBarChart() {
         ArrayList<BarEntry> entries = new ArrayList<>();
+        Log.d("SIZ", String.valueOf(densities.size()));
         for (int i = 0; i < densities.size(); i++) {
             if (densities.get(i) != -1) {
                 entries.add(new BarEntry(i, (float) densities.get(i).doubleValue()));
@@ -291,7 +330,7 @@ public class FacilityPage extends AppCompatActivity {
             }
         });
 
-        densities = loadHistoricalData(getDayString());
+        fetchHistoricalJSON(success -> null, getDayString());
         setChipOnClickListener();
         setToday(getDayString());
         setBars();
