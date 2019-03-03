@@ -141,7 +141,7 @@ public class FacilityPage extends AppCompatActivity {
     }
 
     private void fetchHistoricalJSON(Function<Boolean, Void> success, String day) {
-        Log.d("URL", HISTORICAL_DATA_ENDPOINT + "?id=" + facility.getId());
+        // Log.d("URL", HISTORICAL_DATA_ENDPOINT + "?id=" + facility.getId());
         JsonArrayRequest historicalDataRequest = new JsonArrayRequest
                 (Request.Method.GET, HISTORICAL_DATA_ENDPOINT + "?id=" + facility.getId(), null, new Response.Listener<JSONArray>() {
                     @Override
@@ -153,7 +153,6 @@ public class FacilityPage extends AppCompatActivity {
                             for (int hour = 7; hour <= 23; hour++) {
                                 historicalDensities.add(fac_on_day.getDouble(String.valueOf(hour)));
                             }
-                            Log.d("historicalSiz", String.valueOf(historicalDensities.size()));
                             densities = historicalDensities;
                             setupBarChart();
                         } catch (JSONException e) {
@@ -177,31 +176,9 @@ public class FacilityPage extends AppCompatActivity {
                 return headers;
             }
         };
-        Log.d("RETRY", "please don't repeat");
-        historicalDataRequest.setRetryPolicy(new DefaultRetryPolicy(0, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        Log.d("QUEUE", "whyyyy");
+        historicalDataRequest.setRetryPolicy(new DefaultRetryPolicy(0, -1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(historicalDataRequest);
     }
-
-//    private List<Double> loadHistoricalData(String day) {
-//        List<Double> densities = new ArrayList<>();
-//        try {
-//            JSONObject jsonObject = new JSONObject(loadJSONFile());
-//            JSONArray facilities = jsonObject.getJSONArray("Facilities");
-//            for (int i = 0; i < facilities.length(); i++) {
-//                if (facilities.getJSONObject(i).getString("id").equals(facility.getId())) {
-//                    JSONObject fac_on_day = facilities.getJSONObject(i).getJSONObject(day);
-//                    for (int hour = 7; hour <= 23; hour++) {
-//                        densities.add(fac_on_day.getDouble(String.valueOf(hour)));
-//                    }
-//                }
-//            }
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        return densities;
-//    }
 
     private void setChipOnClickListener() {
         dayChips.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
@@ -247,7 +224,6 @@ public class FacilityPage extends AppCompatActivity {
 
     private void setupBarChart() {
         ArrayList<BarEntry> entries = new ArrayList<>();
-        Log.d("SIZ", String.valueOf(densities.size()));
         for (int i = 0; i < densities.size(); i++) {
             if (densities.get(i) != -1) {
                 entries.add(new BarEntry(i, (float) densities.get(i).doubleValue()));

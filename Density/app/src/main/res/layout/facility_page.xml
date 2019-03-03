@@ -57,33 +57,33 @@
         app:layout_constraintTop_toBottomOf="@id/topView">
 
         <TextView
+            android:id="@+id/now_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/now"
-            android:textColor="#000"
-            android:textStyle="bold"
+            style="@style/DTI.Headline6"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/currentOccupancy"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:gravity="end"
-            android:text="Pretty Crowded"
-            android:textColor="#000"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:text="Status"
+            style="@style/DTI.Subtitle2"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="8dp"
             android:gravity="center"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/currentOccupancy"
+            app:layout_constraintTop_toBottomOf="@id/now_header"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -162,8 +162,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="@string/popular"
-            android:textColor="@android:color/black"
-            android:textStyle="bold"
+            style="@style/DTI.Headline6"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -172,8 +171,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="8dp"
-            android:layout_marginTop="16dp"
             app:chipSpacing="@dimen/chip_day_padding"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -250,6 +247,8 @@
             android:id="@+id/densityChart"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toTopOf="@+id/today_hours"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -260,10 +259,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="@string/todaysHours"
-            android:textStyle="bold"
+            style="@style/DTI.Subtitle2"
             app:layout_constraintBottom_toTopOf="@id/f_hours"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
