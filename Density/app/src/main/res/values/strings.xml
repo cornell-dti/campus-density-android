@@ -32,13 +32,23 @@
     <string name="search_hint">Search</string>
     <string name="todaysHours">Today\'s Hours</string>
     <string name="searchTitle">Search</string>
+
+    <!-- facility status names -->
     <string name="open">Open</string>
     <string name="closed">Closed</string>
+    <string name="very_empty">Not Busy</string>
+    <string name="pretty_empty">Somewhat Busy</string>
+    <string name="pretty_crowded">Pretty Busy</string>
+    <string name="very_crowded">Very Busy</string>
+    <string name="unknown">Unknown</string>
+
+    <!-- old facility status names -->
+    <!--
     <string name="very_empty">Very Empty</string>
     <string name="pretty_empty">Pretty Empty</string>
     <string name="pretty_crowded">Pretty Crowded</string>
     <string name="very_crowded">Very Crowded</string>
-    <string name="unknown">Unknown</string>
+    -->
 
     <!-- content descriptions -->
     <string name="back_button_desc">Back button to return list of locations</string>

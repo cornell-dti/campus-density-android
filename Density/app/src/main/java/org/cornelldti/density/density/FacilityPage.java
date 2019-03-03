@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -103,6 +104,7 @@ public class FacilityPage extends AppCompatActivity {
         sat = findViewById(R.id.sat);
 
         densityChart = findViewById(R.id.densityChart);
+        densityChart.setNoDataText("");
         facilityHours = findViewById(R.id.f_hours);
 
         initializeView();
@@ -154,9 +156,7 @@ public class FacilityPage extends AppCompatActivity {
                             Log.d("historicalSiz", String.valueOf(historicalDensities.size()));
                             densities = historicalDensities;
                             setupBarChart();
-                        }
-                        catch(JSONException e)
-                        {
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                         success.apply(true);
@@ -177,6 +177,9 @@ public class FacilityPage extends AppCompatActivity {
                 return headers;
             }
         };
+        Log.d("RETRY", "please don't repeat");
+        historicalDataRequest.setRetryPolicy(new DefaultRetryPolicy(0, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        Log.d("QUEUE", "whyyyy");
         queue.add(historicalDataRequest);
     }
 
@@ -330,7 +333,6 @@ public class FacilityPage extends AppCompatActivity {
             }
         });
 
-        fetchHistoricalJSON(success -> null, getDayString());
         setChipOnClickListener();
         setToday(getDayString());
         setBars();
