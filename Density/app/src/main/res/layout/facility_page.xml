@@ -88,7 +88,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
-                android:id="@+id/first_bar"
+                android:id="@+id/first_pill"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -98,7 +98,7 @@
                 android:src="@drawable/rounded_box" />
 
             <ImageView
-                android:id="@+id/second_bar"
+                android:id="@+id/second_pill"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -108,7 +108,7 @@
                 android:src="@drawable/rounded_box" />
 
             <ImageView
-                android:id="@+id/third_bar"
+                android:id="@+id/third_pill"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -118,7 +118,7 @@
                 android:src="@drawable/rounded_box" />
 
             <ImageView
-                android:id="@+id/fourth_bar"
+                android:id="@+id/fourth_pill"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -273,7 +273,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="1dp"
             android:gravity="center"
-            android:text="HOURS"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

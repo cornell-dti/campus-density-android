@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -38,24 +39,15 @@ public class ColorBarMarkerView extends MarkerView {
     public void draw(Canvas canvas, float posX, float posY) {
         int saveId = canvas.save();
 
+        float eX = entry.getX();
+        float eY = 0;
+
         Paint paint = new Paint();
         paint.setColor(getResources().getColor(R.color.border));
         paint.setStrokeWidth(3);
+        canvas.drawLine(posX, eY, posX, posY, paint);
 
-        canvas.drawLine(posX, 8, posX, posY, paint);
-
-        float eX = entry.getX();
-        // sets position of marker based on the entry; this ensures that it doesn't overflow
-        // the chart's boundaries
-        if (eX == 14) {
-            canvas.translate(posX - 2 * (getWidth() / 3), 8);
-        } else if (eX >= 15) {
-            canvas.translate(posX - 5 * (getWidth() / 6), 8);
-        } else if (eX <= 2) {
-            canvas.translate(posX - (getWidth() / 6), 8);
-        } else {
-            canvas.translate(posX + getXOffset(posX), 8);
-        }
+        canvas.translate(posX + (float) getXOffset(eX), eY);
         draw(canvas);
         canvas.restoreToCount(saveId);
     }
@@ -70,11 +62,11 @@ public class ColorBarMarkerView extends MarkerView {
 
         String time = "";
         if (eX <= 4) {
-            time = (int) eX + 7 + " AM: ";
+            time = (int) eX + 7 + "am: ";
         } else if (eX == 5) {
-            time = "12 PM: ";
+            time = "12pm: ";
         } else {
-            time = (int) eX - 5 + " PM: ";
+            time = (int) eX - 5 + "pm: ";
         }
 
         String crowd = "";
@@ -84,7 +76,7 @@ public class ColorBarMarkerView extends MarkerView {
             crowd = getContext().getString(R.string.pretty_crowded);
         } else if (eY >= 0.25) {
             crowd = getContext().getString(R.string.pretty_empty);
-        } else if (eY >= 0) {
+        } else if (eY > 0) {
             crowd = getContext().getString(R.string.very_empty);
         } else {
             crowd = getContext().getString(R.string.closed);
@@ -94,9 +86,17 @@ public class ColorBarMarkerView extends MarkerView {
         markerText.setText(Html.fromHtml("<b>" + time + "</b>" + crowd));
     }
 
-    public int getXOffset(float xpos) {
+    public double getXOffset(float xpos) {
         // this will center the marker-view horizontally
-        return -(getWidth() / 2);
+        // sets position of marker based on the entry; this ensures that it doesn't overflow
+        // the chart's boundaries
+        double k = 2;
+        if (xpos <= 2) {
+            k = 0.96 * Math.pow(xpos - 2, 2) + 2.2;
+        } else if (xpos >= 14) {
+            k = 0.08 * Math.pow(xpos - 17, 2) + 1.11;
+        }
+        return -(getWidth() / k);
     }
 
     public int getYOffset(float ypos) {

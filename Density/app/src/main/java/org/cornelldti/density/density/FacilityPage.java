@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.format.DateFormat;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -32,42 +32,48 @@ import com.google.android.material.chip.ChipGroup;
 import org.cornelldti.density.density.util.ColorBarChartRenderer;
 import org.cornelldti.density.density.util.ColorBarDataSet;
 import org.cornelldti.density.density.util.ColorBarMarkerView;
+import org.cornelldti.density.density.util.FluxUtil;
 import org.cornelldti.density.density.util.ValueFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.arch.core.util.Function;
 import androidx.core.content.ContextCompat;
 
 public class FacilityPage extends AppCompatActivity {
-    // TODO: Rename para meter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String ARG_PARAM = "Facility_Object";
 
-    private TextView facilityName, facilityHours, currentOccupancy, feedback;
+    private TextView facilityName, facilityHours, currentOccupancy, feedback, todayHours;
     private ImageButton backButton;
     private BarChart densityChart;
     private Facility facility;
-    private ImageView firstBar, secondBar, thirdBar, fourthBar;
+    private ImageView firstPill, secondPill, thirdPill, fourthPill;
 
     private ChipGroup dayChips;
     private Chip sun, mon, tue, wed, thu, fri, sat;
 
-    private ArrayList<Double> densities = new ArrayList<>();
+    private List<Double> densities = new ArrayList<>();
+    private List<String> opHours = new ArrayList<>();
 
     private RequestQueue queue;
     private SharedPreferences pref;
 
     public static final String HISTORICAL_DATA_ENDPOINT =
-            "https://us-central1-campus-density-backend.cloudfunctions.net/historicalData";
+            "https://flux.api.internal.cornelldti.org/v1/historicalData";
+
+    public static final String OPERATING_HOURS_ENDPOINT =
+            "https://flux.api.internal.cornelldti.org/v1/facilityHours";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,10 +93,10 @@ public class FacilityPage extends AppCompatActivity {
         facilityName = findViewById(R.id.f_name);
 
         currentOccupancy = findViewById(R.id.currentOccupancy);
-        firstBar = findViewById(R.id.first_bar);
-        secondBar = findViewById(R.id.second_bar);
-        thirdBar = findViewById(R.id.third_bar);
-        fourthBar = findViewById(R.id.fourth_bar);
+        firstPill = findViewById(R.id.first_pill);
+        secondPill = findViewById(R.id.second_pill);
+        thirdPill = findViewById(R.id.third_pill);
+        fourthPill = findViewById(R.id.fourth_pill);
 
         feedback = findViewById(R.id.accuracy);
 
@@ -105,50 +111,20 @@ public class FacilityPage extends AppCompatActivity {
 
         densityChart = findViewById(R.id.densityChart);
         densityChart.setNoDataText("");
+        todayHours = findViewById(R.id.today_hours);
         facilityHours = findViewById(R.id.f_hours);
 
         initializeView();
     }
 
-    private String getDayString() {
-        String dayString = "";
-        Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
-        switch (day) {
-            case Calendar.SUNDAY:
-                dayString = getString(R.string.SUN);
-                break;
-            case Calendar.MONDAY:
-                dayString = getString(R.string.MON);
-                break;
-            case Calendar.TUESDAY:
-                dayString = getString(R.string.TUE);
-                break;
-            case Calendar.WEDNESDAY:
-                dayString = getString(R.string.WED);
-                break;
-            case Calendar.THURSDAY:
-                dayString = getString(R.string.THU);
-                break;
-            case Calendar.FRIDAY:
-                dayString = getString(R.string.FRI);
-                break;
-            case Calendar.SATURDAY:
-                dayString = getString(R.string.SAT);
-                break;
-        }
-        return dayString;
-    }
-
     private void fetchHistoricalJSON(Function<Boolean, Void> success, String day) {
-        // Log.d("URL", HISTORICAL_DATA_ENDPOINT + "?id=" + facility.getId());
         JsonArrayRequest historicalDataRequest = new JsonArrayRequest
                 (Request.Method.GET, HISTORICAL_DATA_ENDPOINT + "?id=" + facility.getId(), null, new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        ArrayList<Double> historicalDensities = new ArrayList<Double>();
+                        ArrayList<Double> historicalDensities = new ArrayList<>();
                         try {
-                            JSONObject facilityHistory = response.getJSONObject(0).getJSONObject("history");
+                            JSONObject facilityHistory = response.getJSONObject(0).getJSONObject("hours");
                             JSONObject fac_on_day = facilityHistory.getJSONObject(day);
                             for (int hour = 7; hour <= 23; hour++) {
                                 historicalDensities.add(fac_on_day.getDouble(String.valueOf(hour)));
@@ -176,7 +152,6 @@ public class FacilityPage extends AppCompatActivity {
                 return headers;
             }
         };
-        historicalDataRequest.setRetryPolicy(new DefaultRetryPolicy(0, -1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(historicalDataRequest);
     }
 
@@ -190,36 +165,32 @@ public class FacilityPage extends AppCompatActivity {
     }
 
     private void setDay(int checkedId) {
+        String day = "";
         switch (checkedId) {
             case R.id.sun:
-                facilityHours.setText(operatingHours("SUN"));
-                fetchHistoricalJSON(success -> null, "SUN");
+                day = "SUN";
                 break;
             case R.id.mon:
-                facilityHours.setText(operatingHours("MON"));
-                fetchHistoricalJSON(success -> null, "MON");
+                day = "MON";
                 break;
             case R.id.tue:
-                facilityHours.setText(operatingHours("TUE"));
-                fetchHistoricalJSON(success -> null, "TUE");
+                day = "TUE";
                 break;
             case R.id.wed:
-                facilityHours.setText(operatingHours("WED"));
-                fetchHistoricalJSON(success -> null, "WED");
+                day = "WED";
                 break;
             case R.id.thu:
-                facilityHours.setText(operatingHours("THU"));
-                fetchHistoricalJSON(success -> null, "THU");
+                day = "THU";
                 break;
             case R.id.fri:
-                facilityHours.setText(operatingHours("FRI"));
-                fetchHistoricalJSON(success -> null, "FRI");
+                day = "FRI";
                 break;
             case R.id.sat:
-                facilityHours.setText(operatingHours("SAT"));
-                fetchHistoricalJSON(success -> null, "SAT");
+                day = "SAT";
                 break;
         }
+        fetchHistoricalJSON(success -> null, day);
+        fetchOperatingHours(success -> null, day);
     }
 
     private void setupBarChart() {
@@ -253,19 +224,19 @@ public class FacilityPage extends AppCompatActivity {
         ArrayList<String> xAxis = new ArrayList<>();
         xAxis.add("");
         xAxis.add("");
-        xAxis.add("9 AM");
+        xAxis.add("9am");
         xAxis.add("");
         xAxis.add("");
-        xAxis.add("12 PM");
+        xAxis.add("12pm");
         xAxis.add("");
         xAxis.add("");
-        xAxis.add("3 PM");
+        xAxis.add("3pm");
         xAxis.add("");
         xAxis.add("");
-        xAxis.add("6 PM");
+        xAxis.add("6pm");
         xAxis.add("");
         xAxis.add("");
-        xAxis.add("9 PM");
+        xAxis.add("9pm");
         xAxis.add("");
         xAxis.add("");
 
@@ -298,7 +269,7 @@ public class FacilityPage extends AppCompatActivity {
 
     private void initializeView() {
         facilityName.setText(facility.getName());
-        facilityHours.setText(operatingHours(getDayString()));
+        fetchOperatingHours(success -> null, FluxUtil.getDayString());
         currentOccupancy.setText(getString(facility.getDensityResId()));
         feedback.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -309,17 +280,18 @@ public class FacilityPage extends AppCompatActivity {
             }
         });
 
+        fetchHistoricalJSON(success -> null, FluxUtil.getDayString());
         setChipOnClickListener();
-        setToday(getDayString());
-        setBars();
+        setToday(FluxUtil.getDayString());
+        setPills();
     }
 
-    private void setBars() {
+    private void setPills() {
         List<ImageView> bars = new ArrayList<>();
-        bars.add(firstBar);
-        bars.add(secondBar);
-        bars.add(thirdBar);
-        bars.add(fourthBar);
+        bars.add(firstPill);
+        bars.add(secondPill);
+        bars.add(thirdPill);
+        bars.add(fourthPill);
 
         int color = R.color.filler_boxes;
         if (facility.isOpen()) {
@@ -345,6 +317,11 @@ public class FacilityPage extends AppCompatActivity {
 
     }
 
+    /**
+     * Updates the chip to be "checked" when it is selected
+     *
+     * @param dayString specifies the day to be checked
+     */
     private void setToday(String dayString) {
         switch (dayString) {
             case "SUN":
@@ -371,228 +348,80 @@ public class FacilityPage extends AppCompatActivity {
         }
     }
 
-    private String operatingHours(String day) {
-        switch (facility.getName()) {
-            case "Rose Dining Hall":
-                switch (day) {
-                    case "SUN":
-                        return "8:00 AM - 9:30 AM\n10:00 AM - 2:00 PM\n5:00 PM - 8:00 PM";
-                    case "MON":
-                        return "7:30 AM - 10:00 AM\n5:00 PM - 8:00 PM";
-                    case "TUE":
-                        return "7:30 AM - 10:00 AM\n5:00 PM - 8:00 PM";
-                    case "WED":
-                        return "7:30 AM - 10:00 AM\n6:00 PM - 8:00 PM";
-                    case "THU":
-                        return "7:30 AM - 10:00 AM\n5:00 PM - 8:00 PM";
-                    case "FRI":
-                        return "7:30 AM - 10:00 AM\n5:00 PM - 8:00 PM";
-                    case "SAT":
-                        return "8:00 AM - 10:00 AM\n10:30 AM - 2:00 PM\n5:00 PM - 8:00 PM";
-                    default:
-                        return "Closed";
-                }
-            case "Risley":
-                switch (day) {
-                    case "SUN":
-                        return "Closed";
-                    case "MON":
-                        return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
-                    case "TUE":
-                        return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
-                    case "WED":
-                        return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
-                    case "THU":
-                        return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
-                    case "FRI":
-                        return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
-                    case "SAT":
-                        return "Closed";
-                    default:
-                        return "Closed";
-                }
-            case "RPCC Dining Hall":
-                switch (day) {
-                    case "SUN":
-                        return "10:00 AM - 2:00 PM\n5:30 PM - 8:30 PM";
-                    case "MON":
-                        return "5:30 PM - 9:00 PM";
-                    case "TUE":
-                        return "5:30 PM - 9:00 PM";
-                    case "WED":
-                        return "5:30 PM - 9:00 PM";
-                    case "THU":
-                        return "5:30 PM - 9:00 PM";
-                    case "FRI":
-                        return "5:30 PM - 8:30 PM";
-                    case "SAT":
-                        return "5:30 PM - 8:30 PM";
-                    default:
-                        return "Closed";
-                }
-            case "Olin Libe Cafe":
-                switch (day) {
-                    case "SUN":
-                        return "10:00 AM - 12:00 AM";
-                    case "MON":
-                        return "8:00 AM - 12:00 AM";
-                    case "TUE":
-                        return "8:00 AM - 12:00 AM";
-                    case "WED":
-                        return "8:00 AM - 12:00 AM";
-                    case "THU":
-                        return "8:00 AM - 12:00 AM";
-                    case "FRI":
-                        return "8:00 AM - 6:00 PM";
-                    case "SAT":
-                        return "10:00 AM - 8:00 PM";
-                    default:
-                        return "Closed";
-                }
-            case "Okenshields":
-                if (day.equals("FRI")) {
-                    return "11:00 AM - 2:30 PM";
-                } else if (day.equals("SUN") || day.equals("SAT")) {
-                    return "Closed";
-                } else {
-                    return "11:00 AM - 2:30 PM\n4:30 PM - 7:30 PM";
-                }
-            case "North Star at Appel":
-                switch (day) {
-                    case "SUN":
-                        return "10:00 AM - 2:00 PM\n2:00 PM - 4:00 PM\n5:00 PM - 8:00 PM";
-                    case "MON":
-                        return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n2:00 PM - 4:00 PM\n5:00 PM - 8:00 PM";
-                    case "TUE":
-                        return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n2:00 PM - 4:00 PM\n5:00 PM - 8:00 PM";
-                    case "WED":
-                        return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n2:00 PM - 4:00 PM\n5:00 PM - 8:00 PM";
-                    case "THU":
-                        return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n2:00 PM - 4:00 PM\n5:00 PM - 8:00 PM";
-                    case "FRI":
-                        return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n2:00 PM - 4:00 PM\n5:00 PM - 8:00 PM";
-                    case "SAT":
-                        return "8:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n2:00 PM - 4:00 PM\n5:00 PM - 8:00 PM";
-                    default:
-                        return "Closed";
-                }
-            case "104West!":
-                switch (day) {
-                    case "SUN":
-                        return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
-                    case "MON":
-                        return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
-                    case "TUE":
-                        return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
-                    case "WED":
-                        return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
-                    case "THU":
-                        return "11:00 AM - 2:00 PM\n5:00 PM - 7:00 PM";
-                    case "FRI":
-                        return "11:00 AM - 3:00 PM\n6:00 PM - 8:00 PM";
-                    case "SAT":
-                        return "12:30 PM - 2:00 PM\n6:00 PM - 8:00 PM";
-                    default:
-                        return "Closed";
-                }
-            case "Keeton House":
-                switch (day) {
-                    case "SUN":
-                        return "10:00 AM - 2:00 PM\n5:00 PM - 8:00 PM";
-                    case "MON":
-                        return "7:30 AM - 10:00 AM\n5:00 PM - 8:00 PM";
-                    case "TUE":
-                        return "11:00 AM - 2:00 PM\n5:00 PM - 8:00 PM";
-                    case "WED":
-                        return "6:00 PM - 8:00 PM";
-                    case "THU":
-                        return "7:30 AM - 10:00 AM\n5:00 PM - 8:00 PM";
-                    case "FRI":
-                        return "7:30 AM - 10:00 AM\n5:00 PM - 8:00 PM";
-                    case "SAT":
-                        return "10:30 AM - 2:00 PM\n5:00 PM - 8:00 PM";
-                    default:
-                        return "Closed";
-                }
-            case "Jansen's at Bethe House":
-                switch (day) {
-                    case "SUN":
-                        return "10:00 AM - 2:00 PM\n4:30 PM - 7:30 PM";
-                    case "MON":
-                        return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n4:30 PM - 7:30 PM";
-                    case "TUE":
-                        return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n4:30 PM - 7:30 PM";
-                    case "WED":
-                        return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n6:00 PM - 7:30 PM";
-                    case "THU":
-                        return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n4:30 PM - 7:30 PM";
-                    case "FRI":
-                        return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n4:30 PM - 7:30 PM";
-                    case "SAT":
-                        return "10:30 AM - 2:00 PM\n4:30 PM - 7:30 PM";
-                    default:
-                        return "Closed";
-                }
-            case "Carl Becker House":
-                switch (day) {
-                    case "SUN":
-                        return "10:00 AM - 2:00 PM\n5:00 PM - 8:00 PM";
-                    case "MON":
-                        return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n5:00 PM - 8:00 PM";
-                    case "TUE":
-                        return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n5:00 PM - 8:00 PM";
-                    case "WED":
-                        return "7:00 AM - 10:30 AM\n10:30 AM - 2:00 PM\n6:00 PM - 8:00 PM";
-                    case "THU":
-                        return "7:00 AM - 10:30 AM\n10:30 AM - 3:30 PM\n5:00 PM - 8:00 PM";
-                    case "FRI":
-                        return "7:00 AM - 10:30 AM\n10:30 AM - 3:30 PM\n5:00 PM - 8:00 PM";
-                    case "SAT":
-                        return "10:30 AM - 2:00 PM\n5:00 PM - 8:00 PM";
-                    default:
-                        return "Closed";
-                }
-            case "Cafe Jennie":
-                switch (day) {
-                    case "SUN":
-                        return "Closed";
-                    case "MON":
-                        return "8:00 AM - 6:00 PM";
-                    case "TUE":
-                        return "8:00 AM - 6:00 PM";
-                    case "WED":
-                        return "8:00 AM - 6:00 PM";
-                    case "THU":
-                        return "8:00 AM - 6:00 PM";
-                    case "FRI":
-                        return "8:00 AM - 6:00 PM";
-                    case "SAT":
-                        return "10:00 AM - 5:00 PM";
-                    default:
-                        return "Closed";
-                }
-            case "Alice Cook House":
-                switch (day) {
-                    case "SUN":
-                        return "10:00 AM - 2:00 PM\n5:00 PM - 9:00 PM";
-                    case "MON":
-                        return "7:30 AM - 10:00 AM\n5:00 PM - 9:00 PM";
-                    case "TUE":
-                        return "7:30 AM - 10:00 AM\n5:00 PM - 9:00 PM";
-                    case "WED":
-                        return "6:00 PM - 9:00 PM";
-                    case "THU":
-                        return "7:30 AM - 10:00 AM\n5:00 PM - 9:00 PM";
-                    case "FRI":
-                        return "7:30 AM - 10:00 AM\n5:00 PM - 9:00 PM";
-                    case "SAT":
-                        return "10:30 AM - 2:00 PM\n5:00 PM - 9:00 PM";
-                    default:
-                        return "Closed";
-                }
-            default:
-                return "";
+    private void setOperatingHours(String day) {
+        String hourTitle = FluxUtil.dayFullString(day) + "'s Hours";
+        todayHours.setText(hourTitle);
+        facilityHours.setText("");
+        for (String operatingSegment : opHours) {
+            String allHours = facilityHours.getText() + operatingSegment + (opHours.indexOf(operatingSegment) == opHours.size() - 1 ? "" : "\n");
+            facilityHours.setText(allHours);
         }
+    }
+
+    private void fetchOperatingHours(Function<Boolean, Void> success, String day) {
+        JsonArrayRequest operatingHoursRequest = new JsonArrayRequest
+                (Request.Method.GET, OPERATING_HOURS_ENDPOINT + "?id=" + facility.getId() + "&startDate=" + getDate(day) + "&endDate=" + getDate(day), null, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        opHours = new ArrayList<>();
+                        ArrayList<String> operatingHours = new ArrayList<>();
+                        try {
+                            JSONArray hours = response.getJSONObject(0).getJSONArray("hours");
+                            for (int i = 0; i < hours.length(); i++) {
+                                JSONObject segment = hours.getJSONObject(i).getJSONObject("dailyHours");
+                                long start = segment.getLong("startTimestamp");
+                                long end = segment.getLong("endTimestamp");
+                                operatingHours.add(parseTime(start) + " – " + parseTime(end));
+                            }
+                            opHours = operatingHours;
+                            setOperatingHours(day);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        success.apply(true);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
+                        Log.d("ERROR MESSAGE", error.toString());
+                        success.apply(false);
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + getString(R.string.auth_key));
+                headers.put("x-api-key", pref.getString("auth_token", ""));
+                return headers;
+            }
+        };
+        queue.add(operatingHoursRequest);
+    }
+
+    private String getDate(String day) {
+        Calendar current = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("MM-dd-yy");
+        SimpleDateFormat checkFormat = new SimpleDateFormat("E");
+
+        String dayCheck = checkFormat.format(current.getTime()).toUpperCase();
+        while (!dayCheck.equals(day)) {
+            current.add(Calendar.DAY_OF_MONTH, 1);
+            dayCheck = checkFormat.format(current.getTime()).toUpperCase();
+        }
+
+        return format.format(current.getTime());
+    }
+
+    private String parseTime(long timestamp) {
+        TimeZone timeZone = Calendar.getInstance().getTimeZone();
+        SimpleDateFormat format = new SimpleDateFormat("h:mma");
+        if (DateFormat.is24HourFormat(getApplicationContext())) {
+            format = new SimpleDateFormat("HH:mm");
+        }
+        format.setTimeZone(timeZone);
+
+        return format.format(new Date((long) timestamp * 1000)).toLowerCase();
     }
 
     @Override

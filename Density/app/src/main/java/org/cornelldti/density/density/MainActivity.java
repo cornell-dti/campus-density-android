@@ -78,9 +78,9 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
     private float facilitiesScroll;
 
     private static final String TOKEN_REQUEST_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/authv1";
-    private static final String FACILITY_LIST_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/facilityList";
-    private static final String FACILITY_INFO_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/facilityInfo";
-    private static final String HOW_DENSE_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/howDense";
+    private static final String FACILITY_LIST_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityList";
+    private static final String FACILITY_INFO_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityInfo";
+    private static final String HOW_DENSE_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/howDense";
     private NestedScrollView nestedScrollView;
     private SearchView searchView;
 
