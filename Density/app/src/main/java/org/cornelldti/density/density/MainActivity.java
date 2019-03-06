@@ -511,7 +511,6 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
         return super.onCreateOptionsMenu(menu);
     }
 
-
     @Override
     public void onFragmentInteraction(Uri uri) {
         Log.d("ON", "FRAGMENT INTERACTION");

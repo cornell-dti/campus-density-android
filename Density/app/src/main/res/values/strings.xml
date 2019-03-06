@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Density</string>
+    <string name="app_name">Flux</string>
     <string name="search_title"></string>
     <string name="endpoint_url">https://flux.api.internal.cornelldti.org/v1/</string>
 

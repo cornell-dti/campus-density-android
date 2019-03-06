@@ -130,6 +130,7 @@ public class FacilityPage extends AppCompatActivity {
                                 historicalDensities.add(fac_on_day.getDouble(String.valueOf(hour)));
                             }
                             densities = historicalDensities;
+                            fetchOperatingHours(success -> null, day);
                             setupBarChart();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -190,7 +191,6 @@ public class FacilityPage extends AppCompatActivity {
                 break;
         }
         fetchHistoricalJSON(success -> null, day);
-        fetchOperatingHours(success -> null, day);
     }
 
     private void setupBarChart() {
@@ -269,7 +269,7 @@ public class FacilityPage extends AppCompatActivity {
 
     private void initializeView() {
         facilityName.setText(facility.getName());
-        fetchOperatingHours(success -> null, FluxUtil.getDayString());
+//        fetchOperatingHours(success -> null, FluxUtil.getDayString());
         currentOccupancy.setText(getString(facility.getDensityResId()));
         feedback.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -281,8 +281,8 @@ public class FacilityPage extends AppCompatActivity {
         });
 
         fetchHistoricalJSON(success -> null, FluxUtil.getDayString());
-        setChipOnClickListener();
         setToday(FluxUtil.getDayString());
+        setChipOnClickListener();
         setPills();
     }
 
