@@ -46,8 +46,7 @@ public class BaseActivity extends AppCompatActivity
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth auth)
     {
-        // DISPLAY ERROR SCREEN AND ATTEMPT TO RE SIGN IN
-
+        // TODO DISPLAY ERROR SCREEN AND ATTEMPT TO RE SIGN IN
     }
 
     public String getIdToken()
