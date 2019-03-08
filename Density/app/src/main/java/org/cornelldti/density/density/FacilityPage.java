@@ -126,7 +126,6 @@ public class FacilityPage extends BaseActivity
                             }
                             densities = historicalDensities;
                             fetchOperatingHours(success -> null, day);
-                            setupBarChart();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -188,6 +187,7 @@ public class FacilityPage extends BaseActivity
     }
 
     private void setupBarChart() {
+        Log.d("SETUP", "BARCHART");
         ArrayList<BarEntry> entries = new ArrayList<>();
         for (int i = 0; i < densities.size(); i++) {
             if (densities.get(i) != -1) {
@@ -263,7 +263,6 @@ public class FacilityPage extends BaseActivity
 
     private void initializeView() {
         facilityName.setText(facility.getName());
-//        fetchOperatingHours(success -> null, FluxUtil.getDayString());
         currentOccupancy.setText(getString(facility.getDensityResId()));
         feedback.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -343,6 +342,7 @@ public class FacilityPage extends BaseActivity
     }
 
     private void setOperatingHours(String day) {
+        Log.d("SET", "OPERATING");
         String hourTitle = FluxUtil.dayFullString(day) + "'s Hours";
         todayHours.setText(hourTitle);
         facilityHours.setText("");
@@ -369,6 +369,7 @@ public class FacilityPage extends BaseActivity
                             }
                             opHours = operatingHours;
                             setOperatingHours(day);
+                            setupBarChart();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
