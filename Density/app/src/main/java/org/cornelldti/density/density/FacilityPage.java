@@ -1,10 +1,8 @@
 package org.cornelldti.density.density;
 
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -47,11 +45,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.arch.core.util.Function;
 import androidx.core.content.ContextCompat;
 
-public class FacilityPage extends AppCompatActivity {
+public class FacilityPage extends BaseActivity
+{
     public static final String ARG_PARAM = "Facility_Object";
 
     private TextView facilityName, facilityHours, currentOccupancy, feedback, todayHours;
@@ -67,7 +65,6 @@ public class FacilityPage extends AppCompatActivity {
     private List<String> opHours = new ArrayList<>();
 
     private RequestQueue queue;
-    private SharedPreferences pref;
 
     public static final String HISTORICAL_DATA_ENDPOINT =
             "https://flux.api.internal.cornelldti.org/v1/historicalData";
@@ -86,8 +83,6 @@ public class FacilityPage extends AppCompatActivity {
         if (b != null) {
             facility = (Facility) b.getSerializable(ARG_PARAM);
         }
-
-        pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         backButton = findViewById(R.id.backButton);
         facilityName = findViewById(R.id.f_name);
@@ -148,8 +143,7 @@ public class FacilityPage extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", "Bearer " + getString(R.string.auth_key));
-                headers.put("x-api-key", pref.getString("auth_token", ""));
+                headers.put("Authorization", "Bearer " + getIdToken());
                 return headers;
             }
         };
@@ -391,8 +385,7 @@ public class FacilityPage extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", "Bearer " + getString(R.string.auth_key));
-                headers.put("x-api-key", pref.getString("auth_token", ""));
+                headers.put("Authorization", "Bearer " + getIdToken());
                 return headers;
             }
         };
