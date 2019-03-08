@@ -1,12 +1,10 @@
 package org.cornelldti.density.density;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -21,9 +19,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.iid.InstanceID;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.chip.Chip;
@@ -37,7 +33,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.arch.core.util.Function;
@@ -47,9 +42,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-public class MainActivity extends AppCompatActivity implements FacilityPage.OnFragmentInteractionListener {
-
-    private SharedPreferences pref;
+public class MainActivity extends BaseActivity implements FacilityPage.OnFragmentInteractionListener {
 
     private RecyclerView facilities;
 
@@ -66,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
 
     private RecyclerView.LayoutManager layoutManager;
 
-
     private ChipGroup filterChips;
 
     private Chip all;
@@ -77,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
 
     private float facilitiesScroll;
 
-    private static final String TOKEN_REQUEST_ENDPOINT = "https://us-central1-campus-density-backend.cloudfunctions.net/authv1";
     private static final String FACILITY_LIST_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityList";
     private static final String FACILITY_INFO_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityInfo";
     private static final String HOW_DENSE_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/howDense";
@@ -174,54 +165,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
         layoutManager = new LinearLayoutManager(this);
         facilities.setLayoutManager(layoutManager);
 
-        pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-        if (!pref.contains("auth_token")) {
-            requestToken();
-        } else {
-            fetchFacilities(false, success -> null);
-        }
-    }
-
-    private void requestToken() {
-        final String instanceId = InstanceID.getInstance(MainActivity.this).getId();
-        JSONObject requestBody = new JSONObject();
-        try {
-            requestBody.put("platform", "android");
-            requestBody.put("receipt", "");
-            requestBody.put("instanceId", instanceId);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest tokenRequest = new JsonObjectRequest
-                (Request.Method.PUT, TOKEN_REQUEST_ENDPOINT, requestBody, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            String token = response.getString("token");
-                            Log.d("TOKEN", token);
-                            pref.edit().putString("auth_token", token).commit();
-                            fetchFacilities(false, (success) -> null);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_LONG).show();
-                        Log.d("ERROR MESSAGE", error.toString());
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", "Bearer " + getString(R.string.auth_key));
-                headers.put("x-api-key", instanceId);
-                return headers;
-            }
-        };
-        queue.add(tokenRequest);
+        fetchFacilities(false, success -> null);
     }
 
     private void setOnRefreshListener() {
@@ -310,8 +254,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
             @Override
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", "Bearer " + getString(R.string.auth_key));
-                headers.put("x-api-key", pref.getString("auth_token", ""));
+                headers.put("Authorization", "Bearer " + getIdToken());
                 return headers;
             }
         };
@@ -363,8 +306,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
             @Override
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", "Bearer " + getString(R.string.auth_key));
-                headers.put("x-api-key", pref.getString("auth_token", ""));
+                headers.put("Authorization", "Bearer " + getIdToken());
                 return headers;
             }
         };
@@ -449,8 +391,7 @@ public class MainActivity extends AppCompatActivity implements FacilityPage.OnFr
             @Override
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", "Bearer " + getString(R.string.auth_key));
-                headers.put("x-api-key", pref.getString("auth_token", ""));
+                headers.put("Authorization", "Bearer " + getIdToken());
                 return headers;
             }
         };
