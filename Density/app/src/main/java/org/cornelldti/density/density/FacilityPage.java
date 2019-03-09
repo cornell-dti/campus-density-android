@@ -215,22 +215,23 @@ public class FacilityPage extends BaseActivity
         // adjusts the width of the data bars
         data.setBarWidth(0.9f);
 
+        boolean is24 = DateFormat.is24HourFormat(getApplicationContext());
         ArrayList<String> xAxis = new ArrayList<>();
         xAxis.add("");
         xAxis.add("");
-        xAxis.add("9am");
+        xAxis.add(is24 ? "09:00" : "9am");
         xAxis.add("");
         xAxis.add("");
-        xAxis.add("12pm");
+        xAxis.add(is24 ? "12:00" : "12pm");
         xAxis.add("");
         xAxis.add("");
-        xAxis.add("3pm");
+        xAxis.add(is24 ? "15:00" : "3pm");
         xAxis.add("");
         xAxis.add("");
-        xAxis.add("6pm");
+        xAxis.add(is24 ? "18:00" : "6pm");
         xAxis.add("");
         xAxis.add("");
-        xAxis.add("9pm");
+        xAxis.add(is24 ? "21:00" : "9pm");
         xAxis.add("");
         xAxis.add("");
 
