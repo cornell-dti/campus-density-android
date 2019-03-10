@@ -22,8 +22,7 @@ public class BaseActivity extends AppCompatActivity
     private FirebaseAuth auth;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
         checkUserSignedIn();
@@ -31,36 +30,37 @@ public class BaseActivity extends AppCompatActivity
 
     // Invoked whenever ID Token changed!
     @Override
-    public void onIdTokenChanged(@NonNull FirebaseAuth auth)
-    {
-        if(auth.getCurrentUser() != null) {
+    public void onIdTokenChanged(@NonNull FirebaseAuth auth) {
+        if (auth.getCurrentUser() != null) {
             requestToken(auth.getCurrentUser());
-        }
-        else
-        {
+        } else {
             signIn();
         }
     }
 
     // When user is signed out, or lost access.
     @Override
-    public void onAuthStateChanged(@NonNull FirebaseAuth auth)
-    {
+    public void onAuthStateChanged(@NonNull FirebaseAuth auth) {
         // TODO DISPLAY ERROR SCREEN AND ATTEMPT TO RE SIGN IN
     }
 
-    public String getIdToken()
-    {
+    protected void updateUI() {
+        // add implementation
+    }
+
+    public String getIdToken() {
         return idToken;
     }
 
-    private void requestToken(FirebaseUser user)
-    {
+    protected void requestToken(FirebaseUser user) {
+        Log.d("checkpoint", "requestToken");
         user.getIdToken(true)
                 .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                     public void onComplete(@NonNull Task<GetTokenResult> task) {
                         if (task.isSuccessful()) {
+                            Log.d("checkpoint", "gotToken");
                             idToken = task.getResult().getToken();
+                            updateUI();
                         } else {
                             Log.d("AUTH ERROR", "Error obtaining Firebase Auth ID token");
                         }
@@ -69,32 +69,33 @@ public class BaseActivity extends AppCompatActivity
     }
 
     private void checkUserSignedIn() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user != null) {
-            requestToken(user);
-        }
+        Log.d("checkpoint", "checkUserSignedIn");
+        FirebaseUser user = auth.getCurrentUser();
+//        if (user != null) {
+//            requestToken(user);
+//        }
         // NEED TO SIGN USER IN
-        else
-        {
+        if (user == null) {
             signIn();
         }
         auth.addIdTokenListener(this);
         auth.addAuthStateListener(this);
     }
 
-    private void signIn()
-    {
+    private void signIn() {
+        Log.d("checkpoint", "signIn");
         auth.signInAnonymously()
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            Log.d("checkpoint", "signIn = success");
                             Log.d("Firebase", "signInAnonymously:success");
                             FirebaseUser user = auth.getCurrentUser();
                             requestToken(user);
-
                         } else {
                             // If sign in fails, display a message to the user.
+                            Log.d("checkpoint", "signIn = failure");
                             Log.w("Firebase", "signInAnonymously:failure", task.getException());
                             Toast.makeText(BaseActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
