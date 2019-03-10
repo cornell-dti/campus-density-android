@@ -24,6 +24,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -78,6 +79,7 @@ public class MainActivity extends BaseActivity implements FacilityPage.OnFragmen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        Log.d("initialToken", getIdToken());
         setContentView(R.layout.activity_main);
 
         facilities = findViewById(R.id.facilities);
@@ -223,6 +225,12 @@ public class MainActivity extends BaseActivity implements FacilityPage.OnFragmen
         }
     }
 
+    @Override
+    protected void updateUI() {
+        Log.d("updatedMainUI", "success");
+        fetchFacilities(false, success -> null);
+    }
+
     /**
      * @return
      */
@@ -246,7 +254,7 @@ public class MainActivity extends BaseActivity implements FacilityPage.OnFragmen
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_LONG).show();
+                        // Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_LONG).show();
                         Log.d("ERROR", error.toString());
                         success.apply(false);
                     }
@@ -417,8 +425,7 @@ public class MainActivity extends BaseActivity implements FacilityPage.OnFragmen
 
             @Override
             public boolean onQueryTextChange(String query) {
-                adapter.getFilter().filter(query);
-                Log.d("Size of search results:", String.valueOf(adapter.getItemCount()));
+                if (adapter != null) adapter.getFilter().filter(query);
                 return false;
             }
         });
