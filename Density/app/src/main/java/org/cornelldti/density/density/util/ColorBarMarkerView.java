@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.text.Html;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -55,12 +56,17 @@ public class ColorBarMarkerView extends MarkerView {
         float eY = e.getY();
 
         String time = "";
-        if (eX <= 4) {
-            time = (int) eX + 7 + "am: ";
-        } else if (eX == 5) {
-            time = "12pm: ";
+        boolean is24 = DateFormat.is24HourFormat(getContext());
+        if (is24) {
+            time = ((int) eX + 7 < 10) ? "0" + ((int) eX + 7) + ":00  " : (int) eX + 7 + ":00 ";
         } else {
-            time = (int) eX - 5 + "pm: ";
+            if (eX <= 4) {
+                time = (int) eX + 7 + "am ";
+            } else if (eX == 5) {
+                time = "12pm ";
+            } else {
+                time = (int) eX - 5 + "pm ";
+            }
         }
 
         String crowd = "";

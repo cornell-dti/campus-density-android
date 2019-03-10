@@ -1,6 +1,7 @@
 package org.cornelldti.density.density;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -19,6 +20,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.components.IMarker;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -48,9 +50,10 @@ import java.util.TimeZone;
 import androidx.arch.core.util.Function;
 import androidx.core.content.ContextCompat;
 
-public class FacilityPage extends BaseActivity
-{
+public class FacilityPage extends BaseActivity {
     public static final String ARG_PARAM = "Facility_Object";
+
+    private String selectedDay;
 
     private TextView facilityName, facilityHours, currentOccupancy, feedback, todayHours;
     private ImageButton backButton;
@@ -134,7 +137,7 @@ public class FacilityPage extends BaseActivity
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
+                        // Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
                         Log.d("ERROR MESSAGE", error.toString());
                         success.apply(false);
                     }
@@ -183,15 +186,18 @@ public class FacilityPage extends BaseActivity
                 day = "SAT";
                 break;
         }
+        selectedDay = day;
         fetchHistoricalJSON(success -> null, day);
     }
 
     private void setupBarChart() {
         Log.d("SETUP", "BARCHART");
         ArrayList<BarEntry> entries = new ArrayList<>();
+        boolean isClosed = true;
         for (int i = 0; i < densities.size(); i++) {
             if (densities.get(i) != -1) {
                 entries.add(new BarEntry(i, (float) densities.get(i).doubleValue()));
+                isClosed = false;
             } else {
                 entries.add(new BarEntry(i, 0));
             }
@@ -215,22 +221,23 @@ public class FacilityPage extends BaseActivity
         // adjusts the width of the data bars
         data.setBarWidth(0.9f);
 
+        boolean is24 = DateFormat.is24HourFormat(getApplicationContext());
         ArrayList<String> xAxis = new ArrayList<>();
         xAxis.add("");
         xAxis.add("");
-        xAxis.add("9am");
+        xAxis.add(is24 ? "09:00" : "9am");
         xAxis.add("");
         xAxis.add("");
-        xAxis.add("12pm");
+        xAxis.add(is24 ? "12:00" : "12pm");
         xAxis.add("");
         xAxis.add("");
-        xAxis.add("3pm");
+        xAxis.add(is24 ? "15:00" : "3pm");
         xAxis.add("");
         xAxis.add("");
-        xAxis.add("6pm");
+        xAxis.add(is24 ? "18:00" : "6pm");
         xAxis.add("");
         xAxis.add("");
-        xAxis.add("9pm");
+        xAxis.add(is24 ? "21:00" : "9pm");
         xAxis.add("");
         xAxis.add("");
 
@@ -239,14 +246,15 @@ public class FacilityPage extends BaseActivity
         densityChart.setScaleEnabled(false);
         densityChart.setTouchEnabled(true);
 
-        // allows rounded bars on graph
-        densityChart.setRenderer(new ColorBarChartRenderer(densityChart, densityChart.getAnimator(), densityChart.getViewPortHandler()));
-        // removes gap between graph and the x-axis
-        densityChart.getAxisLeft().setAxisMinimum(0f);
-
         // sets the marker for the graph
-        IMarker marker = new ColorBarMarkerView(getApplicationContext(), R.layout.marker_layout);
-        densityChart.setMarker(marker);
+        if (!isClosed) {
+            // allows rounded bars on graph
+            densityChart.setRenderer(new ColorBarChartRenderer(densityChart, densityChart.getAnimator(), densityChart.getViewPortHandler()));
+            // removes gap between graph and the x-axis
+            densityChart.getAxisLeft().setAxisMinimum(0f);
+            IMarker marker = new ColorBarMarkerView(getApplicationContext(), R.layout.marker_layout);
+            densityChart.setMarker(marker);
+        }
 
         densityChart.getAxisLeft().setEnabled(false);
         densityChart.getAxisRight().setEnabled(false);
@@ -255,7 +263,15 @@ public class FacilityPage extends BaseActivity
 
         densityChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xAxis));
         densityChart.getXAxis().setLabelCount(xAxis.size());
-        densityChart.setData(data);
+        if (!isClosed) densityChart.setData(data);
+        else {
+            densityChart.setData(null);
+            Paint p = densityChart.getPaint(Chart.PAINT_INFO);
+            p.setTextSize(36);
+            p.setColor(Color.BLACK);
+            p.setFakeBoldText(true);
+            densityChart.setNoDataText("Closed");
+        }
         densityChart.invalidate();
         densityChart.animateY(500);
 
@@ -316,6 +332,7 @@ public class FacilityPage extends BaseActivity
      * @param dayString specifies the day to be checked
      */
     private void setToday(String dayString) {
+        selectedDay = dayString;
         switch (dayString) {
             case "SUN":
                 sun.setChecked(true);
@@ -352,6 +369,12 @@ public class FacilityPage extends BaseActivity
         }
     }
 
+    @Override
+    protected void updateUI() {
+        Log.d("updatedFPUI", "updating");
+        fetchHistoricalJSON(success -> null, selectedDay);
+    }
+
     private void fetchOperatingHours(Function<Boolean, Void> success, String day) {
         JsonArrayRequest operatingHoursRequest = new JsonArrayRequest
                 (Request.Method.GET, OPERATING_HOURS_ENDPOINT + "?id=" + facility.getId() + "&startDate=" + getDate(day) + "&endDate=" + getDate(day), null, new Response.Listener<JSONArray>() {
@@ -378,7 +401,7 @@ public class FacilityPage extends BaseActivity
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
+                        // Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
                         Log.d("ERROR MESSAGE", error.toString());
                         success.apply(false);
                     }

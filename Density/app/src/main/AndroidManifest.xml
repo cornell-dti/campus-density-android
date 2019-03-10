@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="org.cornelldti.density.density">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -12,7 +13,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".BaseActivity"
+            android:label="Base Activity" />
+
+        <activity
+            android:name=".MainActivity"
+            android:label="Main Activity"
+            android:parentActivityName=".BaseActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
