@@ -28,6 +28,12 @@ public class BaseActivity extends AppCompatActivity
         checkUserSignedIn();
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        checkUserSignedIn();
+    }
+
     // Invoked whenever ID Token changed!
     @Override
     public void onIdTokenChanged(@NonNull FirebaseAuth auth) {
@@ -70,16 +76,15 @@ public class BaseActivity extends AppCompatActivity
 
     private void checkUserSignedIn() {
         Log.d("checkpoint", "checkUserSignedIn");
+//        auth.addIdTokenListener(this);
+        auth.addAuthStateListener(this);
         FirebaseUser user = auth.getCurrentUser();
-//        if (user != null) {
-//            requestToken(user);
-//        }
-        // NEED TO SIGN USER IN
         if (user == null) {
             signIn();
+        } else {
+            requestToken(user);
         }
-        auth.addIdTokenListener(this);
-        auth.addAuthStateListener(this);
+
     }
 
     private void signIn() {
@@ -91,8 +96,8 @@ public class BaseActivity extends AppCompatActivity
                         if (task.isSuccessful()) {
                             Log.d("checkpoint", "signIn = success");
                             Log.d("Firebase", "signInAnonymously:success");
-                            FirebaseUser user = auth.getCurrentUser();
-                            requestToken(user);
+//                            FirebaseUser user = auth.getCurrentUser();
+//                            requestToken(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.d("checkpoint", "signIn = failure");
