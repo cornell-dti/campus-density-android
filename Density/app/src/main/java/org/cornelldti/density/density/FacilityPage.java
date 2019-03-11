@@ -65,6 +65,7 @@ public class FacilityPage extends BaseActivity {
 
     private ChipGroup dayChips;
     private Chip sun, mon, tue, wed, thu, fri, sat;
+    private int wasChecked;
 
     private List<Double> densities = new ArrayList<>();
     private List<String> opHours = new ArrayList<>();
@@ -118,6 +119,7 @@ public class FacilityPage extends BaseActivity {
     }
 
     private void fetchHistoricalJSON(Function<Boolean, Void> success, String day) {
+        fetchOperatingHours(successOp -> null, day);
         JsonArrayRequest historicalDataRequest = new JsonArrayRequest
                 (Request.Method.GET, HISTORICAL_DATA_ENDPOINT + "?id=" + facility.getId(), null, new Response.Listener<JSONArray>() {
                     @Override
@@ -130,7 +132,7 @@ public class FacilityPage extends BaseActivity {
                                 historicalDensities.add(fac_on_day.getDouble(String.valueOf(hour)));
                             }
                             densities = historicalDensities;
-                            fetchOperatingHours(success -> null, day);
+                            setupBarChart();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -187,9 +189,14 @@ public class FacilityPage extends BaseActivity {
             case R.id.sat:
                 day = "SAT";
                 break;
+            case -1:
+                dayChips.check(wasChecked);
         }
-        selectedDay = day;
-        fetchHistoricalJSON(success -> null, day);
+        if (checkedId != -1 && wasChecked != checkedId) {
+            wasChecked = checkedId;
+            selectedDay = day;
+            fetchHistoricalJSON(success -> null, day);
+        }
     }
 
     private void setupBarChart() {
@@ -358,11 +365,12 @@ public class FacilityPage extends BaseActivity {
                 sat.setChecked(true);
                 break;
         }
+        wasChecked = dayChips.getCheckedChipId();
     }
 
     private void setOperatingHours(String day) {
         Log.d("SET", "OPERATING");
-        String hourTitle = FluxUtil.dayFullString(day) + "'s Hours";
+        String hourTitle = FluxUtil.dayFullString(day);
         todayHours.setText(hourTitle);
         facilityHours.setText("");
         for (String operatingSegment : opHours) {
@@ -394,7 +402,7 @@ public class FacilityPage extends BaseActivity {
                             }
                             opHours = operatingHours;
                             setOperatingHours(day);
-                            setupBarChart();
+//                            setupBarChart();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -443,15 +451,10 @@ public class FacilityPage extends BaseActivity {
         return format.format(new Date((long) timestamp * 1000)).toLowerCase();
     }
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
-
     @Override
     public void onBackPressed() {
 //        Intent intent = new Intent(FacilityPage.this, MainActivity.class);
 //        startActivity(intent);
         finish();
-//        overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
     }
 }
