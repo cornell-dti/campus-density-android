@@ -1,10 +1,12 @@
 package org.cornelldti.density.density;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.transition.Explode;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -76,8 +78,11 @@ public class MainActivity extends BaseActivity implements FacilityPage.OnFragmen
     private NestedScrollView nestedScrollView;
     private SearchView searchView;
 
+    private boolean loaded;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        loaded = false;
         super.onCreate(savedInstanceState);
 //        Log.d("initialToken", getIdToken());
         setContentView(R.layout.activity_main);
@@ -350,6 +355,8 @@ public class MainActivity extends BaseActivity implements FacilityPage.OnFragmen
                                         b.putSerializable(FacilityPage.ARG_PARAM, adapter.getDataSet().get(position));
                                         intent.putExtras(b);
                                         startActivity(intent);
+//                                        overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
+//                                        finish();
                                     }
                                 });
 
@@ -418,8 +425,7 @@ public class MainActivity extends BaseActivity implements FacilityPage.OnFragmen
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                adapter.getFilter().filter(query);
-                Log.d("Size of search results:", String.valueOf(adapter.getItemCount()));
+                if (adapter != null) adapter.getFilter().filter(query);
                 return false;
             }
 

@@ -96,8 +96,8 @@ public class BaseActivity extends AppCompatActivity
                         if (task.isSuccessful()) {
                             Log.d("checkpoint", "signIn = success");
                             Log.d("Firebase", "signInAnonymously:success");
-//                            FirebaseUser user = auth.getCurrentUser();
-//                            requestToken(user);
+                            FirebaseUser user = auth.getCurrentUser();
+                            requestToken(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.d("checkpoint", "signIn = failure");

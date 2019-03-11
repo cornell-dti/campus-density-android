@@ -1,5 +1,6 @@
 package org.cornelldti.density.density;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
@@ -28,6 +29,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.cornelldti.density.density.util.ColorBarChartRenderer;
 import org.cornelldti.density.density.util.ColorBarDataSet;
@@ -285,7 +287,7 @@ public class FacilityPage extends BaseActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                onBackPressed();
             }
         });
 
@@ -441,13 +443,15 @@ public class FacilityPage extends BaseActivity {
         return format.format(new Date((long) timestamp * 1000)).toLowerCase();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
 
+    @Override
+    public void onBackPressed() {
+//        Intent intent = new Intent(FacilityPage.this, MainActivity.class);
+//        startActivity(intent);
+        finish();
+//        overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
+    }
 }
