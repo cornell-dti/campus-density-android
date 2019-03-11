@@ -45,7 +45,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-public class MainActivity extends BaseActivity implements FacilityPage.OnFragmentInteractionListener {
+public class MainActivity extends BaseActivity {
 
     private RecyclerView facilities;
 
@@ -65,6 +65,7 @@ public class MainActivity extends BaseActivity implements FacilityPage.OnFragmen
     private ChipGroup filterChips;
 
     private Chip all;
+    private int wasChecked;
 
     private ArrayList<Facility> all_facilities;
 
@@ -207,33 +208,40 @@ public class MainActivity extends BaseActivity implements FacilityPage.OnFragmen
         switch (checkedId) {
             case R.id.all:
                 adapter.showAllLocations();
+                wasChecked = R.id.all;
                 Log.d("SIZEALL", String.valueOf(adapter.getItemCount()));
                 break;
 
             case R.id.north:
                 adapter.filterFacilitiesByLocation(Facility.CampusLocation.NORTH);
+                wasChecked = R.id.north;
                 Log.d("SIZENORTH", String.valueOf(adapter.getItemCount()));
                 break;
 
             case R.id.west:
                 adapter.filterFacilitiesByLocation(Facility.CampusLocation.WEST);
+                wasChecked = R.id.west;
                 Log.d("SIZEWEST", String.valueOf(adapter.getItemCount()));
                 break;
 
             case R.id.central:
                 adapter.filterFacilitiesByLocation(Facility.CampusLocation.CENTRAL);
+                wasChecked = R.id.central;
                 Log.d("SIZECENTRAL", String.valueOf(adapter.getItemCount()));
                 break;
 
             case -1:
-                all.setChecked(true);
+                filterChips.check(wasChecked);
         }
     }
 
     @Override
     protected void updateUI() {
         Log.d("updatedMainUI", "success");
-        fetchFacilities(false, success -> null);
+        if (adapter == null)
+            fetchFacilities(false, success -> null);
+        else
+            fetchFacilities(true, success -> null);
     }
 
     /**
@@ -465,8 +473,4 @@ public class MainActivity extends BaseActivity implements FacilityPage.OnFragmen
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-        Log.d("ON", "FRAGMENT INTERACTION");
-    }
 }
