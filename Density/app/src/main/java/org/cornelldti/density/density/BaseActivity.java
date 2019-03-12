@@ -58,6 +58,10 @@ public class BaseActivity extends AppCompatActivity
         return idToken;
     }
 
+    public void refreshToken() {
+        requestToken(auth.getCurrentUser());
+    }
+
     protected void requestToken(FirebaseUser user) {
         Log.d("checkpoint", "requestToken");
         user.getIdToken(true)

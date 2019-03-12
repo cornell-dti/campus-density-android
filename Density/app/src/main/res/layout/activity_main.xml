@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/full_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/full_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -17,10 +17,10 @@
             android:id="@+id/collapsingToolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:collapsedTitleTextAppearance="@style/CollapsedTitleAppearance"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleGravity="center_vertical|start"
             app:expandedTitleTextAppearance="@style/ExpandedTitleAppearance"
-            app:collapsedTitleTextAppearance="@style/CollapsedTitleAppearance"
             app:layout_scrollFlags="scroll|snap|enterAlways|exitUntilCollapsed"
             app:title="Places"
             app:titleEnabled="true"
@@ -120,7 +120,15 @@
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
+
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <include
+        android:id="@+id/failure_page"
+        layout="@layout/failure_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/progressBar"

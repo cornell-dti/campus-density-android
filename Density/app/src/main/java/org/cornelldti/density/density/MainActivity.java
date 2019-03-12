@@ -6,6 +6,8 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.Layout;
 import android.transition.Explode;
 import android.util.Log;
 import android.util.TypedValue;
@@ -78,6 +80,7 @@ public class MainActivity extends BaseActivity {
     private static final String HOW_DENSE_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/howDense";
     private NestedScrollView nestedScrollView;
     private SearchView searchView;
+    private View failurePage, progressBar;
 
     private boolean loaded;
 
@@ -93,9 +96,13 @@ public class MainActivity extends BaseActivity {
         spinner = findViewById(R.id.progressBar);
 
         swipeRefresh = findViewById(R.id.swipe_refresh);
+        setOnRefreshListener();
 
         appBarLayout = findViewById(R.id.appbar);
         toolbar = findViewById(R.id.toolbar);
+
+        failurePage = findViewById(R.id.failure_page);
+        progressBar = findViewById(R.id.progressBar);
 
         nestedScrollView = findViewById(R.id.nestedScrollView);
 
@@ -182,11 +189,19 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onRefresh() {
                 swipeRefresh.setRefreshing(true);
-                fetchFacilities(true, (success) -> {
-                    swipeRefresh.setRefreshing(false);
-                    return null;
-                });
-                handleCheckChange(filterChips.getCheckedChipId());
+                if (adapter == null) {
+                    refreshToken();
+                    fetchFacilities(false, (success) -> {
+                        swipeRefresh.setRefreshing(false);
+                        return null;
+                    });
+                } else {
+                    fetchFacilities(true, (success) -> {
+                        swipeRefresh.setRefreshing(false);
+                        return null;
+                    });
+                    handleCheckChange(filterChips.getCheckedChipId());
+                }
             }
         });
     }
@@ -253,6 +268,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         try {
+                            failurePage.setVisibility(View.GONE);
                             ArrayList<Facility> f = new ArrayList<Facility>();
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject facility = response.getJSONObject(i);
@@ -270,6 +286,17 @@ public class MainActivity extends BaseActivity {
                         // Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_LONG).show();
                         Log.d("ERROR", error.toString());
                         success.apply(false);
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Do something after 10s = 10000ms
+                                if (adapter == null) {
+                                    failurePage.setVisibility(View.VISIBLE);
+                                    progressBar.setVisibility(View.INVISIBLE);
+                                }
+                            }
+                        }, 10000);
                     }
                 }) {
             @Override
@@ -371,8 +398,8 @@ public class MainActivity extends BaseActivity {
                                 MainActivity.this.facilities.setAdapter(adapter);
                                 MainActivity.this.spinner.setVisibility(View.GONE);
                                 MainActivity.this.facilities.setVisibility(View.VISIBLE);
+                                success.apply(true);
                                 setChipOnClickListener();
-                                setOnRefreshListener();
                             } else {
                                 MainActivity.this.adapter.setDataSet(all_facilities);
                                 success.apply(true);
