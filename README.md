@@ -1,6 +1,8 @@
-# Flux Android v1.0 （dev)
+# Flux Android
 
 by [Cornell Design Tech Initiative](https://www.cornelldti.org/)
+
+<a href='https://play.google.com/store/apps/details?id=org.cornelldti.density.density&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
 
 #### Contents
   - [About](#about)
@@ -43,8 +45,10 @@ _Screenshots showing major parts of app_
  
  * **Evan Welsh** - Backend Developer
  * **Raymone Radi** - Backend/iOS Developer
+ * **Ashneel Das** - Backend Developer
  * **Matthew Coufal** - iOS Developer
  * **Kaushik Ravikumar** - Android Developer
+ * **Andrew Gao** - Android Developer
  
  * **Kaitlyn Son** - Designer
  * **April Ye** - Designer
