@@ -1,9 +1,7 @@
 package org.cornelldti.density.density;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.text.method.LinkMovementMethod;
@@ -12,14 +10,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.components.IMarker;
@@ -29,7 +20,6 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.firebase.auth.FirebaseUser;
 
 import org.cornelldti.density.density.util.ColorBarChartRenderer;
 import org.cornelldti.density.density.util.ColorBarDataSet;
@@ -44,9 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 
 import androidx.arch.core.util.Function;
@@ -67,28 +55,21 @@ public class FacilityPage extends BaseActivity {
     private Chip sun, mon, tue, wed, thu, fri, sat;
     private int wasChecked;
 
-    private List<Double> densities = new ArrayList<>();
-    private List<String> opHours = new ArrayList<>();
+    private List<String> opHours = new ArrayList<>(); // KEEPS TRACK OF OPERATING HOURS FOR FACILITY
+    private List<Double> densities = new ArrayList<>(); // KEEPS TRACK OF HISTORICAL DENSITIES
 
-    private RequestQueue queue;
-
-    public static final String HISTORICAL_DATA_ENDPOINT =
-            "https://flux.api.internal.cornelldti.org/v1/historicalData";
-
-    public static final String OPERATING_HOURS_ENDPOINT =
-            "https://flux.api.internal.cornelldti.org/v1/facilityHours";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.facility_page);
 
-        queue = Volley.newRequestQueue(this);
-
         Bundle b = getIntent().getExtras();
         if (b != null) {
             facility = (Facility) b.getSerializable(ARG_PARAM);
         }
+        // TODO Uncomment this
+//     facility = refreshFacilityOccupancy(facility);
 
         backButton = findViewById(R.id.backButton);
         facilityName = findViewById(R.id.f_name);
@@ -118,42 +99,11 @@ public class FacilityPage extends BaseActivity {
         initializeView();
     }
 
-    private void fetchHistoricalJSON(Function<Boolean, Void> success, String day) {
-        fetchOperatingHours(successOp -> null, day);
-        JsonArrayRequest historicalDataRequest = new JsonArrayRequest
-                (Request.Method.GET, HISTORICAL_DATA_ENDPOINT + "?id=" + facility.getId(), null, new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        ArrayList<Double> historicalDensities = new ArrayList<>();
-                        try {
-                            JSONObject facilityHistory = response.getJSONObject(0).getJSONObject("hours");
-                            JSONObject fac_on_day = facilityHistory.getJSONObject(day);
-                            for (int hour = 7; hour <= 23; hour++) {
-                                historicalDensities.add(fac_on_day.getDouble(String.valueOf(hour)));
-                            }
-                            densities = historicalDensities;
-                            setupBarChart();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        success.apply(true);
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
-                        Log.d("ERROR MESSAGE", error.toString());
-                        success.apply(false);
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", "Bearer " + getIdToken());
-                return headers;
-            }
-        };
-        queue.add(historicalDataRequest);
+    private Facility refreshFacilityOccupancy(Facility fac)
+    {
+        singleFacilityOccupancy(fac.getId());
+        Facility f = fac.setOccupancy_rating(super.getFacility_occupancy_rating());
+        return f;
     }
 
     private void setChipOnClickListener() {
@@ -195,7 +145,7 @@ public class FacilityPage extends BaseActivity {
         if (checkedId != -1 && wasChecked != checkedId) {
             wasChecked = checkedId;
             selectedDay = day;
-            fetchHistoricalJSON(success -> null, day);
+            fetchHistoricalJSON(success -> null, day, facility);
         }
     }
 
@@ -298,7 +248,7 @@ public class FacilityPage extends BaseActivity {
             }
         });
 
-        fetchHistoricalJSON(success -> null, FluxUtil.getDayString());
+        fetchHistoricalJSON(success -> null, FluxUtil.getDayString(), facility);
         setToday(FluxUtil.getDayString());
         setChipOnClickListener();
         setPills();
@@ -382,48 +332,7 @@ public class FacilityPage extends BaseActivity {
     @Override
     protected void updateUI() {
         Log.d("updatedFPUI", "updating");
-        fetchHistoricalJSON(success -> null, selectedDay);
-    }
-
-    private void fetchOperatingHours(Function<Boolean, Void> success, String day) {
-        JsonArrayRequest operatingHoursRequest = new JsonArrayRequest
-                (Request.Method.GET, OPERATING_HOURS_ENDPOINT + "?id=" + facility.getId() + "&startDate=" + getDate(day) + "&endDate=" + getDate(day), null, new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        opHours = new ArrayList<>();
-                        ArrayList<String> operatingHours = new ArrayList<>();
-                        try {
-                            JSONArray hours = response.getJSONObject(0).getJSONArray("hours");
-                            for (int i = 0; i < hours.length(); i++) {
-                                JSONObject segment = hours.getJSONObject(i).getJSONObject("dailyHours");
-                                long start = segment.getLong("startTimestamp");
-                                long end = segment.getLong("endTimestamp");
-                                operatingHours.add(parseTime(start) + " – " + parseTime(end));
-                            }
-                            opHours = operatingHours;
-                            setOperatingHours(day);
-//                            setupBarChart();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        success.apply(true);
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
-                        Log.d("ERROR MESSAGE", error.toString());
-                        success.apply(false);
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", "Bearer " + getIdToken());
-                return headers;
-            }
-        };
-        queue.add(operatingHoursRequest);
+        fetchHistoricalJSON(success -> null, selectedDay, facility);
     }
 
     private String getDate(String day) {
@@ -456,5 +365,47 @@ public class FacilityPage extends BaseActivity {
 //        Intent intent = new Intent(FacilityPage.this, MainActivity.class);
 //        startActivity(intent);
         finish();
+    }
+
+    // OVERRIDE API FUNCTIONS
+
+
+    @Override
+    public void fetchOperatingHoursOnResponse(JSONArray response, Function<Boolean, Void> success, String day) {
+        super.fetchOperatingHoursOnResponse(response, success, day);
+        opHours = new ArrayList<>();
+        ArrayList<String> operatingHours = new ArrayList<>();
+        try {
+            JSONArray hours = response.getJSONObject(0).getJSONArray("hours");
+            for (int i = 0; i < hours.length(); i++) {
+                JSONObject segment = hours.getJSONObject(i).getJSONObject("dailyHours");
+                long start = segment.getLong("startTimestamp");
+                long end = segment.getLong("endTimestamp");
+                operatingHours.add(parseTime(start) + " – " + parseTime(end));
+            }
+            opHours = operatingHours;
+            setOperatingHours(day);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        success.apply(true);
+    }
+
+    @Override
+    public void fetchHistoricalJSONOnResponse(JSONArray response, Function<Boolean, Void> success, String day)
+    {
+        ArrayList<Double> historicalDensities = new ArrayList<>();
+        try {
+            JSONObject facilityHistory = response.getJSONObject(0).getJSONObject("hours");
+            JSONObject fac_on_day = facilityHistory.getJSONObject(day);
+            for (int hour = 7; hour <= 23; hour++) {
+                historicalDensities.add(fac_on_day.getDouble(String.valueOf(hour)));
+            }
+            densities = historicalDensities;
+            setupBarChart();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        success.apply(true);
     }
 }
