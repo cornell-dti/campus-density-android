@@ -2,25 +2,19 @@ package org.cornelldti.density.density.util;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.Html;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.utils.MPPointF;
 
 import org.cornelldti.density.density.R;
-import org.w3c.dom.Text;
-
-import androidx.core.content.ContextCompat;
 
 public class ColorBarMarkerView extends MarkerView {
     private TextView markerText;

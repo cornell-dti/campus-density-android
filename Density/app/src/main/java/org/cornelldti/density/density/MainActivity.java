@@ -1,14 +1,10 @@
 package org.cornelldti.density.density;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Layout;
-import android.transition.Explode;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -16,27 +12,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -69,15 +56,8 @@ public class MainActivity extends BaseActivity {
     private Chip all;
     private int wasChecked;
 
-    private ArrayList<Facility> all_facilities;
-
-    private RequestQueue queue;
-
     private float facilitiesScroll;
 
-    private static final String FACILITY_LIST_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityList";
-    private static final String FACILITY_INFO_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityInfo";
-    private static final String HOW_DENSE_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/howDense";
     private NestedScrollView nestedScrollView;
     private SearchView searchView;
     private View failurePage, progressBar;
@@ -88,7 +68,6 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         loaded = false;
         super.onCreate(savedInstanceState);
-//        Log.d("initialToken", getIdToken());
         setContentView(R.layout.activity_main);
 
         facilities = findViewById(R.id.facilities);
@@ -172,8 +151,6 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
-
-        queue = Volley.newRequestQueue(this);
 
         facilities.setHasFixedSize(true);
 
@@ -259,195 +236,6 @@ public class MainActivity extends BaseActivity {
             fetchFacilities(true, success -> null);
     }
 
-    /**
-     * @return
-     */
-    private void fetchFacilities(final boolean refresh, Function<Boolean, Void> success) {
-        JsonArrayRequest facilityListRequest = new JsonArrayRequest
-                (Request.Method.GET, FACILITY_LIST_ENDPOINT, null, new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            failurePage.setVisibility(View.GONE);
-                            ArrayList<Facility> f = new ArrayList<Facility>();
-                            for (int i = 0; i < response.length(); i++) {
-                                JSONObject facility = response.getJSONObject(i);
-                                f.add(new Facility(facility.getString("displayName"), facility.getString("id")));
-                            }
-                            fetchFacilityInfo(f, refresh, success);
-                        } catch (JSONException e) {
-                            success.apply(false);
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_LONG).show();
-                        Log.d("ERROR", error.toString());
-                        success.apply(false);
-                        final Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                // Do something after 10s = 10000ms
-                                if (adapter == null) {
-                                    failurePage.setVisibility(View.VISIBLE);
-                                    progressBar.setVisibility(View.INVISIBLE);
-                                }
-                            }
-                        }, 10000);
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", "Bearer " + getIdToken());
-                return headers;
-            }
-        };
-        queue.add(facilityListRequest);
-    }
-
-    private void fetchFacilityInfo(final ArrayList<Facility> list, final boolean refresh, Function<Boolean, Void> success) {
-        JsonArrayRequest facilityInfoRequest = new JsonArrayRequest
-                (Request.Method.GET, FACILITY_INFO_ENDPOINT, null, new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            ArrayList<Facility> f_list = list;
-                            for (int i = 0; i < f_list.size(); i++) {
-                                for (int x = 0; x < response.length(); x++) {
-                                    JSONObject obj = response.getJSONObject(x);
-                                    if (obj.getString("id").equals(f_list.get(i).getId())) {
-                                        Facility f = f_list.get(i);
-                                        if (obj.has("campusLocation")) {
-                                            f.setLocation(obj.getString("campusLocation"));
-                                        }
-
-                                        if (obj.has("description")) {
-                                            f.setDescription(obj.getString("description"));
-                                        }
-
-                                        if (obj.has("closingAt")) {
-                                            f.setClosingAt(obj.getLong("closingAt"));
-                                        }
-
-                                        f_list.set(i, f);
-                                    }
-                                }
-                            }
-                            fetchFacilityOccupancy(f_list, refresh, success);
-                        } catch (JSONException e) {
-                            success.apply(false);
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_LONG).show();
-                        Log.d("ERROR MESSAGE", error.toString());
-                        success.apply(false);
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", "Bearer " + getIdToken());
-                return headers;
-            }
-        };
-        queue.add(facilityInfoRequest);
-    }
-
-    private void fetchFacilityOccupancy(final ArrayList<Facility> list, final boolean refresh, Function<Boolean, Void> success) {
-        JsonArrayRequest facilityOccupancyRequest = new JsonArrayRequest
-                (Request.Method.GET, HOW_DENSE_ENDPOINT, null, new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            ArrayList<Facility> f_list = list;
-                            for (int i = 0; i < f_list.size(); i++) {
-                                for (int x = 0; x < response.length(); x++) {
-                                    JSONObject obj = response.getJSONObject(x);
-                                    if (obj.getString("id")
-                                            .equals(f_list.get(i).getId())) {
-                                        f_list.set(i, f_list.get(i).setOccupancy_rating(obj.getInt("density")));
-                                    }
-                                }
-                            }
-
-                            all_facilities = f_list;
-
-                            if (!refresh) {
-                                MainActivity.this.adapter = new FacilitiesListAdapter(MainActivity.this.all_facilities);
-                                MainActivity.this.adapter.setOnItemClickListener(new FacilitiesListAdapter.ClickListener() {
-                                    @Override
-                                    public void onItemClick(int position, View v) {
-                                        Intent intent = new Intent(MainActivity.this, FacilityPage.class);
-                                        Bundle b = new Bundle();
-                                        b.putSerializable(FacilityPage.ARG_PARAM, adapter.getDataSet().get(position));
-                                        intent.putExtras(b);
-                                        startActivity(intent);
-//                                        overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
-//                                        finish();
-                                    }
-                                });
-
-                                MainActivity.this.facilities.setAdapter(adapter);
-                                MainActivity.this.spinner.setVisibility(View.GONE);
-                                MainActivity.this.facilities.setVisibility(View.VISIBLE);
-                                success.apply(true);
-                                setChipOnClickListener();
-                            } else {
-                                MainActivity.this.adapter.setDataSet(all_facilities);
-                                success.apply(true);
-                                switch (filterChips.getCheckedChipId()) {
-                                    case R.id.all:
-                                        adapter.showAllLocations();
-                                        break;
-
-                                    case R.id.north:
-                                        adapter.filterFacilitiesByLocation(Facility.CampusLocation.NORTH);
-                                        break;
-
-                                    case R.id.west:
-                                        adapter.filterFacilitiesByLocation(Facility.CampusLocation.WEST);
-                                        break;
-
-                                    case R.id.central:
-                                        adapter.filterFacilitiesByLocation(Facility.CampusLocation.CENTRAL);
-                                        break;
-
-                                    case -1:
-                                        all.setChecked(true);
-                                }
-                            }
-
-                        } catch (JSONException e) {
-                            success.apply(false);
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        success.apply(false);
-                        Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_LONG).show();
-                        Log.d("ERROR MESSAGE", error.toString());
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", "Bearer " + getIdToken());
-                return headers;
-            }
-        };
-        queue.add(facilityOccupancyRequest);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -498,6 +286,89 @@ public class MainActivity extends BaseActivity {
         });
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    // FETCH FUNCTIONS OVERRIDES
+
+    @Override
+    public void fetchFacilitiesOnResponse(JSONArray response, boolean refresh, Function<Boolean, Void> success) {
+        try {
+            failurePage.setVisibility(View.GONE);
+            ArrayList<Facility> f = new ArrayList<Facility>();
+            for (int i = 0; i < response.length(); i++) {
+                JSONObject facility = response.getJSONObject(i);
+                f.add(new Facility(facility.getString("displayName"), facility.getString("id")));
+            }
+            fetchFacilityInfo(f, refresh, success);
+        } catch (JSONException e) {
+            success.apply(false);
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void fetchFacilitiesOnError(VolleyError error, Function<Boolean, Void> success) {
+        super.fetchFacilitiesOnError(error, success);
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Do something after 10s = 10000ms
+                if (adapter == null) {
+                    failurePage.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+            }
+        }, 10000);
+    }
+
+    public void fetchFacilityOccupancyOnResponse(ArrayList<Facility> list, JSONArray response, boolean refresh, Function<Boolean, Void> success) {
+        super.fetchFacilityOccupancyOnResponse(list, response, refresh, success);
+        if (!refresh)
+        {
+            MainActivity.this.adapter = new FacilitiesListAdapter(getAll_facilities());
+            MainActivity.this.adapter.setOnItemClickListener(new FacilitiesListAdapter.ClickListener() {
+                @Override
+                public void onItemClick(int position, View v) {
+                    Intent intent = new Intent(MainActivity.this, FacilityPage.class);
+                    Bundle b = new Bundle();
+                    b.putSerializable(FacilityPage.ARG_PARAM, adapter.getDataSet().get(position));
+                    intent.putExtras(b);
+                    startActivity(intent);
+                }
+            });
+
+            MainActivity.this.facilities.setAdapter(adapter);
+            MainActivity.this.spinner.setVisibility(View.GONE);
+            MainActivity.this.facilities.setVisibility(View.VISIBLE);
+            success.apply(true);
+            setChipOnClickListener();
+        } else
+
+        {
+            MainActivity.this.adapter.setDataSet(getAll_facilities());
+            success.apply(true);
+            switch (filterChips.getCheckedChipId()) {
+                case R.id.all:
+                    adapter.showAllLocations();
+                    break;
+
+                case R.id.north:
+                    adapter.filterFacilitiesByLocation(Facility.CampusLocation.NORTH);
+                    break;
+
+                case R.id.west:
+                    adapter.filterFacilitiesByLocation(Facility.CampusLocation.WEST);
+                    break;
+
+                case R.id.central:
+                    adapter.filterFacilitiesByLocation(Facility.CampusLocation.CENTRAL);
+                    break;
+
+                case -1:
+                    all.setChecked(true);
+            }
+        }
     }
 
 }
