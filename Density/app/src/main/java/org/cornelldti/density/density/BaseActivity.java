@@ -1,5 +1,6 @@
 package org.cornelldti.density.density;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -57,6 +58,7 @@ public class BaseActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
         checkUserSignedIn();
