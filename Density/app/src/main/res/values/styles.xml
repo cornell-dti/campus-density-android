@@ -15,7 +15,7 @@
     </style>
 
     <style name="MyCardView" parent="Widget.MaterialComponents.CardView">
-        <item name="cardElevation">1.5dp</item>
+        <item name="cardElevation">2.5dp</item>
         <item name="enforceMaterialTheme">true</item>
         <item name="cardCornerRadius">8dp</item>
     </style>
