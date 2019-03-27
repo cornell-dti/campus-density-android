@@ -62,11 +62,8 @@ public class MainActivity extends BaseActivity {
     private SearchView searchView;
     private View failurePage, progressBar;
 
-    private boolean loaded;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        loaded = false;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -185,7 +182,6 @@ public class MainActivity extends BaseActivity {
 
     private void setChipOnClickListener() {
         all = findViewById(R.id.all);
-
         filterChips = findViewById(R.id.filterChips);
 
         filterChips.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
@@ -202,6 +198,11 @@ public class MainActivity extends BaseActivity {
                 adapter.showAllLocations();
                 wasChecked = R.id.all;
                 Log.d("SIZEALL", String.valueOf(adapter.getItemCount()));
+                break;
+
+            case R.id.fav:
+                adapter.showFavLocations(getFavorites());
+                wasChecked = R.id.fav;
                 break;
 
             case R.id.north:
@@ -324,8 +325,7 @@ public class MainActivity extends BaseActivity {
 
     public void fetchFacilityOccupancyOnResponse(ArrayList<Facility> list, JSONArray response, boolean refresh, Function<Boolean, Void> success) {
         super.fetchFacilityOccupancyOnResponse(list, response, refresh, success);
-        if (!refresh)
-        {
+        if (!refresh) {
             MainActivity.this.adapter = new FacilitiesListAdapter(getAll_facilities());
             MainActivity.this.adapter.setOnItemClickListener(new FacilitiesListAdapter.ClickListener() {
                 @Override
@@ -343,14 +343,16 @@ public class MainActivity extends BaseActivity {
             MainActivity.this.facilities.setVisibility(View.VISIBLE);
             success.apply(true);
             setChipOnClickListener();
-        } else
-
-        {
+        } else {
             MainActivity.this.adapter.setDataSet(getAll_facilities());
             success.apply(true);
             switch (filterChips.getCheckedChipId()) {
                 case R.id.all:
                     adapter.showAllLocations();
+                    break;
+
+                case R.id.fav:
+                    adapter.showFavLocations(getFavorites());
                     break;
 
                 case R.id.north:

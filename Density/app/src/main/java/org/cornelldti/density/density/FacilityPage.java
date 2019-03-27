@@ -1,15 +1,20 @@
 package org.cornelldti.density.density;
 
+import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
@@ -47,6 +52,7 @@ public class FacilityPage extends BaseActivity {
 
     private TextView facilityName, facilityHours, currentOccupancy, feedback, todayHours;
     private ImageButton backButton;
+    private ToggleButton favButton;
     private BarChart densityChart;
     private Facility facility;
     private ImageView firstPill, secondPill, thirdPill, fourthPill;
@@ -73,6 +79,7 @@ public class FacilityPage extends BaseActivity {
 
         backButton = findViewById(R.id.backButton);
         facilityName = findViewById(R.id.f_name);
+        favButton = findViewById(R.id.fav_button);
 
         currentOccupancy = findViewById(R.id.currentOccupancy);
         firstPill = findViewById(R.id.first_pill);
@@ -99,8 +106,7 @@ public class FacilityPage extends BaseActivity {
         initializeView();
     }
 
-    private Facility refreshFacilityOccupancy(Facility fac)
-    {
+    private Facility refreshFacilityOccupancy(Facility fac) {
         singleFacilityOccupancy(fac.getId());
         Facility f = fac.setOccupancy_rating(super.getFacility_occupancy_rating());
         return f;
@@ -239,12 +245,40 @@ public class FacilityPage extends BaseActivity {
     private void initializeView() {
         facilityName.setText(facility.getName());
         currentOccupancy.setText(getString(facility.getDensityResId()));
-        feedback.setMovementMethod(LinkMovementMethod.getInstance());
+//        feedback.setMovementMethod(LinkMovementMethod.getInstance());
+
+        feedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String accuracyLink = getResources().getString(R.string.accuracy_link);
+                Uri uri = Uri.parse(accuracyLink);
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
+            }
+        });
+
+        if (favFacilities.contains(facility.getId())) {
+            favButton.setChecked(true);
+            favButton.setButtonDrawable(R.drawable.ic_favorite_black);
+        } else
+            favButton.setButtonDrawable(R.drawable.ic_favorite_border_black);
+
+        favButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    buttonView.setButtonDrawable(R.drawable.ic_favorite_black);
+                else
+                    buttonView.setButtonDrawable(R.drawable.ic_favorite_border_black);
+                favButton.setChecked(isChecked);
+                toggleFavorite(facility);
             }
         });
 
@@ -364,6 +398,7 @@ public class FacilityPage extends BaseActivity {
     public void onBackPressed() {
 //        Intent intent = new Intent(FacilityPage.this, MainActivity.class);
 //        startActivity(intent);
+        saveFavorites();
         finish();
     }
 
@@ -392,8 +427,7 @@ public class FacilityPage extends BaseActivity {
     }
 
     @Override
-    public void fetchHistoricalJSONOnResponse(JSONArray response, Function<Boolean, Void> success, String day)
-    {
+    public void fetchHistoricalJSONOnResponse(JSONArray response, Function<Boolean, Void> success, String day) {
         ArrayList<Double> historicalDensities = new ArrayList<>();
         try {
             JSONObject facilityHistory = response.getJSONObject(0).getJSONObject("hours");

@@ -50,6 +50,24 @@
                     app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
                 <com.google.android.material.chip.Chip
+                    android:id="@+id/fav"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textAppearance="@style/ChipTextStyle"
+                    app:chipBackgroundColor="@drawable/chip_color_toggle"
+                    app:chipIcon="@drawable/ic_favorite_black"
+                    app:chipIconEnabled="true"
+                    app:chipIconSize="20dp"
+                    app:closeIconEnabled="false"
+                    app:closeIconEndPadding="0dp"
+                    app:closeIconStartPadding="0dp"
+                    app:iconEndPadding="0dp"
+                    app:iconStartPadding="2dp"
+                    app:textEndPadding="0dp"
+                    app:textStartPadding="0dp" />
+
+                <com.google.android.material.chip.Chip
                     android:id="@+id/north"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"

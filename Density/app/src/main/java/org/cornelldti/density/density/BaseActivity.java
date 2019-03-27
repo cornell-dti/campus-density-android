@@ -1,7 +1,9 @@
 package org.cornelldti.density.density;
 
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -32,6 +34,7 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.arch.core.util.Function;
+import kotlin.Unit;
 
 public class BaseActivity extends AppCompatActivity
         implements FirebaseAuth.IdTokenListener, FirebaseAuth.AuthStateListener {
@@ -41,6 +44,7 @@ public class BaseActivity extends AppCompatActivity
     private FirebaseAuth auth;
 
     private ArrayList<Facility> all_facilities; // KEEPS TRACK OF ALL FACILITIES
+    protected ArrayList<String> favFacilities;
 
     private int facility_occupancy_rating; // KEEPS TRACK OF SELECTED FACILITY'S OCCUPANCY
 
@@ -60,6 +64,8 @@ public class BaseActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
+        favFacilities = new ArrayList<>();
+        initFavorites();
         auth = FirebaseAuth.getInstance();
         checkUserSignedIn();
         queue = Volley.newRequestQueue(this);
@@ -152,8 +158,7 @@ public class BaseActivity extends AppCompatActivity
 
     // API HANDLING FUNCTIONS HERE
 
-    public void fetchFacilitiesOnResponse(JSONArray response, boolean refresh, Function<Boolean, Void> success)
-    {
+    public void fetchFacilitiesOnResponse(JSONArray response, boolean refresh, Function<Boolean, Void> success) {
         try {
             ArrayList<Facility> f = new ArrayList<Facility>();
             for (int i = 0; i < response.length(); i++) {
@@ -167,14 +172,12 @@ public class BaseActivity extends AppCompatActivity
         }
     }
 
-    public void fetchFacilitiesOnError(VolleyError error, Function<Boolean, Void> success)
-    {
+    public void fetchFacilitiesOnError(VolleyError error, Function<Boolean, Void> success) {
         Log.d("ERROR", error.toString());
         success.apply(false);
     }
 
-    public void fetchFacilityOccupancyOnResponse(ArrayList<Facility> list, JSONArray response, boolean refresh, Function<Boolean, Void> success)
-    {
+    public void fetchFacilityOccupancyOnResponse(ArrayList<Facility> list, JSONArray response, boolean refresh, Function<Boolean, Void> success) {
         try {
             ArrayList<Facility> f_list = list;
             for (int i = 0; i < f_list.size(); i++) {
@@ -189,16 +192,15 @@ public class BaseActivity extends AppCompatActivity
 
             all_facilities = f_list;
 
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             success.apply(false);
             e.printStackTrace();
         }
 
-        }
-// TODO Function returns a 403 Error Code!
-    public void singleFacilityOccupancy(String facId)
-    {
+    }
+
+    // TODO Function returns a 403 Error Code!
+    public void singleFacilityOccupancy(String facId) {
         JsonObjectRequest facilityRequest = new JsonObjectRequest
                 (Request.Method.GET, HOW_DENSE_ENDPOINT + "?=" + facId, null, new Response.Listener<JSONObject>() {
                     @Override
@@ -334,13 +336,11 @@ public class BaseActivity extends AppCompatActivity
         queue.add(facilityOccupancyRequest);
     }
 
-    public void fetchOperatingHoursOnResponse(JSONArray response, Function<Boolean, Void> success, String day)
-    {
+    public void fetchOperatingHoursOnResponse(JSONArray response, Function<Boolean, Void> success, String day) {
         // OVERRIDE IN FACILITYPAGE
     }
 
-    public void fetchHistoricalJSONOnResponse(JSONArray response, Function<Boolean, Void> success, String day )
-    {
+    public void fetchHistoricalJSONOnResponse(JSONArray response, Function<Boolean, Void> success, String day) {
         // OVERRIDE IN FACILITYPAGE
     }
 
@@ -399,16 +399,14 @@ public class BaseActivity extends AppCompatActivity
     /**
      * GETTER FUNCTION FOR ALL_FACILITIES LIST
      */
-    public ArrayList<Facility> getAll_facilities()
-    {
+    public ArrayList<Facility> getAll_facilities() {
         return all_facilities;
     }
 
     /**
      * GETTER FUNCTION FOR SELECTED FACILITY'S OCCUPANCY RATING
      */
-    public int getFacility_occupancy_rating()
-    {
+    public int getFacility_occupancy_rating() {
         return facility_occupancy_rating;
     }
 
@@ -424,6 +422,43 @@ public class BaseActivity extends AppCompatActivity
         }
 
         return format.format(current.getTime());
+    }
+
+    protected void toggleFavorite(Facility fac) {
+        if (!favFacilities.contains(fac.getId()))
+            favFacilities.add(fac.getId());
+        else
+            favFacilities.remove(fac.getId());
+    }
+
+    public ArrayList<String> getFavorites() {
+        initFavorites();
+        return favFacilities;
+    }
+
+    protected void initFavorites() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        favFacilities = new ArrayList<>();
+        try {
+            JSONArray favArray = new JSONArray(prefs.getString("favorites", "[]"));
+            for (int i = 0; i < favArray.length(); i++) {
+                String facId = favArray.getString(i);
+                favFacilities.add(facId);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void saveFavorites() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = prefs.edit();
+        JSONArray favArray = new JSONArray();
+        for (String id : favFacilities) {
+            favArray.put(id);
+        }
+        editor.putString("favorites", favArray.toString());
+        editor.apply();
     }
 
 }

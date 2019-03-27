@@ -55,7 +55,8 @@
     <string name="back_button_desc">Back button to return list of locations</string>
 
     <!-- facility page strings -->
-    <string name="accuracy"><a href="https://docs.google.com/forms/d/e/1FAIpQLSeJZ7AyVRZ8tfw-XiJqREmKn9y0wPCyreEkkysJn0QHCLDmaA/viewform">Is this accurate?</a></string>
+    <string name="accuracy_link">https://docs.google.com/forms/d/e/1FAIpQLSeJZ7AyVRZ8tfw-XiJqREmKn9y0wPCyreEkkysJn0QHCLDmaA/viewform</string>
+    <string name="accuracy">Is this accurate?</string>
     <string name="now">Now</string>
     <string name="popular">Popular Times</string>
 

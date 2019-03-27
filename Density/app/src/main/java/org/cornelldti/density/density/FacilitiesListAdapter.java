@@ -13,6 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import androidx.arch.core.util.Function;
@@ -22,6 +23,7 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
         implements Filterable {
 
     private List<Facility> facilities, filteredFacilities;
+    private HashMap<String, Facility> facility_ids;
 
     private ClickListener clickListener;
     private Context context;
@@ -70,6 +72,10 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
         Collections.sort(data = new ArrayList<>(data));
         this.facilities = data;
         this.filteredFacilities = facilities;
+        facility_ids = new HashMap<>();
+        for (Facility fac : facilities) {
+            facility_ids.put(fac.getId(), fac);
+        }
     }
 
     @Override
@@ -135,6 +141,17 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
             }
         }
         this.filteredFacilities = filtered_list;
+        notifyDataSetChanged();
+    }
+
+    public void showFavLocations(ArrayList<String> favorites) {
+        ArrayList<Facility> favorite_facilities = new ArrayList<>();
+        for (String id : favorites) {
+            if (facility_ids.containsKey(id)) {
+                favorite_facilities.add(facility_ids.get(id));
+            }
+        }
+        this.filteredFacilities = favorite_facilities;
         notifyDataSetChanged();
     }
 

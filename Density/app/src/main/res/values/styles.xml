@@ -30,6 +30,7 @@
 
     <style name="DTI.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
         <item name="android:textSize">14dp</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
     <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView.ActionBar">
