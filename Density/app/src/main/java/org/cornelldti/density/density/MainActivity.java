@@ -200,6 +200,7 @@ public class MainActivity extends BaseActivity {
                 Log.d("SIZEALL", String.valueOf(adapter.getItemCount()));
                 break;
 
+            // origin/feat/favorites
             case R.id.fav:
                 adapter.showFavLocations(getFavorites());
                 wasChecked = R.id.fav;
@@ -351,6 +352,7 @@ public class MainActivity extends BaseActivity {
                     adapter.showAllLocations();
                     break;
 
+                // origin/feat/favorites
                 case R.id.fav:
                     adapter.showFavLocations(getFavorites());
                     break;

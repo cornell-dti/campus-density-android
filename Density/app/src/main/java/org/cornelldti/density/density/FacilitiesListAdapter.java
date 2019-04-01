@@ -144,6 +144,7 @@ public class FacilitiesListAdapter extends RecyclerView.Adapter<FacilitiesListAd
         notifyDataSetChanged();
     }
 
+    // origin/feat/favorites
     public void showFavLocations(ArrayList<String> favorites) {
         ArrayList<Facility> favorite_facilities = new ArrayList<>();
         for (String id : favorites) {

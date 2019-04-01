@@ -44,7 +44,7 @@ public class BaseActivity extends AppCompatActivity
     private FirebaseAuth auth;
 
     private ArrayList<Facility> all_facilities; // KEEPS TRACK OF ALL FACILITIES
-    protected ArrayList<String> favFacilities;
+    protected ArrayList<String> favFacilities; // origin/feat/favorites
 
     private int facility_occupancy_rating; // KEEPS TRACK OF SELECTED FACILITY'S OCCUPANCY
 
@@ -64,8 +64,11 @@ public class BaseActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
+
+        // origin/feat/favorites
         favFacilities = new ArrayList<>();
         initFavorites();
+
         auth = FirebaseAuth.getInstance();
         checkUserSignedIn();
         queue = Volley.newRequestQueue(this);
@@ -424,6 +427,7 @@ public class BaseActivity extends AppCompatActivity
         return format.format(current.getTime());
     }
 
+    // origin/feat/favorites
     protected void toggleFavorite(Facility fac) {
         if (!favFacilities.contains(fac.getId()))
             favFacilities.add(fac.getId());

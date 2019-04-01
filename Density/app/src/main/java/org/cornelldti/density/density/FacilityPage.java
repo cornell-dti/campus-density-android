@@ -52,7 +52,7 @@ public class FacilityPage extends BaseActivity {
 
     private TextView facilityName, facilityHours, currentOccupancy, feedback, todayHours;
     private ImageButton backButton;
-    private ToggleButton favButton;
+    private ToggleButton favButton; // origin/feat/favorites
     private BarChart densityChart;
     private Facility facility;
     private ImageView firstPill, secondPill, thirdPill, fourthPill;
@@ -79,7 +79,7 @@ public class FacilityPage extends BaseActivity {
 
         backButton = findViewById(R.id.backButton);
         facilityName = findViewById(R.id.f_name);
-        favButton = findViewById(R.id.fav_button);
+        favButton = findViewById(R.id.fav_button); // origin/feat/favorites
 
         currentOccupancy = findViewById(R.id.currentOccupancy);
         firstPill = findViewById(R.id.first_pill);
@@ -264,19 +264,11 @@ public class FacilityPage extends BaseActivity {
             }
         });
 
-        if (favFacilities.contains(facility.getId())) {
-            favButton.setChecked(true);
-            favButton.setButtonDrawable(R.drawable.ic_favorite_black);
-        } else
-            favButton.setButtonDrawable(R.drawable.ic_favorite_border_black);
-
+        // origin/feat/favorites
+        favButton.setChecked(favFacilities.contains(facility.getId()));
         favButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                    buttonView.setButtonDrawable(R.drawable.ic_favorite_black);
-                else
-                    buttonView.setButtonDrawable(R.drawable.ic_favorite_border_black);
                 favButton.setChecked(isChecked);
                 toggleFavorite(facility);
             }
@@ -398,7 +390,7 @@ public class FacilityPage extends BaseActivity {
     public void onBackPressed() {
 //        Intent intent = new Intent(FacilityPage.this, MainActivity.class);
 //        startActivity(intent);
-        saveFavorites();
+        saveFavorites(); // origin/feat/favorites
         finish();
     }
 
