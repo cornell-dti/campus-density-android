@@ -4,6 +4,7 @@ import android.content.res.Resources;
 
 import org.cornelldti.density.density.R;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class FluxUtil {
@@ -56,5 +57,40 @@ public class FluxUtil {
                 return "Sunday";
         }
         return "";
+    }
+
+    // returns integer corresponding to day where 0 = Sunday, 1 = Monday, ... , 6 = Saturday
+    public static int intOfDay(String day) {
+        switch (day) {
+            case "SUN":
+                return 0;
+            case "MON":
+                return 1;
+            case "TUE":
+                return 2;
+            case "WED":
+                return 3;
+            case "THU":
+                return 4;
+            case "FRI":
+                return 5;
+            case "SAT":
+                return 6;
+        }
+        return -1;
+    }
+
+    public static String dateOfDay(String day) {
+        Calendar current = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("MMM d");
+        SimpleDateFormat checkFormat = new SimpleDateFormat("E");
+
+        String dayCheck = checkFormat.format(current.getTime()).toUpperCase();
+        while (!dayCheck.equals(day)) {
+            current.add(Calendar.DAY_OF_MONTH, 1);
+            dayCheck = checkFormat.format(current.getTime()).toUpperCase();
+        }
+
+        return format.format(current.getTime());
     }
 }

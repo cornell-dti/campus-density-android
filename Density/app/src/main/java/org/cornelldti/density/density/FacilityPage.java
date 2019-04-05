@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.text.method.LinkMovementMethod;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -50,7 +51,7 @@ public class FacilityPage extends BaseActivity {
 
     private String selectedDay;
 
-    private TextView facilityName, facilityHours, currentOccupancy, feedback, todayHours;
+    private TextView facilityName, facilityHours, currentOccupancy, feedback, todayHours, date;
     private ImageButton backButton;
     private ToggleButton favButton; // origin/feat/favorites
     private BarChart densityChart;
@@ -98,9 +99,11 @@ public class FacilityPage extends BaseActivity {
         fri = findViewById(R.id.fri);
         sat = findViewById(R.id.sat);
 
+
         densityChart = findViewById(R.id.densityChart);
         densityChart.setNoDataText("");
         todayHours = findViewById(R.id.today_hours);
+        date = findViewById(R.id.date);
         facilityHours = findViewById(R.id.f_hours);
 
         initializeView();
@@ -318,40 +321,65 @@ public class FacilityPage extends BaseActivity {
      */
     private void setToday(String dayString) {
         selectedDay = dayString;
-        switch (dayString) {
-            case "SUN":
-                sun.setChecked(true);
-                break;
-            case "MON":
-                mon.setChecked(true);
-                break;
-            case "TUE":
-                tue.setChecked(true);
-                break;
-            case "WED":
-                wed.setChecked(true);
-                break;
-            case "THU":
-                thu.setChecked(true);
-                break;
-            case "FRI":
-                fri.setChecked(true);
-                break;
-            case "SAT":
-                sat.setChecked(true);
-                break;
+
+        List<Chip> dayChipList = new ArrayList<>();
+        dayChipList.add(sun);
+        dayChipList.add(mon);
+        dayChipList.add(tue);
+        dayChipList.add(wed);
+        dayChipList.add(thu);
+        dayChipList.add(fri);
+        dayChipList.add(sat);
+
+        dayChips.removeAllViews();
+
+        int todayInt = FluxUtil.intOfDay(dayString);
+        for (int i = todayInt + 6; i >= todayInt; i--) {
+            Chip currentDay = dayChipList.get(i % 7);
+            dayChips.addView(currentDay, 0, currentDay.getLayoutParams());
         }
+        dayChipList.get(todayInt).setChecked(true);
+
+//        switch (dayString) {
+//            case "SUN":
+//                sun.setChecked(true);
+//                break;
+//            case "MON":
+//                mon.setChecked(true);
+//                break;
+//            case "TUE":
+//                tue.setChecked(true);
+//                break;
+//            case "WED":
+//                wed.setChecked(true);
+//                break;
+//            case "THU":
+//                thu.setChecked(true);
+//                break;
+//            case "FRI":
+//                fri.setChecked(true);
+//                break;
+//            case "SAT":
+//                sat.setChecked(true);
+//                break;
+//        }
         wasChecked = dayChips.getCheckedChipId();
     }
 
     private void setOperatingHours(String day) {
         Log.d("SET", "OPERATING");
         String hourTitle = FluxUtil.dayFullString(day);
+        String dayDate = FluxUtil.dateOfDay(day);
         todayHours.setText(hourTitle);
+        date.setText(dayDate);
         facilityHours.setText("");
-        for (String operatingSegment : opHours) {
-            String allHours = facilityHours.getText() + operatingSegment + (opHours.indexOf(operatingSegment) == opHours.size() - 1 ? "" : "\n");
-            facilityHours.setText(allHours);
+        if (opHours.isEmpty()) {
+            facilityHours.setText(getResources().getText(R.string.no_operating));
+        } else {
+            for (String operatingSegment : opHours) {
+                String allHours = facilityHours.getText() + operatingSegment + (opHours.indexOf(operatingSegment) == opHours.size() - 1 ? "" : "\n");
+                facilityHours.setText(allHours);
+            }
         }
     }
 
@@ -359,20 +387,6 @@ public class FacilityPage extends BaseActivity {
     protected void updateUI() {
         Log.d("updatedFPUI", "updating");
         fetchHistoricalJSON(success -> null, selectedDay, facility);
-    }
-
-    private String getDate(String day) {
-        Calendar current = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat("MM-dd-yy");
-        SimpleDateFormat checkFormat = new SimpleDateFormat("E");
-
-        String dayCheck = checkFormat.format(current.getTime()).toUpperCase();
-        while (!dayCheck.equals(day)) {
-            current.add(Calendar.DAY_OF_MONTH, 1);
-            dayCheck = checkFormat.format(current.getTime()).toUpperCase();
-        }
-
-        return format.format(current.getTime());
     }
 
     private String parseTime(long timestamp) {

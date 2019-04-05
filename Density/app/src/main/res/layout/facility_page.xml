@@ -287,7 +287,9 @@
                     android:text="Su"
                     android:textAppearance="@style/ChipTextStyle"
                     app:chipBackgroundColor="@drawable/chip_color_toggle" />
+
             </com.google.android.material.chip.ChipGroup>
+            `
 
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/densityChart"
@@ -308,10 +310,22 @@
                 android:layout_margin="5dp"
                 android:gravity="center"
                 android:text=""
-                app:layout_constraintBottom_toTopOf="@id/f_hours"
+                app:layout_constraintBottom_toTopOf="@id/date"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/densityChart" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:text=""
+                app:layout_constraintBottom_toTopOf="@id/f_hours"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/today_hours" />
 
             <TextView
                 android:id="@+id/f_hours"

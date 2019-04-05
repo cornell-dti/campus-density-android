@@ -350,7 +350,9 @@ public class BaseActivity extends AppCompatActivity
 
     public void fetchOperatingHours(Function<Boolean, Void> success, String day, Facility facility) {
         JsonArrayRequest operatingHoursRequest = new JsonArrayRequest
-                (Request.Method.GET, OPERATING_HOURS_ENDPOINT + "?id=" + facility.getId() + "&startDate=" + getDate(day) + "&endDate=" + getDate(day), null, new Response.Listener<JSONArray>() {
+                (Request.Method.GET, OPERATING_HOURS_ENDPOINT + "?id=" + facility.getId() +
+                        "&startDate=" + getDate(day) + "&endDate=" + getDate(day),
+                        null, new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         fetchOperatingHoursOnResponse(response, success, day);

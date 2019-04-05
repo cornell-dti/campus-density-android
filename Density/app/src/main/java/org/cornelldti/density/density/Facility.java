@@ -62,7 +62,8 @@ public class Facility implements Serializable, Comparable<Facility> {
         this.id = id;
     }
 
-    public Facility(String name, String id, String description, long nextOpen, long closingAt, String address, CampusLocation campusLocation, int occupancy_rating) {
+    public Facility(String name, String id, String description, long nextOpen, long closingAt,
+                    String address, CampusLocation campusLocation, int occupancy_rating) {
         this.name = name;
         this.id = id;
         this.description = description;

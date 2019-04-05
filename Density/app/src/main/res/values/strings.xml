@@ -59,6 +59,7 @@
     <string name="accuracy">Is this accurate?</string>
     <string name="now">Now</string>
     <string name="popular">Popular Times</string>
+    <string name="no_operating">No operating hours</string>
 
     <!-- failure page strings -->
     <string name="sorry_failure">Sorry, there\'s an error loading the data.</string>
