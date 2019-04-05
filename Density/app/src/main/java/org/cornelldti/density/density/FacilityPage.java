@@ -369,7 +369,7 @@ public class FacilityPage extends BaseActivity {
     private void setOperatingHours(String day) {
         Log.d("SET", "OPERATING");
         String hourTitle = FluxUtil.dayFullString(day);
-        String dayDate = FluxUtil.dateOfDay(day);
+        String dayDate = FluxUtil.dateOfDay(day, "MMM d");
         todayHours.setText(hourTitle);
         date.setText(dayDate);
         facilityHours.setText("");

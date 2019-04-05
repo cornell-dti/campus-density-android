@@ -80,9 +80,9 @@ public class FluxUtil {
         return -1;
     }
 
-    public static String dateOfDay(String day) {
+    public static String dateOfDay(String day, String pattern) {
         Calendar current = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat("MMM d");
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
         SimpleDateFormat checkFormat = new SimpleDateFormat("E");
 
         String dayCheck = checkFormat.format(current.getTime()).toUpperCase();

@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 
+import org.cornelldti.density.density.util.FluxUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -416,17 +417,7 @@ public class BaseActivity extends AppCompatActivity
     }
 
     private String getDate(String day) {
-        Calendar current = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat("MM-dd-yy");
-        SimpleDateFormat checkFormat = new SimpleDateFormat("E");
-
-        String dayCheck = checkFormat.format(current.getTime()).toUpperCase();
-        while (!dayCheck.equals(day)) {
-            current.add(Calendar.DAY_OF_MONTH, 1);
-            dayCheck = checkFormat.format(current.getTime()).toUpperCase();
-        }
-
-        return format.format(current.getTime());
+        return FluxUtil.dateOfDay(day, "MM-dd-yy");
     }
 
     // origin/feat/favorites
