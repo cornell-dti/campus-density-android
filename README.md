@@ -7,7 +7,7 @@
     - `intOfDay` - get corresponding integers (0 for Sunday..6 for Saturday) 
     - `dateOfDay` - returns date of given day in a specified format (SimpleDateFormat)
   
-### Author Notes
+### Author's Note
 - I don't know if dynamic chips is the best way to go esp. because this part of the app is supposed to show historical data, which doesn't really have to do with the current day, as moving the chips would suggest
 - I think we should separate out the operating hours somehow
 
