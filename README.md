@@ -1,10 +1,20 @@
+## This Branch
+- dynamic chips on Facility Page, so that current day is the first chip
+- updated files/locations:
+  - added date to Facility Page layout
+  - FacilityPage: dynamically adds the chips using for loop
+  - FluxUtil: 2 new methods
+    - `intOfDay` - get corresponding integers (0 for Sunday..6 for Saturday) 
+    - `dateOfDay` - returns date of given day in a specified format (SimpleDateFormat)
+  
+
 # Flux Android
 
 by [Cornell Design Tech Initiative](https://www.cornelldti.org/)
 
 <a href='https://play.google.com/store/apps/details?id=org.cornelldti.density.density&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width='250px'/></a>
 
-#### Contents
+## Contents
   - [About](#about)
   - [Getting Started](#getting-started)
   - [Dependencies & Libraries](#dependencies--libraries)
