@@ -46,7 +46,7 @@ public class BaseActivity extends AppCompatActivity
 
     private RequestQueue queue;
 
-    private static final String FACILITY_LIST_ENDPOINT = "https://flux-backend-dev.herokuapp.com/v1/facilityList";
+    private static final String FACILITY_LIST_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityList";
     private static final String FACILITY_INFO_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityInfo";
     private static final String HOW_DENSE_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/howDense";
 
