@@ -32,14 +32,11 @@ class Facility : Serializable, Comparable<Facility> {
         get() = this.closingAt != -1L
 
     val locationString: String
-        get() {
-            var loc_string = ""
-            when (this.location) {
-                Facility.CampusLocation.NORTH -> loc_string = "NORTH"
-                Facility.CampusLocation.CENTRAL -> loc_string = "CENTRAL"
-                Facility.CampusLocation.WEST -> loc_string = "WEST"
-            }
-            return loc_string
+        get() = when (this.location) {
+            CampusLocation.NORTH -> "NORTH"
+            CampusLocation.CENTRAL -> "CENTRAL"
+            CampusLocation.WEST -> "WEST"
+            else -> ""
         }
 
     fun setClosingAt(closingAt: Long) {
