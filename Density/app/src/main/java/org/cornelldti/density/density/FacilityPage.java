@@ -248,8 +248,8 @@ public class FacilityPage extends BaseActivity {
             }
         });
 
-        fetchHistoricalJSON(success -> null, FluxUtil.getDayString(), facility);
-        setToday(FluxUtil.getDayString());
+        fetchHistoricalJSON(success -> null, FluxUtil.INSTANCE.getDayString(), facility);
+        setToday(FluxUtil.INSTANCE.getDayString());
         setChipOnClickListener();
         setPills();
     }
@@ -320,7 +320,7 @@ public class FacilityPage extends BaseActivity {
 
     private void setOperatingHours(String day) {
         Log.d("SET", "OPERATING");
-        String hourTitle = FluxUtil.dayFullString(day);
+        String hourTitle = FluxUtil.INSTANCE.dayFullString(day);
         todayHours.setText(hourTitle);
         facilityHours.setText("");
         for (String operatingSegment : opHours) {
