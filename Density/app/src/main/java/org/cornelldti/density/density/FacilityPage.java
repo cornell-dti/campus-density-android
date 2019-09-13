@@ -99,8 +99,7 @@ public class FacilityPage extends BaseActivity {
         initializeView();
     }
 
-    private Facility refreshFacilityOccupancy(Facility fac)
-    {
+    private Facility refreshFacilityOccupancy(Facility fac) {
         singleFacilityOccupancy(fac.getId());
         Facility f = fac.setOccupancy_rating(super.getFacility_occupancy_rating());
         return f;
@@ -173,7 +172,7 @@ public class FacilityPage extends BaseActivity {
 
         dataSet.setColors(colors);
         dataSet.setValueTextColor(Color.DKGRAY);
-        dataSet.setValueFormatter(new ValueFormatter());
+        dataSet.setValueFormatter(ValueFormatter.INSTANCE);
 
         BarData data = new BarData(dataSet);
         data.setValueTextSize(13f);
@@ -392,8 +391,7 @@ public class FacilityPage extends BaseActivity {
     }
 
     @Override
-    public void fetchHistoricalJSONOnResponse(JSONArray response, Function<Boolean, Void> success, String day)
-    {
+    public void fetchHistoricalJSONOnResponse(JSONArray response, Function<Boolean, Void> success, String day) {
         ArrayList<Double> historicalDensities = new ArrayList<>();
         try {
             JSONObject facilityHistory = response.getJSONObject(0).getJSONObject("hours");

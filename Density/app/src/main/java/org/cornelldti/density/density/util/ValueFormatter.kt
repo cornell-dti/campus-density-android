@@ -6,7 +6,7 @@ import com.github.mikephil.charting.utils.ViewPortHandler
 
 import java.text.DecimalFormat
 
-class ValueFormatter : IValueFormatter {
+object ValueFormatter : IValueFormatter {
 
     private val format: DecimalFormat = DecimalFormat("#.###")
 
