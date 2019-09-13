@@ -300,14 +300,16 @@ class MainActivity : BaseActivity() {
     ) {
         super.fetchFacilityOccupancyOnResponse(list, response, refresh, success)
         if (!refresh) {
-            this@MainActivity.adapter = FacilitiesListAdapter(all_facilities)
-            this@MainActivity.adapter!!.setOnItemClickListener { position, v ->
-                val intent = Intent(this@MainActivity, FacilityPage::class.java)
-                val b = Bundle()
-                b.putSerializable(FacilityPage.ARG_PARAM, adapter!!.dataSet[position])
-                intent.putExtras(b)
-                startActivity(intent)
-            }
+            this@MainActivity.adapter = FacilitiesListAdapter(all_facilities!!)
+            this@MainActivity.adapter!!.setOnItemClickListener(object : FacilitiesListAdapter.ClickListener {
+                override fun onItemClick(position: Int, v: View) {
+                    val intent = Intent(this@MainActivity, FacilityPage::class.java)
+                    val b = Bundle()
+                    b.putSerializable(FacilityPage.ARG_PARAM, adapter!!.dataSet!![position])
+                    intent.putExtras(b)
+                    startActivity(intent)
+                }
+            })
 
             this@MainActivity.facilities!!.adapter = adapter
             this@MainActivity.spinner!!.visibility = View.GONE
@@ -315,7 +317,7 @@ class MainActivity : BaseActivity() {
             success(true)
             setChipOnClickListener()
         } else {
-            this@MainActivity.adapter!!.setDataSet(all_facilities)
+            this@MainActivity.adapter!!.setDataSet(all_facilities!!)
             success(true)
             when (filterChips!!.checkedChipId) {
                 R.id.all -> adapter!!.showAllLocations()
