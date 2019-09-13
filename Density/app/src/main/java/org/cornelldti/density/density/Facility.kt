@@ -10,19 +10,14 @@ class Facility : Serializable, Comparable<Facility> {
     private var closingAt: Long = 0
 
     val densityResId: Int
-        get() {
-            if (!this.isOpen) {
-                return R.string.closed
-            }
-
-            when (this.occupancyRating) {
-                0 -> return R.string.very_empty
-                1 -> return R.string.pretty_empty
-                2 -> return R.string.pretty_crowded
-                3 -> return R.string.very_crowded
-            }
-
-            return R.string.unknown
+        get() = if (!this.isOpen) {
+            R.string.closed
+        } else when (this.occupancyRating) {
+            0 -> R.string.very_empty
+            1 -> R.string.pretty_empty
+            2 -> R.string.pretty_crowded
+            3 -> R.string.very_crowded
+            else -> R.string.unknown
         }
 
     var location: CampusLocation? = null

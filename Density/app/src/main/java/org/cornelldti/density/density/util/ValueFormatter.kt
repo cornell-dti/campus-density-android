@@ -8,11 +8,7 @@ import java.text.DecimalFormat
 
 class ValueFormatter : IValueFormatter {
 
-    private val format: DecimalFormat
-
-    init {
-        format = DecimalFormat("#.###")
-    }
+    private val format: DecimalFormat = DecimalFormat("#.###")
 
     override fun getFormattedValue(value: Float, entry: Entry, dataSetIndex: Int, viewPortHandler: ViewPortHandler): String {
         return format.format(value.toDouble())
