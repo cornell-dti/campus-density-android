@@ -38,23 +38,13 @@ class Facility : Serializable, Comparable<Facility> {
         this.closingAt = closingAt
     }
 
-    override fun compareTo(o: Facility): Int {
-        if (!o.isOpen && this.isOpen) {
-            return -1
-        }
-
-        if (o.isOpen && !this.isOpen) {
-            return 1
-        }
-
-        if (o.occupancyRating < this.occupancyRating) {
-            return 1
-        }
-
-        return if (o.occupancyRating > this.occupancyRating) {
+    override fun compareTo(other: Facility): Int = when {
+        !other.isOpen && this.isOpen -> -1
+        other.isOpen && !this.isOpen -> 1
+        other.occupancyRating < this.occupancyRating -> 1
+        else -> if (other.occupancyRating > this.occupancyRating) {
             -1
         } else 0
-
     }
 
     enum class CampusLocation {
