@@ -1,19 +1,16 @@
 package org.cornelldti.density.density
 
 import android.graphics.Color
-import android.graphics.Paint
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.util.Log
-import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.Chart
-import com.github.mikephil.charting.components.IMarker
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarEntry
@@ -28,16 +25,13 @@ import org.cornelldti.density.density.util.FluxUtil
 import org.cornelldti.density.density.util.ValueFormatter
 import org.json.JSONArray
 import org.json.JSONException
-import org.json.JSONObject
 
 import java.text.SimpleDateFormat
-import java.util.ArrayList
-import java.util.Calendar
-import java.util.Date
-import java.util.TimeZone
 
-import androidx.arch.core.util.Function
 import androidx.core.content.ContextCompat
+import java.util.Calendar
+import java.util.Locale
+import java.util.Date
 
 class FacilityPage : BaseActivity() {
 
@@ -111,11 +105,11 @@ class FacilityPage : BaseActivity() {
 
     private fun refreshFacilityOccupancy(fac: Facility): Facility {
         singleFacilityOccupancy(fac.id!!)
-        return fac.setOccupancy_rating(super.facility_occupancy_rating)
+        return fac.setOccupancyRating(super.facilityOccupancyRating)
     }
 
     private fun setChipOnClickListener() {
-        dayChips!!.setOnCheckedChangeListener { group, checkedId -> setDay(checkedId) }
+        dayChips!!.setOnCheckedChangeListener { _, checkedId -> setDay(checkedId) }
     }
 
     private fun setDay(checkedId: Int) {
@@ -256,7 +250,7 @@ class FacilityPage : BaseActivity() {
         }
 
         for (i in 0..facility!!.occupancyRating) {
-            bars[i]?.setColorFilter(resources.getColor(color))
+            bars[i]?.setColorFilter(ContextCompat.getColor(applicationContext, color))
         }
 
     }
@@ -298,13 +292,13 @@ class FacilityPage : BaseActivity() {
 
     private fun getDate(day: String): String {
         val current = Calendar.getInstance()
-        val format = SimpleDateFormat("MM-dd-yy")
-        val checkFormat = SimpleDateFormat("E")
+        val format = SimpleDateFormat("MM-dd-yy", Locale.US)
+        val checkFormat = SimpleDateFormat("E", Locale.US)
 
-        var dayCheck = checkFormat.format(current.time).toUpperCase()
+        var dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
         while (dayCheck != day) {
             current.add(Calendar.DAY_OF_MONTH, 1)
-            dayCheck = checkFormat.format(current.time).toUpperCase()
+            dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
         }
 
         return format.format(current.time)
@@ -312,13 +306,13 @@ class FacilityPage : BaseActivity() {
 
     private fun parseTime(timestamp: Long): String {
         val timeZone = Calendar.getInstance().timeZone
-        var format = SimpleDateFormat("h:mma")
+        var format = SimpleDateFormat("h:mma", Locale.US)
         if (DateFormat.is24HourFormat(applicationContext)) {
-            format = SimpleDateFormat("HH:mm")
+            format = SimpleDateFormat("HH:mm", Locale.US)
         }
         format.timeZone = timeZone
 
-        return format.format(Date(timestamp * 1000)).toLowerCase()
+        return format.format(Date(timestamp * 1000)).toLowerCase(Locale.US)
     }
 
     override fun onBackPressed() {
@@ -355,9 +349,9 @@ class FacilityPage : BaseActivity() {
         val historicalDensities = ArrayList<Double>()
         try {
             val facilityHistory = response.getJSONObject(0).getJSONObject("hours")
-            val fac_on_day = facilityHistory.getJSONObject(day)
+            val facOnDay = facilityHistory.getJSONObject(day)
             for (hour in 7..23) {
-                historicalDensities.add(fac_on_day.getDouble(hour.toString()))
+                historicalDensities.add(facOnDay.getDouble(hour.toString()))
             }
             densities = historicalDensities
             setupBarChart()
@@ -369,6 +363,6 @@ class FacilityPage : BaseActivity() {
     }
 
     companion object {
-        val ARG_PARAM = "Facility_Object"
+        const val ARG_PARAM = "Facility_Object"
     }
 }

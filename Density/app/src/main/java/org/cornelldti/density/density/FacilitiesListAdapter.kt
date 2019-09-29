@@ -10,12 +10,10 @@ import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 
-import java.util.ArrayList
-import java.util.Collections
-import java.util.Comparator
-
 import androidx.arch.core.util.Function
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import java.util.*
 
 class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<FacilitiesListAdapter.ViewHolder>(), Filterable {
 
@@ -50,11 +48,11 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
     }
 
     inner class DescriptionViewHolder(v: View) : FacilitiesListAdapter.ViewHolder(v) {
-        internal var description: TextView
+        internal var description: TextView = v.findViewById(R.id.description_phrase)
 
-        init {
-            description = v.findViewById(R.id.description_phrase)
-        }
+//        init {
+//            description = v.findViewById(R.id.description_phrase)
+//        }
     }
 
     fun setOnItemClickListener(clickListener: ClickListener) {
@@ -94,19 +92,23 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(charSequence: CharSequence): FilterResults {
-                val charString = charSequence.toString().toLowerCase()
-                if (!charString.isEmpty()) {
-                    val filteredList = ArrayList<Facility>()
-                    for (f in facilities!!) {
-                        if (f.name!!.toLowerCase().contains(charString.toLowerCase())) {
-                            filteredList.add(f)
+                val charString = charSequence.toString().toLowerCase(Locale.US)
+                when(charString.isNotEmpty()) {
+                    true -> {
+                        val filteredList = ArrayList<Facility>()
+                        for (f in facilities!!) {
+                            if (f.name!!.toLowerCase(Locale.US).contains(charString.toLowerCase(Locale.US))) {
+                                filteredList.add(f)
+                            }
                         }
+                        Collections.sort(filteredList, SEARCH_SORT.apply(charString))
+                        dataSet = filteredList
                     }
-                    Collections.sort(filteredList, SEARCH_SORT.apply(charString))
-                    dataSet = filteredList
-                } else {
-                    Collections.sort(facilities)
-                    dataSet = facilities
+                    false -> {
+                        val mutFacilities = facilities!!.toMutableList()
+                        mutFacilities.sort()
+                        dataSet = mutFacilities
+                    }
                 }
                 val filterResults = FilterResults()
                 filterResults.values = dataSet
@@ -121,13 +123,13 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
     }
 
     fun filterFacilitiesByLocation(location: Facility.CampusLocation) {
-        val filtered_list = ArrayList<Facility>()
+        val filteredList = ArrayList<Facility>()
         for (f in facilities!!) {
             if (f.location == location) {
-                filtered_list.add(f)
+                filteredList.add(f)
             }
         }
-        this.dataSet = filtered_list
+        this.dataSet = filteredList
         notifyDataSetChanged()
     }
 
@@ -157,57 +159,57 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
     }
 
     private fun setClosed(holder: ViewHolder) {
-        holder.firstBar.setColorFilter(context!!.resources.getColor(R.color.filler_boxes),
+        holder.firstBar.setColorFilter(ContextCompat.getColor(context!!, R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY)
-        holder.secondBar.setColorFilter(context!!.resources.getColor(R.color.filler_boxes),
+        holder.secondBar.setColorFilter(ContextCompat.getColor(context!!, R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY)
-        holder.thirdBar.setColorFilter(context!!.resources.getColor(R.color.filler_boxes),
+        holder.thirdBar.setColorFilter(ContextCompat.getColor(context!!, R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY)
-        holder.fourthBar.setColorFilter(context!!.resources.getColor(R.color.filler_boxes),
+        holder.fourthBar.setColorFilter(ContextCompat.getColor(context!!, R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY)
     }
 
     private fun setVeryCrowded(holder: ViewHolder) {
-        holder.firstBar.setColorFilter(context!!.resources.getColor(R.color.very_crowded),
+        holder.firstBar.setColorFilter(ContextCompat.getColor(context!!, R.color.very_crowded),
                 PorterDuff.Mode.MULTIPLY)
-        holder.secondBar.setColorFilter(context!!.resources.getColor(R.color.very_crowded),
+        holder.secondBar.setColorFilter(ContextCompat.getColor(context!!, R.color.very_crowded),
                 PorterDuff.Mode.MULTIPLY)
-        holder.thirdBar.setColorFilter(context!!.resources.getColor(R.color.very_crowded),
+        holder.thirdBar.setColorFilter(ContextCompat.getColor(context!!, R.color.very_crowded),
                 PorterDuff.Mode.MULTIPLY)
-        holder.fourthBar.setColorFilter(context!!.resources.getColor(R.color.very_crowded),
+        holder.fourthBar.setColorFilter(ContextCompat.getColor(context!!, R.color.very_crowded),
                 PorterDuff.Mode.MULTIPLY)
     }
 
     private fun setPrettyCrowded(holder: ViewHolder) {
-        holder.firstBar.setColorFilter(context!!.resources.getColor(R.color.pretty_crowded),
+        holder.firstBar.setColorFilter(ContextCompat.getColor(context!!, R.color.pretty_crowded),
                 PorterDuff.Mode.MULTIPLY)
-        holder.secondBar.setColorFilter(context!!.resources.getColor(R.color.pretty_crowded),
+        holder.secondBar.setColorFilter(ContextCompat.getColor(context!!, R.color.pretty_crowded),
                 PorterDuff.Mode.MULTIPLY)
-        holder.thirdBar.setColorFilter(context!!.resources.getColor(R.color.pretty_crowded),
+        holder.thirdBar.setColorFilter(ContextCompat.getColor(context!!, R.color.pretty_crowded),
                 PorterDuff.Mode.MULTIPLY)
-        holder.fourthBar.setColorFilter(context!!.resources.getColor(R.color.filler_boxes),
+        holder.fourthBar.setColorFilter(ContextCompat.getColor(context!!, R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY)
     }
 
     private fun setPrettyEmpty(holder: ViewHolder) {
-        holder.firstBar.setColorFilter(context!!.resources.getColor(R.color.pretty_empty),
+        holder.firstBar.setColorFilter(ContextCompat.getColor(context!!, R.color.pretty_empty),
                 PorterDuff.Mode.MULTIPLY)
-        holder.secondBar.setColorFilter(context!!.resources.getColor(R.color.pretty_empty),
+        holder.secondBar.setColorFilter(ContextCompat.getColor(context!!, R.color.pretty_empty),
                 PorterDuff.Mode.MULTIPLY)
-        holder.thirdBar.setColorFilter(context!!.resources.getColor(R.color.filler_boxes),
+        holder.thirdBar.setColorFilter(ContextCompat.getColor(context!!, R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY)
-        holder.fourthBar.setColorFilter(context!!.resources.getColor(R.color.filler_boxes),
+        holder.fourthBar.setColorFilter(ContextCompat.getColor(context!!, R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY)
     }
 
     private fun setVeryEmpty(holder: ViewHolder) {
-        holder.firstBar.setColorFilter(context!!.resources.getColor(R.color.very_empty),
+        holder.firstBar.setColorFilter(ContextCompat.getColor(context!!, R.color.very_empty),
                 PorterDuff.Mode.MULTIPLY)
-        holder.secondBar.setColorFilter(context!!.resources.getColor(R.color.filler_boxes),
+        holder.secondBar.setColorFilter(ContextCompat.getColor(context!!, R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY)
-        holder.thirdBar.setColorFilter(context!!.resources.getColor(R.color.filler_boxes),
+        holder.thirdBar.setColorFilter(ContextCompat.getColor(context!!, R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY)
-        holder.fourthBar.setColorFilter(context!!.resources.getColor(R.color.filler_boxes),
+        holder.fourthBar.setColorFilter(ContextCompat.getColor(context!!, R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY)
     }
 
@@ -218,8 +220,8 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
         init {
             SEARCH_SORT = Function { charString: String ->
                 Comparator { a: Facility, b: Facility ->
-                    val lowerA = a.name!!.toLowerCase()
-                    val lowerB = b.name!!.toLowerCase()
+                    val lowerA = a.name!!.toLowerCase(Locale.US)
+                    val lowerB = b.name!!.toLowerCase(Locale.US)
                     if (lowerA.startsWith(charString) && !lowerB.startsWith(charString)) {
                         return@Comparator -1
                     }

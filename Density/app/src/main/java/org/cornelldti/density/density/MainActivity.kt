@@ -1,14 +1,12 @@
 package org.cornelldti.density.density
 
 import android.content.Intent
-import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
@@ -21,18 +19,17 @@ import com.google.android.material.chip.ChipGroup
 
 import org.json.JSONArray
 import org.json.JSONException
-import org.json.JSONObject
 
 import java.util.ArrayList
 
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.arch.core.util.Function
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import kotlin.math.absoluteValue
 
 class MainActivity : BaseActivity() {
 
@@ -117,8 +114,7 @@ class MainActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
         appBarLayout!!.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            var verticalOffset = verticalOffset
-            verticalOffset = Math.abs(verticalOffset)
+            val vertOffset = verticalOffset.absoluteValue
 
             val r = resources
 
@@ -129,7 +125,7 @@ class MainActivity : BaseActivity() {
                     r.displayMetrics
             )
 
-            if (verticalOffset > offset) {
+            if (vertOffset > offset) {
                 val dip = 4f
 
                 val elevation = TypedValue.applyDimension(
@@ -157,11 +153,11 @@ class MainActivity : BaseActivity() {
             swipeRefresh!!.isRefreshing = true
             if (adapter == null) {
                 refreshToken()
-                fetchFacilities(false) { success ->
+                fetchFacilities(false) { _ ->
                     swipeRefresh!!.isRefreshing = false
                 }
             } else {
-                fetchFacilities(true) { success ->
+                fetchFacilities(true) { _ ->
                     swipeRefresh!!.isRefreshing = false
                 }
                 handleCheckChange(filterChips!!.checkedChipId)
@@ -174,7 +170,7 @@ class MainActivity : BaseActivity() {
 
         filterChips = findViewById(R.id.filterChips)
 
-        filterChips!!.setOnCheckedChangeListener { group, checkedId -> handleCheckChange(checkedId) }
+        filterChips!!.setOnCheckedChangeListener { _, checkedId -> handleCheckChange(checkedId) }
     }
 
     private fun handleCheckChange(checkedId: Int) {
@@ -210,9 +206,9 @@ class MainActivity : BaseActivity() {
     override fun updateUI() {
         Log.d("updatedMainUI", "success")
         if (adapter == null)
-            fetchFacilities(false) { success -> null }
+            fetchFacilities(false) { _ -> null }
         else
-            fetchFacilities(true) { success -> null }
+            fetchFacilities(true) { _ -> null }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -300,7 +296,7 @@ class MainActivity : BaseActivity() {
     ) {
         super.fetchFacilityOccupancyOnResponse(list, response, refresh, success)
         if (!refresh) {
-            this@MainActivity.adapter = FacilitiesListAdapter(all_facilities!!)
+            this@MainActivity.adapter = FacilitiesListAdapter(allFacilities!!)
             this@MainActivity.adapter!!.setOnItemClickListener(object : FacilitiesListAdapter.ClickListener {
                 override fun onItemClick(position: Int, v: View) {
                     val intent = Intent(this@MainActivity, FacilityPage::class.java)
@@ -317,7 +313,7 @@ class MainActivity : BaseActivity() {
             success(true)
             setChipOnClickListener()
         } else {
-            this@MainActivity.adapter!!.setDataSet(all_facilities!!)
+            this@MainActivity.adapter!!.setDataSet(allFacilities!!)
             success(true)
             when (filterChips!!.checkedChipId) {
                 R.id.all -> adapter!!.showAllLocations()
