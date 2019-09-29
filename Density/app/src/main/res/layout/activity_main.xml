@@ -45,7 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:checked="true"
-                    android:text="All"
+                    android:text="@string/all"
                     android:textAppearance="@style/ChipTextStyle"
                     app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
@@ -54,7 +54,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="North"
+                    android:text="@string/north"
                     android:textAppearance="@style/ChipTextStyle"
                     app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
@@ -63,7 +63,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="West"
+                    android:text="@string/west"
                     android:textAppearance="@style/ChipTextStyle"
                     app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
@@ -72,7 +72,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="Central"
+                    android:text="@string/central"
                     android:textAppearance="@style/ChipTextStyle"
                     app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
@@ -115,6 +115,7 @@
                     android:animateLayoutChanges="false"
                     android:animationCache="false"
                     android:clickable="true"
+                    android:focusable="true"
                     android:scrollbars="vertical"
                     android:visibility="invisible" />
 
