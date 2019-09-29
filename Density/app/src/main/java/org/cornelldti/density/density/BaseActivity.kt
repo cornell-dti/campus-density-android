@@ -24,11 +24,9 @@ import org.json.JSONException
 import org.json.JSONObject
 
 import java.text.SimpleDateFormat
-import java.util.ArrayList
-import java.util.Calendar
-import java.util.HashMap
 import androidx.appcompat.app.AppCompatActivity
 import androidx.arch.core.util.Function
+import java.util.*
 
 open class BaseActivity :
         AppCompatActivity(), FirebaseAuth.IdTokenListener, FirebaseAuth.AuthStateListener {
@@ -322,13 +320,13 @@ open class BaseActivity :
 
     private fun getDate(day: String): String {
         val current = Calendar.getInstance()
-        val format = SimpleDateFormat("MM-dd-yy")
-        val checkFormat = SimpleDateFormat("E")
+        val format = SimpleDateFormat("MM-dd-yy", Locale.US)
+        val checkFormat = SimpleDateFormat("E", Locale.US)
 
-        var dayCheck = checkFormat.format(current.time).toUpperCase()
+        var dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
         while (dayCheck != day) {
             current.add(Calendar.DAY_OF_MONTH, 1)
-            dayCheck = checkFormat.format(current.time).toUpperCase()
+            dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
         }
 
         return format.format(current.time)

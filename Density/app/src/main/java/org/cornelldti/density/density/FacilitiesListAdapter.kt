@@ -10,12 +10,9 @@ import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 
-import java.util.ArrayList
-import java.util.Collections
-import java.util.Comparator
-
 import androidx.arch.core.util.Function
 import androidx.recyclerview.widget.RecyclerView
+import java.util.*
 
 class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<FacilitiesListAdapter.ViewHolder>(), Filterable {
 
@@ -94,11 +91,11 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(charSequence: CharSequence): FilterResults {
-                val charString = charSequence.toString().toLowerCase()
+                val charString = charSequence.toString().toLowerCase(Locale.US)
                 if (!charString.isEmpty()) {
                     val filteredList = ArrayList<Facility>()
                     for (f in facilities!!) {
-                        if (f.name!!.toLowerCase().contains(charString.toLowerCase())) {
+                        if (f.name!!.toLowerCase(Locale.US).contains(charString.toLowerCase(Locale.US))) {
                             filteredList.add(f)
                         }
                     }

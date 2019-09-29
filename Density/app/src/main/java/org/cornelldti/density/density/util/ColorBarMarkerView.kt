@@ -15,6 +15,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 
 import org.cornelldti.density.density.R
+import java.util.*
 
 class ColorBarMarkerView(context: Context, layoutResource: Int) : MarkerView(context, layoutResource) {
     // this markerview only displays a textview

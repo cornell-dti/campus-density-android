@@ -31,13 +31,10 @@ import org.json.JSONException
 import org.json.JSONObject
 
 import java.text.SimpleDateFormat
-import java.util.ArrayList
-import java.util.Calendar
-import java.util.Date
-import java.util.TimeZone
 
 import androidx.arch.core.util.Function
 import androidx.core.content.ContextCompat
+import java.util.*
 
 class FacilityPage : BaseActivity() {
 
@@ -298,13 +295,13 @@ class FacilityPage : BaseActivity() {
 
     private fun getDate(day: String): String {
         val current = Calendar.getInstance()
-        val format = SimpleDateFormat("MM-dd-yy")
-        val checkFormat = SimpleDateFormat("E")
+        val format = SimpleDateFormat("MM-dd-yy", Locale.US)
+        val checkFormat = SimpleDateFormat("E", Locale.US)
 
-        var dayCheck = checkFormat.format(current.time).toUpperCase()
+        var dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
         while (dayCheck != day) {
             current.add(Calendar.DAY_OF_MONTH, 1)
-            dayCheck = checkFormat.format(current.time).toUpperCase()
+            dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
         }
 
         return format.format(current.time)
@@ -312,13 +309,13 @@ class FacilityPage : BaseActivity() {
 
     private fun parseTime(timestamp: Long): String {
         val timeZone = Calendar.getInstance().timeZone
-        var format = SimpleDateFormat("h:mma")
+        var format = SimpleDateFormat("h:mma", Locale.US)
         if (DateFormat.is24HourFormat(applicationContext)) {
-            format = SimpleDateFormat("HH:mm")
+            format = SimpleDateFormat("HH:mm", Locale.US)
         }
         format.timeZone = timeZone
 
-        return format.format(Date(timestamp * 1000)).toLowerCase()
+        return format.format(Date(timestamp * 1000)).toLowerCase(Locale.US)
     }
 
     override fun onBackPressed() {
