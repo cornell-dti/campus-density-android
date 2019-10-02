@@ -50,9 +50,6 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
     inner class DescriptionViewHolder(v: View) : FacilitiesListAdapter.ViewHolder(v) {
         internal var description: TextView = v.findViewById(R.id.description_phrase)
 
-//        init {
-//            description = v.findViewById(R.id.description_phrase)
-//        }
     }
 
     fun setOnItemClickListener(clickListener: ClickListener) {
@@ -93,22 +90,19 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
         return object : Filter() {
             override fun performFiltering(charSequence: CharSequence): FilterResults {
                 val charString = charSequence.toString().toLowerCase(Locale.US)
-                when(charString.isNotEmpty()) {
-                    true -> {
-                        val filteredList = ArrayList<Facility>()
-                        for (f in facilities!!) {
-                            if (f.name!!.toLowerCase(Locale.US).contains(charString.toLowerCase(Locale.US))) {
-                                filteredList.add(f)
-                            }
+                dataSet = if (charString.isNotEmpty()) {
+                    val filteredList = ArrayList<Facility>()
+                    for (f in facilities!!) {
+                        if (f.name!!.toLowerCase(Locale.US).contains(charString.toLowerCase(Locale.US))) {
+                            filteredList.add(f)
                         }
-                        Collections.sort(filteredList, SEARCH_SORT.apply(charString))
-                        dataSet = filteredList
                     }
-                    false -> {
-                        val mutFacilities = facilities!!.toMutableList()
-                        mutFacilities.sort()
-                        dataSet = mutFacilities
-                    }
+                    Collections.sort(filteredList, SEARCH_SORT.apply(charString))
+                    filteredList
+                } else {
+                    val mutFacilities = facilities!!.toMutableList()
+                    mutFacilities.sort()
+                    mutFacilities
                 }
                 val filterResults = FilterResults()
                 filterResults.values = dataSet
