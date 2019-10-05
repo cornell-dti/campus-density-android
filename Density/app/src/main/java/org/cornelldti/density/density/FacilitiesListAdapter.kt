@@ -25,12 +25,12 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
     private var context: Context? = null
 
     open inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
-        internal var name: TextView
-        internal var openStatus: TextView
-        internal var firstBar: ImageView
-        internal var secondBar: ImageView
-        internal var thirdBar: ImageView
-        internal var fourthBar: ImageView
+        internal val name: TextView
+        internal val openStatus: TextView
+        internal val firstBar: ImageView
+        internal val secondBar: ImageView
+        internal val thirdBar: ImageView
+        internal val fourthBar: ImageView
 
         init {
             v.setOnClickListener(this)
@@ -93,7 +93,7 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
                 dataSet = if (charString.isNotEmpty()) {
                     val filteredList = ArrayList<Facility>()
                     for (f in facilities!!) {
-                        if (f.name!!.toLowerCase(Locale.US).contains(charString.toLowerCase(Locale.US))) {
+                        if (f.name.toLowerCase(Locale.US).contains(charString.toLowerCase(Locale.US))) {
                             filteredList.add(f)
                         }
                     }
@@ -214,8 +214,8 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
         init {
             SEARCH_SORT = Function { charString: String ->
                 Comparator { a: Facility, b: Facility ->
-                    val lowerA = a.name!!.toLowerCase(Locale.US)
-                    val lowerB = b.name!!.toLowerCase(Locale.US)
+                    val lowerA = a.name.toLowerCase(Locale.US)
+                    val lowerB = b.name.toLowerCase(Locale.US)
                     if (lowerA.startsWith(charString) && !lowerB.startsWith(charString)) {
                         return@Comparator -1
                     }
@@ -239,7 +239,7 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
                         }
                     }
 
-                    a.name!!.compareTo(b.name!!)
+                    a.name.compareTo(b.name)
                 }
             }
         }

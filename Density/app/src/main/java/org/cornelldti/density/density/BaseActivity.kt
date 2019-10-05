@@ -30,7 +30,7 @@ open class BaseActivity :
     var idToken: String? = null
         private set
 
-    private var auth: FirebaseAuth? = null
+    private lateinit var auth: FirebaseAuth
 
     /**
      * GETTER FUNCTION FOR ALL_FACILITIES LIST
@@ -43,7 +43,7 @@ open class BaseActivity :
      */
     val facilityOccupancyRating: Int = 0 // KEEPS TRACK OF SELECTED FACILITY'S OCCUPANCY
 
-    private var queue: RequestQueue? = null
+    private lateinit var queue: RequestQueue
 
     override fun onCreate(savedInstanceState: Bundle?) {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -60,8 +60,9 @@ open class BaseActivity :
 
     // Invoked whenever ID Token changed!
     override fun onIdTokenChanged(auth: FirebaseAuth) {
-        if (auth.currentUser != null) {
-            requestToken(auth.currentUser!!)
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            requestToken(currentUser)
         } else {
             signIn()
         }
@@ -77,7 +78,7 @@ open class BaseActivity :
     }
 
     fun refreshToken() {
-        requestToken(auth!!.currentUser!!)
+        requestToken(auth.currentUser!!)
     }
 
     private fun requestToken(user: FirebaseUser) {
@@ -86,7 +87,7 @@ open class BaseActivity :
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d("checkpoint", "gotToken")
-                        idToken = task.result!!.token
+                        idToken = task.result?.token
                         updateUI()
                     } else {
                         Log.d("AUTH ERROR", "Error obtaining Firebase Auth ID token")
@@ -97,8 +98,8 @@ open class BaseActivity :
     private fun checkUserSignedIn() {
         Log.d("checkpoint", "checkUserSignedIn")
         //        auth.addIdTokenListener(this);
-        auth!!.addAuthStateListener(this)
-        val user = auth!!.currentUser
+        auth.addAuthStateListener(this)
+        val user = auth.currentUser
         if (user == null) {
             signIn()
         } else {
@@ -109,12 +110,12 @@ open class BaseActivity :
 
     private fun signIn() {
         Log.d("checkpoint", "signIn")
-        auth!!.signInAnonymously()
+        auth.signInAnonymously()
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         Log.d("checkpoint", "signIn = success")
                         Log.d("Firebase", "signInAnonymously:success")
-                        val user = auth!!.currentUser
+                        val user = auth.currentUser
                         requestToken(user!!)
                     } else {
                         // If sign in fails, display a message to the user.
@@ -191,7 +192,7 @@ open class BaseActivity :
                 return headers
             }
         }
-        queue!!.add(facilityRequest)
+        queue.add(facilityRequest)
     }
 
     /**
@@ -203,12 +204,10 @@ open class BaseActivity :
             fetchFacilitiesOnResponse(response, refresh, success)
         }, Response.ErrorListener { error -> fetchFacilitiesOnError(error, success) }) {
             override fun getHeaders(): Map<String, String> {
-                val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer " + idToken!!
-                return headers
+                return hashMapOf("Authorization" to "Bearer ${idToken!!}")
             }
         }
-        queue!!.add(facilityListRequest)
+        queue.add(facilityListRequest)
     }
 
     fun fetchFacilityInfo(list: ArrayList<Facility>, refresh: Boolean, success: (Boolean) -> Unit) {
@@ -252,7 +251,7 @@ open class BaseActivity :
                 return headers
             }
         }
-        queue!!.add(facilityInfoRequest)
+        queue.add(facilityInfoRequest)
     }
 
     fun fetchFacilityOccupancy(list: ArrayList<Facility>, refresh: Boolean, success: (Boolean) -> Unit) {
@@ -270,7 +269,7 @@ open class BaseActivity :
                 return headers
             }
         }
-        queue!!.add(facilityOccupancyRequest)
+        queue.add(facilityOccupancyRequest)
     }
 
     open fun fetchOperatingHoursOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
@@ -283,7 +282,7 @@ open class BaseActivity :
 
 
     private fun fetchOperatingHours(success: (Boolean) -> Unit, day: String, facility: Facility) {
-        val operatingHoursRequest = object : JsonArrayRequest(Method.GET, OPERATING_HOURS_ENDPOINT + "?id=" + facility.id + "&startDate=" + getDate(day) + "&endDate=" + getDate(day), null, Response.Listener { response -> fetchOperatingHoursOnResponse(response, success, day) }, Response.ErrorListener { error ->
+        val operatingHoursRequest = object : JsonArrayRequest(Method.GET, "$OPERATING_HOURS_ENDPOINT?id=${facility.id}&startDate=${getDate(day)}&endDate=${getDate(day)}", null, Response.Listener { response -> fetchOperatingHoursOnResponse(response, success, day) }, Response.ErrorListener { error ->
             // Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
             Log.d("ERROR MESSAGE", error.toString())
             success(false)
@@ -294,12 +293,12 @@ open class BaseActivity :
                 return headers
             }
         }
-        queue!!.add(operatingHoursRequest)
+        queue.add(operatingHoursRequest)
     }
 
     fun fetchHistoricalJSON(success: (Boolean) -> Unit, day: String, facility: Facility) {
         fetchOperatingHours({ }, day, facility)
-        val historicalDataRequest = object : JsonArrayRequest(Method.GET, HISTORICAL_DATA_ENDPOINT + "?id=" + facility.id, null, Response.Listener { response -> fetchHistoricalJSONOnResponse(response, success, day) }, Response.ErrorListener { error ->
+        val historicalDataRequest = object : JsonArrayRequest(Method.GET, "$HISTORICAL_DATA_ENDPOINT?id=${facility.id}", null, Response.Listener { response -> fetchHistoricalJSONOnResponse(response, success, day) }, Response.ErrorListener { error ->
             // Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
             Log.d("ERROR MESSAGE", error.toString())
             success(false)
@@ -310,7 +309,7 @@ open class BaseActivity :
                 return headers
             }
         }
-        queue!!.add(historicalDataRequest)
+        queue.add(historicalDataRequest)
     }
 
     private fun getDate(day: String): String {

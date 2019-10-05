@@ -2,9 +2,7 @@ package org.cornelldti.density.density
 
 import java.io.Serializable
 
-class Facility : Serializable, Comparable<Facility> {
-    var name: String? = null
-    var id: String? = null
+class Facility(val name: String, val id: String) : Serializable, Comparable<Facility> {
     var occupancyRating: Int = 0
     var description: String? = null
     private var closingAt: Long = 0
@@ -51,14 +49,7 @@ class Facility : Serializable, Comparable<Facility> {
         NORTH, WEST, CENTRAL
     }
 
-    constructor(name: String, id: String) {
-        this.name = name
-        this.id = id
-    }
-
-    constructor(name: String, id: String, description: String, nextOpen: Long, closingAt: Long, address: String, campusLocation: CampusLocation, occupancy_rating: Int) {
-        this.name = name
-        this.id = id
+    constructor(name: String, id: String, description: String, nextOpen: Long, closingAt: Long, address: String, campusLocation: CampusLocation, occupancy_rating: Int) : this(name = name, id = id) {
         this.description = description
         this.location = campusLocation
         this.occupancyRating = occupancy_rating
