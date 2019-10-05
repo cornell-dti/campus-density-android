@@ -65,7 +65,7 @@ class Facility : Serializable, Comparable<Facility> {
         this.closingAt = closingAt
     }
 
-    fun setOccupancy_rating(i: Int): Facility {
+    fun setOccupancyRating(i: Int): Facility {
         if (i in 0..3) {
             this.occupancyRating = i
         }

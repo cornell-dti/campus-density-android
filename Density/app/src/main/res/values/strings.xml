@@ -3,6 +3,11 @@
     <string name="search_title"></string>
     <string name="endpoint_url">https://flux.api.internal.cornelldti.org/v1/</string>
 
+    <string name="all">All</string>
+    <string name="north">North</string>
+    <string name="west">West</string>
+    <string name="central">Central</string>
+
     <string name="Libe">libe</string>
     <string name="Jenny">cafejennie</string>
     <string name="Okenshields">okies</string>
@@ -29,6 +34,20 @@
     <string name="Thu">Thu</string>
     <string name="Fri">Fri</string>
     <string name="Sat">Sat</string>
+
+    <string name="Su">Su</string>
+    <string name="M">M</string>
+    <string name="Tu">Tu</string>
+    <string name="W">W</string>
+    <string name="Th">Th</string>
+    <string name="F">F</string>
+    <string name="Sa">Sa</string>
+
+    <!-- Content descriptions corresponding to the different pills -->
+    <string name="first_pill_content">First pill corresponding to no spots</string>
+    <string name="second_pill_content">Second pill corresponding to few spots</string>
+    <string name="third_pill_content">Third pill corresponding to some spots</string>
+    <string name="fourth_pill_content">Fourth pill corresponding to lots of spots</string>
 
     <string name="search_hint">Search</string>
     <string name="todaysHours">Today\'s Hours</string>

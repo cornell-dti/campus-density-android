@@ -22,14 +22,64 @@
         android:paddingRight="16dp"
         android:paddingBottom="16dp">
 
-        <TextView
-            android:id="@+id/facility_name"
-            style="@style/DTI.Headline6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="4dp"
-            android:text="Facility Name" />
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/description_phrase"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:gravity="start|center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/first_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="2.5dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/first_pill_content"
+                android:src="@drawable/rounded_box" />
+
+            <ImageView
+                android:id="@+id/second_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="2.5dp"
+                android:layout_marginRight="2.5dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/second_pill_content"
+                android:src="@drawable/rounded_box" />
+
+            <ImageView
+                android:id="@+id/third_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="2.5dp"
+                android:layout_marginRight="2.5dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/third_pill_content"
+                android:src="@drawable/rounded_box" />
+
+            <ImageView
+                android:id="@+id/fourth_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="2.5dp"
+                android:layout_marginEnd="0dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/fourth_pill_content"
+                android:src="@drawable/rounded_box" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/description_phrase"
@@ -49,62 +99,14 @@
             android:layout_alignParentEnd="true"
             android:text="Description" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@+id/description_phrase"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="8dp"
-            android:gravity="left|center"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/first_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="0dp"
-                android:layout_marginRight="2.5dp"
-                android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:paddingLeft="0dp"
-                android:src="@drawable/rounded_box" />
-
-            <ImageView
-                android:id="@+id/second_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="2.5dp"
-                android:layout_marginRight="2.5dp"
-                android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:src="@drawable/rounded_box" />
-
-            <ImageView
-                android:id="@+id/third_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="2.5dp"
-                android:layout_marginRight="2.5dp"
-                android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:src="@drawable/rounded_box" />
-
-            <ImageView
-                android:id="@+id/fourth_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="2.5dp"
-                android:layout_marginRight="0dp"
-                android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:paddingRight="0dp"
-                android:src="@drawable/rounded_box" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/facility_name"
+            style="@style/DTI.Headline6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="4dp"
+            android:text="Facility Name" />
 
 
     </RelativeLayout>

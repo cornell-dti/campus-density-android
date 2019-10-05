@@ -194,15 +194,15 @@
 //                                    JSONObject obj = response.getJSONObject(x);
 //                                    if (obj.getString("id")
 //                                            .equals(f_list.get(i).getId())) {
-//                                        f_list.set(i, f_list.get(i).setOccupancy_rating(obj.getInt("density")));
+//                                        f_list.set(i, f_list.get(i).setOccupancyRating(obj.getInt("density")));
 //                                    }
 //                                }
 //                            }
 //
-//                            all_facilities = f_list;
+//                            allFacilities = f_list;
 //
 ////                            if (!refresh) {
-////                                MainActivity.this.adapter = new FacilitiesListAdapter(MainActivity.this.all_facilities);
+////                                MainActivity.this.adapter = new FacilitiesListAdapter(MainActivity.this.allFacilities);
 ////                                MainActivity.this.adapter.setOnItemClickListener(new FacilitiesListAdapter.ClickListener() {
 ////                                    @Override
 ////                                    public void onItemClick(int position, View v) {
@@ -218,7 +218,7 @@
 ////                                setChipOnClickListener();
 ////                                setOnRefreshListener();
 ////                            } else {
-////                                MainActivity.this.adapter.setDataSet(all_facilities);
+////                                MainActivity.this.adapter.setDataSet(allFacilities);
 ////                                success.apply(true);
 ////                                switch (filterChips.getCheckedChipId()) {
 ////                                    case R.id.all:

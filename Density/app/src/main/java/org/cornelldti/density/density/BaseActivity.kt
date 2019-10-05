@@ -5,30 +5,23 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 
-import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GetTokenResult
 
 import org.json.JSONArray
 import org.json.JSONException
-import org.json.JSONObject
 
 import java.text.SimpleDateFormat
-import java.util.ArrayList
-import java.util.Calendar
-import java.util.HashMap
 import androidx.appcompat.app.AppCompatActivity
-import androidx.arch.core.util.Function
+import java.util.Calendar
+import java.util.Locale
+
 
 open class BaseActivity :
         AppCompatActivity(), FirebaseAuth.IdTokenListener, FirebaseAuth.AuthStateListener {
@@ -42,13 +35,13 @@ open class BaseActivity :
     /**
      * GETTER FUNCTION FOR ALL_FACILITIES LIST
      */
-    var all_facilities: ArrayList<Facility>? = null
+    var allFacilities: ArrayList<Facility>? = null
         private set // KEEPS TRACK OF ALL FACILITIES
 
     /**
      * GETTER FUNCTION FOR SELECTED FACILITY'S OCCUPANCY RATING
      */
-    val facility_occupancy_rating: Int = 0 // KEEPS TRACK OF SELECTED FACILITY'S OCCUPANCY
+    val facilityOccupancyRating: Int = 0 // KEEPS TRACK OF SELECTED FACILITY'S OCCUPANCY
 
     private var queue: RequestQueue? = null
 
@@ -87,7 +80,7 @@ open class BaseActivity :
         requestToken(auth!!.currentUser!!)
     }
 
-    protected fun requestToken(user: FirebaseUser) {
+    private fun requestToken(user: FirebaseUser) {
         Log.d("checkpoint", "requestToken")
         user.getIdToken(true)
                 .addOnCompleteListener { task ->
@@ -166,12 +159,12 @@ open class BaseActivity :
                 for (x in 0 until response.length()) {
                     val obj = response.getJSONObject(x)
                     if (obj.getString("id") == list[i].id) {
-                        list[i] = list[i].setOccupancy_rating(obj.getInt("density"))
+                        list[i] = list[i].setOccupancyRating(obj.getInt("density"))
                     }
                 }
             }
 
-            all_facilities = list
+            allFacilities = list
 
         } catch (e: JSONException) {
             success(false)
@@ -185,7 +178,7 @@ open class BaseActivity :
         val facilityRequest = object : JsonObjectRequest(Method.GET, "$HOW_DENSE_ENDPOINT?=$facId", null, Response.Listener { response ->
             Log.d("GOTOCCRATING", response.toString())
             //                        try {
-            //                            facility_occupancy_rating = response.getInt("density");
+            //                            facilityOccupancyRating = response.getInt("density");
             //                        }
             //                        catch(JSONException e)
             //                        {
@@ -289,7 +282,7 @@ open class BaseActivity :
     }
 
 
-    fun fetchOperatingHours(success: (Boolean) -> Unit, day: String, facility: Facility) {
+    private fun fetchOperatingHours(success: (Boolean) -> Unit, day: String, facility: Facility) {
         val operatingHoursRequest = object : JsonArrayRequest(Method.GET, OPERATING_HOURS_ENDPOINT + "?id=" + facility.id + "&startDate=" + getDate(day) + "&endDate=" + getDate(day), null, Response.Listener { response -> fetchOperatingHoursOnResponse(response, success, day) }, Response.ErrorListener { error ->
             // Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
             Log.d("ERROR MESSAGE", error.toString())
@@ -322,13 +315,13 @@ open class BaseActivity :
 
     private fun getDate(day: String): String {
         val current = Calendar.getInstance()
-        val format = SimpleDateFormat("MM-dd-yy")
-        val checkFormat = SimpleDateFormat("E")
+        val format = SimpleDateFormat("MM-dd-yy", Locale.US)
+        val checkFormat = SimpleDateFormat("E", Locale.US)
 
-        var dayCheck = checkFormat.format(current.time).toUpperCase()
+        var dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
         while (dayCheck != day) {
             current.add(Calendar.DAY_OF_MONTH, 1)
-            dayCheck = checkFormat.format(current.time).toUpperCase()
+            dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
         }
 
         return format.format(current.time)
@@ -336,13 +329,13 @@ open class BaseActivity :
 
     companion object {
 
-        private val FACILITY_LIST_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityList"
-        private val FACILITY_INFO_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityInfo"
-        private val HOW_DENSE_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/howDense"
+        private const val FACILITY_LIST_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityList"
+        private const val FACILITY_INFO_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityInfo"
+        private const val HOW_DENSE_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/howDense"
 
-        val OPERATING_HOURS_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityHours"
+        const val OPERATING_HOURS_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityHours"
 
-        val HISTORICAL_DATA_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/historicalData"
+        const val HISTORICAL_DATA_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/historicalData"
     }
 
 }
