@@ -30,7 +30,7 @@
             android:src="@drawable/ic_arrow_back" />
 
         <TextView
-            android:id="@+id/f_name"
+            android:id="@+id/facilityName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|start"
@@ -91,7 +91,7 @@
                 app:layout_constraintTop_toBottomOf="@id/now_header">
 
                 <ImageView
-                    android:id="@+id/first_pill"
+                    android:id="@+id/firstPill"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -102,7 +102,7 @@
                     android:src="@drawable/rounded_box" />
 
                 <ImageView
-                    android:id="@+id/second_pill"
+                    android:id="@+id/secondPill"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -113,7 +113,7 @@
                     android:src="@drawable/rounded_box" />
 
                 <ImageView
-                    android:id="@+id/third_pill"
+                    android:id="@+id/thirdPill"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -124,7 +124,7 @@
                     android:src="@drawable/rounded_box" />
 
                 <ImageView
-                    android:id="@+id/fourth_pill"
+                    android:id="@+id/fourthPill"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -192,20 +192,20 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/today_hours"
+                android:id="@+id/todayHours"
                 style="@style/DTI.Subtitle2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:gravity="center"
                 android:text=""
-                app:layout_constraintBottom_toTopOf="@id/f_hours"
+                app:layout_constraintBottom_toTopOf="@id/facilityHours"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/densityChart" />
 
             <TextView
-                android:id="@+id/f_hours"
+                android:id="@+id/facilityHours"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="1dp"
@@ -220,7 +220,7 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="4dp"
-                app:layout_constraintBottom_toTopOf="@+id/today_hours"
+                app:layout_constraintBottom_toTopOf="@+id/todayHours"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/dayChips" />

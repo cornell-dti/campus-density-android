@@ -1,5 +1,7 @@
 package org.cornelldti.density.density
 
+import kotlinx.android.synthetic.main.activity_main.*
+
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -23,9 +25,7 @@ import org.json.JSONException
 import java.util.ArrayList
 
 import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -33,18 +33,12 @@ import kotlin.math.absoluteValue
 
 class MainActivity : BaseActivity() {
 
-    private var facilities: RecyclerView? = null
-
-    private var spinner: ProgressBar? = null
-
-    private var swipeRefresh: SwipeRefreshLayout? = null
+    private lateinit var spinner: ProgressBar
 
     private var adapter: FacilitiesListAdapter? = null
 
     private var collapsingToolbarLayout: CollapsingToolbarLayout? = null
     private var appBarLayout: AppBarLayout? = null
-
-    private var toolbar: Toolbar? = null
 
     private var layoutManager: RecyclerView.LayoutManager? = null
 
@@ -55,10 +49,7 @@ class MainActivity : BaseActivity() {
 
     private val facilitiesScroll: Float = 0.toFloat()
 
-    private var nestedScrollView: NestedScrollView? = null
     private var searchView: SearchView? = null
-    private var failurePage: View? = null
-    private var progressBar: View? = null
 
     private var loaded: Boolean = false
 
@@ -67,23 +58,14 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        facilities = findViewById(R.id.facilities)
-
         spinner = findViewById(R.id.progressBar)
 
-        swipeRefresh = findViewById(R.id.swipe_refresh)
         setOnRefreshListener()
 
         appBarLayout = findViewById(R.id.appbar)
-        toolbar = findViewById(R.id.toolbar)
-
-        failurePage = findViewById(R.id.failure_page)
-        progressBar = findViewById(R.id.progressBar)
-
-        nestedScrollView = findViewById(R.id.nestedScrollView)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            nestedScrollView!!.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            nestedScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
                 val r = resources
 
                 // TODO Don't recalculate
@@ -109,7 +91,7 @@ class MainActivity : BaseActivity() {
         }
 
         collapsingToolbarLayout = findViewById(R.id.collapsingToolbar)
-        swipeRefresh!!.isNestedScrollingEnabled = true
+        swipeRefresh.isNestedScrollingEnabled = true
 
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
@@ -139,26 +121,25 @@ class MainActivity : BaseActivity() {
             }
         })
 
-        facilities!!.setHasFixedSize(true)
+        facilities.setHasFixedSize(true)
 
         layoutManager = LinearLayoutManager(this)
-        facilities!!.layoutManager = layoutManager
+        facilities.layoutManager = layoutManager
 
         fetchFacilities(false) { }
     }
 
     private fun setOnRefreshListener() {
-        swipeRefresh = findViewById(R.id.swipe_refresh)
-        swipeRefresh!!.setOnRefreshListener {
-            swipeRefresh!!.isRefreshing = true
+        swipeRefresh.setOnRefreshListener {
+            swipeRefresh.isRefreshing = true
             if (adapter == null) {
                 refreshToken()
                 fetchFacilities(false) { _ ->
-                    swipeRefresh!!.isRefreshing = false
+                    swipeRefresh.isRefreshing = false
                 }
             } else {
                 fetchFacilities(true) { _ ->
-                    swipeRefresh!!.isRefreshing = false
+                    swipeRefresh.isRefreshing = false
                 }
                 handleCheckChange(filterChips!!.checkedChipId)
             }
@@ -206,9 +187,9 @@ class MainActivity : BaseActivity() {
     override fun updateUI() {
         Log.d("updatedMainUI", "success")
         if (adapter == null)
-            fetchFacilities(false) { _ -> null }
+            fetchFacilities(false) { }
         else
-            fetchFacilities(true) { _ -> null }
+            fetchFacilities(true) { }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -234,7 +215,7 @@ class MainActivity : BaseActivity() {
         searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem): Boolean {
                 if (appBarLayout != null) {
-                    swipeRefresh!!.isEnabled = false
+                    swipeRefresh.isEnabled = false
                     appBarLayout!!.setExpanded(false)
                     val layoutParams = appBarLayout!!.layoutParams as CoordinatorLayout.LayoutParams
                     (layoutParams.behavior as LockableAppBarLayoutBehavior).lockScroll()
@@ -245,7 +226,7 @@ class MainActivity : BaseActivity() {
 
             override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                 if (appBarLayout != null) {
-                    swipeRefresh!!.isEnabled = true
+                    swipeRefresh.isEnabled = true
                     appBarLayout!!.setExpanded(false)
                     val layoutParams = appBarLayout!!.layoutParams as CoordinatorLayout.LayoutParams
                     (layoutParams.behavior as LockableAppBarLayoutBehavior).unlockScroll()
@@ -262,7 +243,7 @@ class MainActivity : BaseActivity() {
 
     override fun fetchFacilitiesOnResponse(response: JSONArray, refresh: Boolean, success: (Boolean) -> Unit) {
         try {
-            failurePage!!.visibility = View.GONE
+            failurePage.visibility = View.GONE
             val f = ArrayList<Facility>()
             for (i in 0 until response.length()) {
                 val facility = response.getJSONObject(i)
@@ -282,8 +263,8 @@ class MainActivity : BaseActivity() {
         handler.postDelayed({
             // Do something after 10s = 10000ms
             if (adapter == null) {
-                failurePage!!.visibility = View.VISIBLE
-                progressBar!!.visibility = View.INVISIBLE
+                failurePage.visibility = View.VISIBLE
+                progressBar.visibility = View.INVISIBLE
             }
         }, 10000)
     }
@@ -307,9 +288,9 @@ class MainActivity : BaseActivity() {
                 }
             })
 
-            this@MainActivity.facilities!!.adapter = adapter
-            this@MainActivity.spinner!!.visibility = View.GONE
-            this@MainActivity.facilities!!.visibility = View.VISIBLE
+            this@MainActivity.facilities.adapter = adapter
+            this@MainActivity.spinner.visibility = View.GONE
+            this@MainActivity.facilities.visibility = View.VISIBLE
             success(true)
             setChipOnClickListener()
         } else {

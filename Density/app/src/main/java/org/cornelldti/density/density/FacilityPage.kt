@@ -1,22 +1,20 @@
 package org.cornelldti.density.density
 
+import kotlinx.android.synthetic.main.facility_page.*
+
 import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.util.Log
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 
-import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 
 import org.cornelldti.density.density.util.ColorBarChartRenderer
 import org.cornelldti.density.density.util.ColorBarDataSet
@@ -37,32 +35,13 @@ class FacilityPage : BaseActivity() {
 
     private var selectedDay: String? = null
 
-    private var facilityName: TextView? = null
-    private var facilityHours: TextView? = null
-    private var currentOccupancy: TextView? = null
-    private var feedback: TextView? = null
-    private var todayHours: TextView? = null
-    private var backButton: ImageButton? = null
-    private var densityChart: BarChart? = null
+    private lateinit var feedback: TextView
     private var facility: Facility? = null
-    private var firstPill: ImageView? = null
-    private var secondPill: ImageView? = null
-    private var thirdPill: ImageView? = null
-    private var fourthPill: ImageView? = null
 
-    private var dayChips: ChipGroup? = null
-    private var sun: Chip? = null
-    private var mon: Chip? = null
-    private var tue: Chip? = null
-    private var wed: Chip? = null
-    private var thu: Chip? = null
-    private var fri: Chip? = null
-    private var sat: Chip? = null
     private var wasChecked: Int = 0
 
     private var opHours: List<String> = ArrayList() // KEEPS TRACK OF OPERATING HOURS FOR FACILITY
     private var densities: List<Double> = ArrayList() // KEEPS TRACK OF HISTORICAL DENSITIES
-
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,41 +54,20 @@ class FacilityPage : BaseActivity() {
         // TODO Uncomment this
         //     facility = refreshFacilityOccupancy(facility);
 
-        backButton = findViewById(R.id.backButton)
-        facilityName = findViewById(R.id.f_name)
-
-        currentOccupancy = findViewById(R.id.currentOccupancy)
-        firstPill = findViewById(R.id.first_pill)
-        secondPill = findViewById(R.id.second_pill)
-        thirdPill = findViewById(R.id.third_pill)
-        fourthPill = findViewById(R.id.fourth_pill)
-
         feedback = findViewById(R.id.accuracy)
 
-        dayChips = findViewById(R.id.dayChips)
-        sun = findViewById(R.id.sun)
-        mon = findViewById(R.id.mon)
-        tue = findViewById(R.id.tue)
-        wed = findViewById(R.id.wed)
-        thu = findViewById(R.id.thu)
-        fri = findViewById(R.id.fri)
-        sat = findViewById(R.id.sat)
-
-        densityChart = findViewById(R.id.densityChart)
-        densityChart!!.setNoDataText("")
-        todayHours = findViewById(R.id.today_hours)
-        facilityHours = findViewById(R.id.f_hours)
+        densityChart.setNoDataText("")
 
         initializeView()
     }
 
     private fun refreshFacilityOccupancy(fac: Facility): Facility {
-        singleFacilityOccupancy(fac.id!!)
+        singleFacilityOccupancy(fac.id)
         return fac.setOccupancyRating(super.facilityOccupancyRating)
     }
 
     private fun setChipOnClickListener() {
-        dayChips!!.setOnCheckedChangeListener { _, checkedId -> setDay(checkedId) }
+        dayChips.setOnCheckedChangeListener { _, checkedId -> setDay(checkedId) }
     }
 
     private fun setDay(checkedId: Int) {
@@ -122,7 +80,7 @@ class FacilityPage : BaseActivity() {
             R.id.thu -> day = "THU"
             R.id.fri -> day = "FRI"
             R.id.sat -> day = "SAT"
-            -1 -> dayChips!!.check(wasChecked)
+            -1 -> dayChips.check(wasChecked)
         }
         if (checkedId != -1 && wasChecked != checkedId) {
             wasChecked = checkedId
@@ -182,49 +140,49 @@ class FacilityPage : BaseActivity() {
         xAxis.add("")
         xAxis.add("")
 
-        densityChart!!.description.isEnabled = false
-        densityChart!!.legend.isEnabled = false
-        densityChart!!.setScaleEnabled(false)
-        densityChart!!.setTouchEnabled(true)
+        densityChart.description.isEnabled = false
+        densityChart.legend.isEnabled = false
+        densityChart.setScaleEnabled(false)
+        densityChart.setTouchEnabled(true)
 
         // sets the marker for the graph
         if (!isClosed) {
             // allows rounded bars on graph
-            densityChart!!.renderer = ColorBarChartRenderer(densityChart!!, densityChart!!.animator, densityChart!!.viewPortHandler)
+            densityChart.renderer = ColorBarChartRenderer(densityChart, densityChart.animator, densityChart.viewPortHandler)
             // removes gap between graph and the x-axis
-            densityChart!!.axisLeft.axisMinimum = 0f
+            densityChart.axisLeft.axisMinimum = 0f
             val marker = ColorBarMarkerView(applicationContext, R.layout.marker_layout)
-            densityChart!!.marker = marker
+            densityChart.marker = marker
         }
 
-        densityChart!!.axisLeft.isEnabled = false
-        densityChart!!.axisRight.isEnabled = false
-        densityChart!!.xAxis.setDrawGridLines(false)
-        densityChart!!.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        densityChart.axisLeft.isEnabled = false
+        densityChart.axisRight.isEnabled = false
+        densityChart.xAxis.setDrawGridLines(false)
+        densityChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
 
-        densityChart!!.xAxis.valueFormatter = IndexAxisValueFormatter(xAxis)
-        densityChart!!.xAxis.labelCount = xAxis.size
+        densityChart.xAxis.valueFormatter = IndexAxisValueFormatter(xAxis)
+        densityChart.xAxis.labelCount = xAxis.size
         if (!isClosed)
-            densityChart!!.data = data
+            densityChart.data = data
         else {
-            densityChart!!.data = null
-            val p = densityChart!!.getPaint(Chart.PAINT_INFO)
+            densityChart.data = null
+            val p = densityChart.getPaint(Chart.PAINT_INFO)
             p.textSize = 36f
             p.color = Color.BLACK
             p.isFakeBoldText = true
-            densityChart!!.setNoDataText("Closed")
+            densityChart.setNoDataText("Closed")
         }
-        densityChart!!.invalidate()
-        densityChart!!.animateY(500)
+        densityChart.invalidate()
+        densityChart.animateY(500)
 
     }
 
     private fun initializeView() {
-        facilityName!!.text = facility!!.name
-        currentOccupancy!!.text = getString(facility!!.densityResId)
-        feedback!!.movementMethod = LinkMovementMethod.getInstance()
+        facilityName.text = facility!!.name
+        currentOccupancy.text = getString(facility!!.densityResId)
+        feedback.movementMethod = LinkMovementMethod.getInstance()
 
-        backButton!!.setOnClickListener { onBackPressed() }
+        backButton.setOnClickListener { onBackPressed() }
 
         fetchHistoricalJSON({ }, FluxUtil.dayString, facility!!)
         setToday(FluxUtil.dayString)
@@ -263,25 +221,25 @@ class FacilityPage : BaseActivity() {
     private fun setToday(dayString: String) {
         selectedDay = dayString
         when (dayString) {
-            "SUN" -> sun!!.isChecked = true
-            "MON" -> mon!!.isChecked = true
-            "TUE" -> tue!!.isChecked = true
-            "WED" -> wed!!.isChecked = true
-            "THU" -> thu!!.isChecked = true
-            "FRI" -> fri!!.isChecked = true
-            "SAT" -> sat!!.isChecked = true
+            "SUN" -> sun.isChecked = true
+            "MON" -> mon.isChecked = true
+            "TUE" -> tue.isChecked = true
+            "WED" -> wed.isChecked = true
+            "THU" -> thu.isChecked = true
+            "FRI" -> fri.isChecked = true
+            "SAT" -> sat.isChecked = true
         }
-        wasChecked = dayChips!!.checkedChipId
+        wasChecked = dayChips.checkedChipId
     }
 
     private fun setOperatingHours(day: String) {
         Log.d("SET", "OPERATING")
         val hourTitle = FluxUtil.dayFullString(day)
-        todayHours!!.text = hourTitle
-        facilityHours!!.text = ""
+        todayHours.text = hourTitle
+        facilityHours.text = ""
         for (operatingSegment in opHours) {
-            val allHours = facilityHours!!.text.toString() + operatingSegment + if (opHours.indexOf(operatingSegment) == opHours.size - 1) "" else "\n"
-            facilityHours!!.text = allHours
+            val allHours = facilityHours.text.toString() + operatingSegment + if (opHours.indexOf(operatingSegment) == opHours.size - 1) "" else "\n"
+            facilityHours.text = allHours
         }
     }
 
