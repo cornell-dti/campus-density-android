@@ -77,7 +77,7 @@ open class BaseActivity :
         // add implementation
     }
 
-    fun refreshToken() {
+    protected fun refreshToken() {
         requestToken(auth.currentUser!!)
     }
 
@@ -129,7 +129,7 @@ open class BaseActivity :
 
     // API HANDLING FUNCTIONS HERE
 
-    open fun fetchFacilitiesOnResponse(response: JSONArray, refresh: Boolean, success: (Boolean) -> Unit) {
+    protected open fun fetchFacilitiesOnResponse(response: JSONArray, refresh: Boolean, success: (Boolean) -> Unit) {
         try {
             val f = ArrayList<Facility>()
             for (i in 0 until response.length()) {
@@ -144,12 +144,12 @@ open class BaseActivity :
 
     }
 
-    open fun fetchFacilitiesOnError(error: VolleyError, success: (Boolean) -> Unit) {
+    protected open fun fetchFacilitiesOnError(error: VolleyError, success: (Boolean) -> Unit) {
         Log.d("ERROR", error.toString())
         success(false)
     }
 
-    open fun fetchFacilityOccupancyOnResponse(
+    protected open fun fetchFacilityOccupancyOnResponse(
             list: ArrayList<Facility>,
             response: JSONArray,
             refresh: Boolean,
@@ -175,7 +175,7 @@ open class BaseActivity :
     }
 
     // TODO Function returns a 403 Error Code!
-    fun singleFacilityOccupancy(facId: String) {
+    protected fun singleFacilityOccupancy(facId: String) {
         val facilityRequest = object : JsonObjectRequest(Method.GET, "$HOW_DENSE_ENDPOINT?=$facId", null, Response.Listener { response ->
             Log.d("GOTOCCRATING", response.toString())
             //                        try {
@@ -198,7 +198,7 @@ open class BaseActivity :
     /**
      * @return
      */
-    fun fetchFacilities(refresh: Boolean, success: (Boolean) -> Unit) {
+    protected fun fetchFacilities(refresh: Boolean, success: (Boolean) -> Unit) {
         val facilityListRequest = object : JsonArrayRequest(Method.GET, FACILITY_LIST_ENDPOINT, null, Response.Listener { response ->
             Log.d("RESP1", response.toString())
             fetchFacilitiesOnResponse(response, refresh, success)
@@ -210,7 +210,7 @@ open class BaseActivity :
         queue.add(facilityListRequest)
     }
 
-    fun fetchFacilityInfo(list: ArrayList<Facility>, refresh: Boolean, success: (Boolean) -> Unit) {
+    protected fun fetchFacilityInfo(list: ArrayList<Facility>, refresh: Boolean, success: (Boolean) -> Unit) {
         val facilityInfoRequest = object : JsonArrayRequest(Method.GET, FACILITY_INFO_ENDPOINT, null, Response.Listener { response ->
             Log.d("RESP2", response.toString())
             try {
@@ -254,7 +254,7 @@ open class BaseActivity :
         queue.add(facilityInfoRequest)
     }
 
-    fun fetchFacilityOccupancy(list: ArrayList<Facility>, refresh: Boolean, success: (Boolean) -> Unit) {
+    private fun fetchFacilityOccupancy(list: ArrayList<Facility>, refresh: Boolean, success: (Boolean) -> Unit) {
         val facilityOccupancyRequest = object : JsonArrayRequest(Method.GET, HOW_DENSE_ENDPOINT, null, Response.Listener { response ->
             Log.d("RESP3", response.toString())
             fetchFacilityOccupancyOnResponse(list, response, refresh, success)
@@ -272,14 +272,13 @@ open class BaseActivity :
         queue.add(facilityOccupancyRequest)
     }
 
-    open fun fetchOperatingHoursOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
+    protected open fun fetchOperatingHoursOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
         // OVERRIDE IN FACILITYPAGE
     }
 
-    open fun fetchHistoricalJSONOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
+    protected open fun fetchHistoricalJSONOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
         // OVERRIDE IN FACILITYPAGE
     }
-
 
     private fun fetchOperatingHours(success: (Boolean) -> Unit, day: String, facility: Facility) {
         val operatingHoursRequest = object : JsonArrayRequest(Method.GET, "$OPERATING_HOURS_ENDPOINT?id=${facility.id}&startDate=${getDate(day)}&endDate=${getDate(day)}", null, Response.Listener { response -> fetchOperatingHoursOnResponse(response, success, day) }, Response.ErrorListener { error ->
@@ -296,7 +295,7 @@ open class BaseActivity :
         queue.add(operatingHoursRequest)
     }
 
-    fun fetchHistoricalJSON(success: (Boolean) -> Unit, day: String, facility: Facility) {
+    protected fun fetchHistoricalJSON(success: (Boolean) -> Unit, day: String, facility: Facility) {
         fetchOperatingHours({ }, day, facility)
         val historicalDataRequest = object : JsonArrayRequest(Method.GET, "$HISTORICAL_DATA_ENDPOINT?id=${facility.id}", null, Response.Listener { response -> fetchHistoricalJSONOnResponse(response, success, day) }, Response.ErrorListener { error ->
             // Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
