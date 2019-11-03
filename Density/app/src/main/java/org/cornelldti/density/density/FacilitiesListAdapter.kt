@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.arch.core.util.Function
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import org.cornelldti.density.density.models.Facility
 import java.util.*
 
 class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<FacilitiesListAdapter.ViewHolder>(), Filterable {

@@ -16,7 +16,7 @@
 //import com.google.android.gms.iid.InstanceID;
 //
 //import org.cornelldti.density.density.FacilitiesListAdapter;
-//import org.cornelldti.density.density.Facility;
+//import org.cornelldti.density.density.models.Facility;
 //import org.cornelldti.density.density.FacilityPage;
 //import org.cornelldti.density.density.MainActivity;
 //import org.cornelldti.density.density.R;

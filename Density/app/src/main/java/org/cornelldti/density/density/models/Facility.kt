@@ -1,5 +1,6 @@
-package org.cornelldti.density.density
+package org.cornelldti.density.density.models
 
+import org.cornelldti.density.density.R
 import java.io.Serializable
 
 class Facility(val name: String, val id: String) : Serializable, Comparable<Facility> {
