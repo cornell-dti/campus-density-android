@@ -1,4 +1,4 @@
-package org.cornelldti.density.density
+package org.cornelldti.density.density.facilitydetail
 
 import kotlinx.android.synthetic.main.facility_page.*
 
@@ -16,9 +16,9 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 
-import org.cornelldti.density.density.util.ColorBarChartRenderer
-import org.cornelldti.density.density.util.ColorBarDataSet
-import org.cornelldti.density.density.util.ColorBarMarkerView
+import org.cornelldti.density.density.colorbarutil.ColorBarChartRenderer
+import org.cornelldti.density.density.colorbarutil.ColorBarDataSet
+import org.cornelldti.density.density.colorbarutil.ColorBarMarkerView
 import org.cornelldti.density.density.util.FluxUtil
 import org.cornelldti.density.density.util.ValueFormatter
 import org.json.JSONArray
@@ -27,6 +27,9 @@ import org.json.JSONException
 import java.text.SimpleDateFormat
 
 import androidx.core.content.ContextCompat
+import org.cornelldti.density.density.BaseActivity
+import org.cornelldti.density.density.data.FacilityClass
+import org.cornelldti.density.density.R
 import java.util.Calendar
 import java.util.Locale
 import java.util.Date
@@ -36,7 +39,7 @@ class FacilityPage : BaseActivity() {
     private var selectedDay: String? = null
 
     private lateinit var feedback: TextView
-    private var facility: Facility? = null
+    private var facilityClass: FacilityClass? = null
 
     private var wasChecked: Int = 0
 
@@ -49,10 +52,10 @@ class FacilityPage : BaseActivity() {
 
         val b = intent.extras
         if (b != null) {
-            facility = b.getSerializable(ARG_PARAM) as Facility
+            facilityClass = b.getSerializable(ARG_PARAM) as FacilityClass
         }
         // TODO Uncomment this
-        //     facility = refreshFacilityOccupancy(facility);
+        //     facilityClass = refreshFacilityOccupancy(facilityClass);
 
         feedback = findViewById(R.id.accuracy)
 
@@ -61,7 +64,7 @@ class FacilityPage : BaseActivity() {
         initializeView()
     }
 
-    private fun refreshFacilityOccupancy(fac: Facility): Facility {
+    private fun refreshFacilityOccupancy(fac: FacilityClass): FacilityClass {
         singleFacilityOccupancy(fac.id)
         return fac.setOccupancyRating(super.facilityOccupancyRating)
     }
@@ -85,7 +88,7 @@ class FacilityPage : BaseActivity() {
         if (checkedId != -1 && wasChecked != checkedId) {
             wasChecked = checkedId
             selectedDay = day
-            fetchHistoricalJSON({ }, day, facility!!)
+            fetchHistoricalJSON({ }, day, facilityClass!!)
         }
     }
 
@@ -178,13 +181,13 @@ class FacilityPage : BaseActivity() {
     }
 
     private fun initializeView() {
-        facilityName.text = facility!!.name
-        currentOccupancy.text = getString(facility!!.densityResId)
+        facilityName.text = facilityClass!!.name
+        currentOccupancy.text = getString(facilityClass!!.densityResId)
         feedback.movementMethod = LinkMovementMethod.getInstance()
 
         backButton.setOnClickListener { onBackPressed() }
 
-        fetchHistoricalJSON({ }, FluxUtil.dayString, facility!!)
+        fetchHistoricalJSON({ }, FluxUtil.dayString, facilityClass!!)
         setToday(FluxUtil.dayString)
         setChipOnClickListener()
         setPills()
@@ -198,8 +201,8 @@ class FacilityPage : BaseActivity() {
         bars.add(fourthPill)
 
         var color = R.color.filler_boxes
-        if (facility!!.isOpen) {
-            when (facility!!.occupancyRating) {
+        if (facilityClass!!.isOpen) {
+            when (facilityClass!!.occupancyRating) {
                 0 -> color = R.color.very_empty
                 1 -> color = R.color.pretty_empty
                 2 -> color = R.color.pretty_crowded
@@ -207,7 +210,7 @@ class FacilityPage : BaseActivity() {
             }
         }
 
-        for (i in 0..facility!!.occupancyRating) {
+        for (i in 0..facilityClass!!.occupancyRating) {
             bars[i]?.setColorFilter(ContextCompat.getColor(applicationContext, color))
         }
 
@@ -245,7 +248,7 @@ class FacilityPage : BaseActivity() {
 
     override fun updateUI() {
         Log.d("updatedFPUI", "updating")
-        fetchHistoricalJSON({ }, selectedDay!!, facility!!)
+        fetchHistoricalJSON({ }, selectedDay!!, facilityClass!!)
     }
 
     private fun getDate(day: String): String {
@@ -274,7 +277,7 @@ class FacilityPage : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        //        Intent intent = new Intent(FacilityPage.this, MainActivity.class);
+        //        Intent intent = new Intent(FacilityPage.this, FacilitiesActivity.class);
         //        startActivity(intent);
         finish()
     }

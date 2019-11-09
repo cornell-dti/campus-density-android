@@ -19,6 +19,7 @@ import org.json.JSONException
 
 import java.text.SimpleDateFormat
 import androidx.appcompat.app.AppCompatActivity
+import org.cornelldti.density.density.data.FacilityClass
 import java.util.Calendar
 import java.util.Locale
 
@@ -35,7 +36,7 @@ open class BaseActivity :
     /**
      * GETTER FUNCTION FOR ALL_FACILITIES LIST
      */
-    var allFacilities: ArrayList<Facility>? = null
+    var allFacilityClasses: ArrayList<FacilityClass>? = null
         private set // KEEPS TRACK OF ALL FACILITIES
 
     /**
@@ -131,10 +132,10 @@ open class BaseActivity :
 
     protected open fun fetchFacilitiesOnResponse(response: JSONArray, refresh: Boolean, success: (Boolean) -> Unit) {
         try {
-            val f = ArrayList<Facility>()
+            val f = ArrayList<FacilityClass>()
             for (i in 0 until response.length()) {
                 val facility = response.getJSONObject(i)
-                f.add(Facility(facility.getString("displayName"), facility.getString("id")))
+                f.add(FacilityClass(facility.getString("displayName"), facility.getString("id")))
             }
             fetchFacilityInfo(f, refresh, success)
         } catch (e: JSONException) {
@@ -150,7 +151,7 @@ open class BaseActivity :
     }
 
     protected open fun fetchFacilityOccupancyOnResponse(
-            list: ArrayList<Facility>,
+            list: ArrayList<FacilityClass>,
             response: JSONArray,
             refresh: Boolean,
             success: (Boolean) -> Unit
@@ -165,7 +166,7 @@ open class BaseActivity :
                 }
             }
 
-            allFacilities = list
+            allFacilityClasses = list
 
         } catch (e: JSONException) {
             success(false)
@@ -210,7 +211,7 @@ open class BaseActivity :
         queue.add(facilityListRequest)
     }
 
-    protected fun fetchFacilityInfo(list: ArrayList<Facility>, refresh: Boolean, success: (Boolean) -> Unit) {
+    protected fun fetchFacilityInfo(list: ArrayList<FacilityClass>, refresh: Boolean, success: (Boolean) -> Unit) {
         val facilityInfoRequest = object : JsonArrayRequest(Method.GET, FACILITY_INFO_ENDPOINT, null, Response.Listener { response ->
             Log.d("RESP2", response.toString())
             try {
@@ -254,7 +255,7 @@ open class BaseActivity :
         queue.add(facilityInfoRequest)
     }
 
-    private fun fetchFacilityOccupancy(list: ArrayList<Facility>, refresh: Boolean, success: (Boolean) -> Unit) {
+    private fun fetchFacilityOccupancy(list: ArrayList<FacilityClass>, refresh: Boolean, success: (Boolean) -> Unit) {
         val facilityOccupancyRequest = object : JsonArrayRequest(Method.GET, HOW_DENSE_ENDPOINT, null, Response.Listener { response ->
             Log.d("RESP3", response.toString())
             fetchFacilityOccupancyOnResponse(list, response, refresh, success)
@@ -280,8 +281,8 @@ open class BaseActivity :
         // OVERRIDE IN FACILITYPAGE
     }
 
-    private fun fetchOperatingHours(success: (Boolean) -> Unit, day: String, facility: Facility) {
-        val operatingHoursRequest = object : JsonArrayRequest(Method.GET, "$OPERATING_HOURS_ENDPOINT?id=${facility.id}&startDate=${getDate(day)}&endDate=${getDate(day)}", null, Response.Listener { response -> fetchOperatingHoursOnResponse(response, success, day) }, Response.ErrorListener { error ->
+    private fun fetchOperatingHours(success: (Boolean) -> Unit, day: String, facilityClass: FacilityClass) {
+        val operatingHoursRequest = object : JsonArrayRequest(Method.GET, "$OPERATING_HOURS_ENDPOINT?id=${facilityClass.id}&startDate=${getDate(day)}&endDate=${getDate(day)}", null, Response.Listener { response -> fetchOperatingHoursOnResponse(response, success, day) }, Response.ErrorListener { error ->
             // Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
             Log.d("ERROR MESSAGE", error.toString())
             success(false)
@@ -295,9 +296,9 @@ open class BaseActivity :
         queue.add(operatingHoursRequest)
     }
 
-    protected fun fetchHistoricalJSON(success: (Boolean) -> Unit, day: String, facility: Facility) {
-        fetchOperatingHours({ }, day, facility)
-        val historicalDataRequest = object : JsonArrayRequest(Method.GET, "$HISTORICAL_DATA_ENDPOINT?id=${facility.id}", null, Response.Listener { response -> fetchHistoricalJSONOnResponse(response, success, day) }, Response.ErrorListener { error ->
+    protected fun fetchHistoricalJSON(success: (Boolean) -> Unit, day: String, facilityClass: FacilityClass) {
+        fetchOperatingHours({ }, day, facilityClass)
+        val historicalDataRequest = object : JsonArrayRequest(Method.GET, "$HISTORICAL_DATA_ENDPOINT?id=${facilityClass.id}", null, Response.Listener { response -> fetchHistoricalJSONOnResponse(response, success, day) }, Response.ErrorListener { error ->
             // Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
             Log.d("ERROR MESSAGE", error.toString())
             success(false)

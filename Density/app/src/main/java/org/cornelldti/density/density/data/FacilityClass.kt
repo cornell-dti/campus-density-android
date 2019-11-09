@@ -1,8 +1,9 @@
-package org.cornelldti.density.density
+package org.cornelldti.density.density.data
 
+import org.cornelldti.density.density.R
 import java.io.Serializable
 
-class Facility(val name: String, val id: String) : Serializable, Comparable<Facility> {
+class FacilityClass(val name: String, val id: String) : Serializable, Comparable<FacilityClass> {
     var occupancyRating: Int = 0
     var description: String? = null
     private var closingAt: Long = 0
@@ -36,7 +37,7 @@ class Facility(val name: String, val id: String) : Serializable, Comparable<Faci
         this.closingAt = closingAt
     }
 
-    override fun compareTo(other: Facility): Int = when {
+    override fun compareTo(other: FacilityClass): Int = when {
         !other.isOpen && this.isOpen -> -1
         other.isOpen && !this.isOpen -> 1
         other.occupancyRating < this.occupancyRating -> 1
@@ -56,14 +57,14 @@ class Facility(val name: String, val id: String) : Serializable, Comparable<Faci
         this.closingAt = closingAt
     }
 
-    fun setOccupancyRating(i: Int): Facility {
+    fun setOccupancyRating(i: Int): FacilityClass {
         if (i in 0..3) {
             this.occupancyRating = i
         }
         return this
     }
 
-    fun setLocation(loc: String): Facility {
+    fun setLocation(loc: String): FacilityClass {
         when (loc) {
             "north" -> this.location = CampusLocation.NORTH
             "central" -> this.location = CampusLocation.CENTRAL

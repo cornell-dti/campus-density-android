@@ -1,4 +1,4 @@
-package org.cornelldti.density.density
+package org.cornelldti.density.density.facilities
 
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -28,10 +28,14 @@ import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import org.cornelldti.density.density.BaseActivity
+import org.cornelldti.density.density.data.FacilityClass
+import org.cornelldti.density.density.LockableAppBarLayoutBehavior
+import org.cornelldti.density.density.R
+import org.cornelldti.density.density.facilitydetail.FacilityPage
 import kotlin.math.absoluteValue
 
-class MainActivity : BaseActivity() {
+class FacilitiesActivity : BaseActivity() {
 
     private lateinit var spinner: ProgressBar
 
@@ -163,19 +167,19 @@ class MainActivity : BaseActivity() {
             }
 
             R.id.north -> {
-                adapter!!.filterFacilitiesByLocation(Facility.CampusLocation.NORTH)
+                adapter!!.filterFacilitiesByLocation(FacilityClass.CampusLocation.NORTH)
                 wasChecked = R.id.north
                 Log.d("SIZENORTH", adapter!!.itemCount.toString())
             }
 
             R.id.west -> {
-                adapter!!.filterFacilitiesByLocation(Facility.CampusLocation.WEST)
+                adapter!!.filterFacilitiesByLocation(FacilityClass.CampusLocation.WEST)
                 wasChecked = R.id.west
                 Log.d("SIZEWEST", adapter!!.itemCount.toString())
             }
 
             R.id.central -> {
-                adapter!!.filterFacilitiesByLocation(Facility.CampusLocation.CENTRAL)
+                adapter!!.filterFacilitiesByLocation(FacilityClass.CampusLocation.CENTRAL)
                 wasChecked = R.id.central
                 Log.d("SIZECENTRAL", adapter!!.itemCount.toString())
             }
@@ -244,10 +248,10 @@ class MainActivity : BaseActivity() {
     override fun fetchFacilitiesOnResponse(response: JSONArray, refresh: Boolean, success: (Boolean) -> Unit) {
         try {
             failurePage.visibility = View.GONE
-            val f = ArrayList<Facility>()
+            val f = ArrayList<FacilityClass>()
             for (i in 0 until response.length()) {
                 val facility = response.getJSONObject(i)
-                f.add(Facility(facility.getString("displayName"), facility.getString("id")))
+                f.add(FacilityClass(facility.getString("displayName"), facility.getString("id")))
             }
             fetchFacilityInfo(f, refresh, success)
         } catch (e: JSONException) {
@@ -270,17 +274,17 @@ class MainActivity : BaseActivity() {
     }
 
     override fun fetchFacilityOccupancyOnResponse(
-            list: ArrayList<Facility>,
+            list: ArrayList<FacilityClass>,
             response: JSONArray,
             refresh: Boolean,
             success: (Boolean) -> Unit
     ) {
         super.fetchFacilityOccupancyOnResponse(list, response, refresh, success)
         if (!refresh) {
-            this@MainActivity.adapter = FacilitiesListAdapter(allFacilities!!)
-            this@MainActivity.adapter!!.setOnItemClickListener(object : FacilitiesListAdapter.ClickListener {
+            this@FacilitiesActivity.adapter = FacilitiesListAdapter(allFacilityClasses!!)
+            this@FacilitiesActivity.adapter!!.setOnItemClickListener(object : FacilitiesListAdapter.ClickListener {
                 override fun onItemClick(position: Int, v: View) {
-                    val intent = Intent(this@MainActivity, FacilityPage::class.java)
+                    val intent = Intent(this@FacilitiesActivity, FacilityPage::class.java)
                     val b = Bundle()
                     b.putSerializable(FacilityPage.ARG_PARAM, adapter!!.dataSet!![position])
                     intent.putExtras(b)
@@ -288,22 +292,22 @@ class MainActivity : BaseActivity() {
                 }
             })
 
-            this@MainActivity.facilities.adapter = adapter
-            this@MainActivity.spinner.visibility = View.GONE
-            this@MainActivity.facilities.visibility = View.VISIBLE
+            this@FacilitiesActivity.facilities.adapter = adapter
+            this@FacilitiesActivity.spinner.visibility = View.GONE
+            this@FacilitiesActivity.facilities.visibility = View.VISIBLE
             success(true)
             setChipOnClickListener()
         } else {
-            this@MainActivity.adapter!!.setDataSet(allFacilities!!)
+            this@FacilitiesActivity.adapter!!.setDataSet(allFacilityClasses!!)
             success(true)
             when (filterChips!!.checkedChipId) {
                 R.id.all -> adapter!!.showAllLocations()
 
-                R.id.north -> adapter!!.filterFacilitiesByLocation(Facility.CampusLocation.NORTH)
+                R.id.north -> adapter!!.filterFacilitiesByLocation(FacilityClass.CampusLocation.NORTH)
 
-                R.id.west -> adapter!!.filterFacilitiesByLocation(Facility.CampusLocation.WEST)
+                R.id.west -> adapter!!.filterFacilitiesByLocation(FacilityClass.CampusLocation.WEST)
 
-                R.id.central -> adapter!!.filterFacilitiesByLocation(Facility.CampusLocation.CENTRAL)
+                R.id.central -> adapter!!.filterFacilitiesByLocation(FacilityClass.CampusLocation.CENTRAL)
 
                 -1 -> all!!.isChecked = true
             }

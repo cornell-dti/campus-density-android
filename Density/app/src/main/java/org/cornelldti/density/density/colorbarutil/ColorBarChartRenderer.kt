@@ -1,4 +1,4 @@
-package org.cornelldti.density.density.util
+package org.cornelldti.density.density.colorbarutil
 
 import android.graphics.Canvas
 import android.graphics.RectF

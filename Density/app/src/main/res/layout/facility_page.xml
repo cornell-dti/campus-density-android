@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
-    tools:context=".FacilityPage">
+    tools:context=".facilitydetail.FacilityPage">
 
     <LinearLayout
         android:id="@+id/topView"
