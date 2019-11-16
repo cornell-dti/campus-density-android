@@ -12,9 +12,17 @@ import org.cornelldti.density.density.util.FluxUtil
 import org.json.JSONArray
 import org.json.JSONException
 
-class API {
+object API {
+    private const val FACILITY_LIST_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityList"
+    private const val FACILITY_INFO_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityInfo"
+    private const val HOW_DENSE_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/howDense"
+
+    private const val OPERATING_HOURS_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityHours"
+
+    private const val HISTORICAL_DATA_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/historicalData"
+
     private var queue: RequestQueue = Volley.newRequestQueue(DensityApplication.getAppContext())
-    private lateinit var allFacilityClasses: ArrayList<FacilityClass>
+    private var allFacilityClasses: MutableList<FacilityClass> = ArrayList()
 
     private fun fetchFacilitiesOnResponse(idToken: String, response: JSONArray, refresh: Boolean, success: (Boolean) -> Unit) {
         try {
@@ -64,7 +72,7 @@ class API {
     /**
      * @return
      */
-    private fun fetchFacilities(idToken: String, refresh: Boolean, success: (Boolean) -> Unit) {
+    fun fetchFacilities(idToken: String, refresh: Boolean, success: (Boolean) -> Unit) {
         val facilityListRequest = object : JsonArrayRequest(Method.GET, FACILITY_LIST_ENDPOINT, null, Response.Listener { response ->
             Log.d("RESP1", response.toString())
             fetchFacilitiesOnResponse(idToken, response, refresh, success)
@@ -173,16 +181,5 @@ class API {
             }
         }
         queue.add(historicalDataRequest)
-    }
-
-    companion object {
-
-        private const val FACILITY_LIST_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityList"
-        private const val FACILITY_INFO_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityInfo"
-        private const val HOW_DENSE_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/howDense"
-
-        private const val OPERATING_HOURS_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityHours"
-
-        private const val HISTORICAL_DATA_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/historicalData"
     }
 }

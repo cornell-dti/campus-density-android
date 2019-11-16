@@ -33,6 +33,7 @@ import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.LockableAppBarLayoutBehavior
 import org.cornelldti.density.density.R
 import org.cornelldti.density.density.facilitydetail.FacilityPage
+import org.cornelldti.density.density.network.API
 import kotlin.math.absoluteValue
 
 class FacilitiesActivity : BaseActivity() {
@@ -138,11 +139,11 @@ class FacilitiesActivity : BaseActivity() {
             swipeRefresh.isRefreshing = true
             if (adapter == null) {
                 refreshToken()
-                fetchFacilities(false) { _ ->
+                fetchFacilities(refresh = false) {
                     swipeRefresh.isRefreshing = false
                 }
             } else {
-                fetchFacilities(true) { _ ->
+                fetchFacilities(refresh = true) {
                     swipeRefresh.isRefreshing = false
                 }
                 handleCheckChange(filterChips!!.checkedChipId)

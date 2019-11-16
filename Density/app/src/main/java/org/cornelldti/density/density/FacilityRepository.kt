@@ -6,10 +6,10 @@ import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.network.API
 
 class FacilityRepository {
-    private val api: API = API()
     fun getFacilities(): LiveData<FacilityClass> {
         val data = MutableLiveData<MutableList<FacilityClass>>()
 //        api.getFacilities().
+
 
         TODO()
     }
