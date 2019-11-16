@@ -89,7 +89,7 @@ class FacilityPage : BaseActivity() {
         if (checkedId != -1 && wasChecked != checkedId) {
             wasChecked = checkedId
             selectedDay = day
-            fetchHistoricalJSON({ }, day, facilityClass!!)
+            fetchHistoricalJSON(day, facilityClass!!.id)
         }
     }
 
@@ -188,7 +188,7 @@ class FacilityPage : BaseActivity() {
 
         backButton.setOnClickListener { onBackPressed() }
 
-        fetchHistoricalJSON({ }, FluxUtil.dayString, facilityClass!!)
+        fetchHistoricalJSON(day = FluxUtil.dayString, facilityId = facilityClass!!.id)
         setToday(FluxUtil.dayString)
         setChipOnClickListener()
         setPills()
@@ -249,14 +249,18 @@ class FacilityPage : BaseActivity() {
 
     override fun updateUI() {
         Log.d("updatedFPUI", "updating")
+        fetchHistoricalJSON(day = selectedDay!!, facilityId = facilityClass!!.id)
+    }
+
+    private fun fetchHistoricalJSON(day: String, facilityId: String) {
         api.fetchHistoricalJSON(
-                day = selectedDay!!,
-                facilityId = facilityClass!!.id,
-                fetchHistoricalJSONOnResponse = { response, day ->
-                    fetchHistoricalJSONOnResponse(response = response, success = {}, day = day)
+                day = day,
+                facilityId = facilityId,
+                fetchHistoricalJSONOnResponse = { response, d ->
+                    fetchHistoricalJSONOnResponse(response = response, success = {}, day = d)
                 },
-                fetchOperatingHoursOnResponse = { response, day ->
-                    fetchOperatingHoursOnResponse(response = response, success = {}, day = day)
+                fetchOperatingHoursOnResponse = { response, d ->
+                    fetchOperatingHoursOnResponse(response = response, success = {}, day = d)
                 }
         )
     }

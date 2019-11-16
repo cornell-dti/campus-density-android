@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat
 import androidx.appcompat.app.AppCompatActivity
 import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.network.API
+import org.cornelldti.density.density.util.FluxUtil
 import java.util.Calendar
 import java.util.Locale
 
@@ -200,22 +201,7 @@ open class BaseActivity :
         queue.add(facilityRequest)
     }
 
-    /**
-     * @return
-     */
-    protected fun fetchFacilities(refresh: Boolean, success: (Boolean) -> Unit) {
-        val facilityListRequest = object : JsonArrayRequest(Method.GET, FACILITY_LIST_ENDPOINT, null, Response.Listener { response ->
-            Log.d("RESP1", response.toString())
-            fetchFacilitiesOnResponse(response, refresh, success)
-        }, Response.ErrorListener { error -> fetchFacilitiesOnError(error, success) }) {
-            override fun getHeaders(): Map<String, String> {
-                return hashMapOf("Authorization" to "Bearer ${idToken!!}")
-            }
-        }
-        queue.add(facilityListRequest)
-    }
-
-    protected fun fetchFacilityInfo(list: ArrayList<FacilityClass>, refresh: Boolean, success: (Boolean) -> Unit) {
+    private fun fetchFacilityInfo(list: ArrayList<FacilityClass>, refresh: Boolean, success: (Boolean) -> Unit) {
         val facilityInfoRequest = object : JsonArrayRequest(Method.GET, FACILITY_INFO_ENDPOINT, null, Response.Listener { response ->
             Log.d("RESP2", response.toString())
             try {
@@ -285,60 +271,11 @@ open class BaseActivity :
         // OVERRIDE IN FACILITYPAGE
     }
 
-    private fun fetchOperatingHours(success: (Boolean) -> Unit, day: String, facilityClass: FacilityClass) {
-        val operatingHoursRequest = object : JsonArrayRequest(Method.GET, "$OPERATING_HOURS_ENDPOINT?id=${facilityClass.id}&startDate=${getDate(day)}&endDate=${getDate(day)}", null, Response.Listener { response -> fetchOperatingHoursOnResponse(response, success, day) }, Response.ErrorListener { error ->
-            // Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
-            Log.d("ERROR MESSAGE", error.toString())
-            success(false)
-        }) {
-            override fun getHeaders(): Map<String, String> {
-                val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer " + idToken!!
-                return headers
-            }
-        }
-        queue.add(operatingHoursRequest)
-    }
-
-    protected fun fetchHistoricalJSON(success: (Boolean) -> Unit, day: String, facilityClass: FacilityClass) {
-        fetchOperatingHours({ }, day, facilityClass)
-        val historicalDataRequest = object : JsonArrayRequest(Method.GET, "$HISTORICAL_DATA_ENDPOINT?id=${facilityClass.id}", null, Response.Listener { response -> fetchHistoricalJSONOnResponse(response, success, day) }, Response.ErrorListener { error ->
-            // Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
-            Log.d("ERROR MESSAGE", error.toString())
-            success(false)
-        }) {
-            override fun getHeaders(): Map<String, String> {
-                val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer " + idToken!!
-                return headers
-            }
-        }
-        queue.add(historicalDataRequest)
-    }
-
-    private fun getDate(day: String): String {
-        val current = Calendar.getInstance()
-        val format = SimpleDateFormat("MM-dd-yy", Locale.US)
-        val checkFormat = SimpleDateFormat("E", Locale.US)
-
-        var dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
-        while (dayCheck != day) {
-            current.add(Calendar.DAY_OF_MONTH, 1)
-            dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
-        }
-
-        return format.format(current.time)
-    }
-
     companion object {
 
-        private const val FACILITY_LIST_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityList"
         private const val FACILITY_INFO_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityInfo"
         private const val HOW_DENSE_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/howDense"
 
-        const val OPERATING_HOURS_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityHours"
-
-        const val HISTORICAL_DATA_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/historicalData"
     }
 
 }
