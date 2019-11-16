@@ -29,14 +29,6 @@ class API(context: Context) {
         this.idToken = idToken
     }
 
-    private fun fetchFacilityOccupancyOnResponse(
-            list: ArrayList<FacilityClass>,
-            response: JSONArray,
-            success: (Boolean) -> Unit
-    ) {
-        // override
-    }
-
     /**
      * @return
      */
@@ -61,40 +53,53 @@ class API(context: Context) {
         queue.add(facilityListRequest)
     }
 
-    private fun fetchFacilityInfo(list: ArrayList<FacilityClass>, success: (Boolean) -> Unit) {
-        val facilityInfoRequest = object : JsonArrayRequest(Method.GET, FACILITY_INFO_ENDPOINT, null, Response.Listener { response ->
-            Log.d("RESP2", response.toString())
-            try {
-                for (i in list.indices) {
-                    for (x in 0 until response.length()) {
-                        val obj = response.getJSONObject(x)
-                        if (obj.getString("id") == list[i].id) {
-                            val f = list[i]
-                            if (obj.has("campusLocation")) {
-                                f.setLocation(obj.getString("campusLocation"))
-                            }
+    fun fetchFacilityInfo(
+            list: ArrayList<FacilityClass>,
+            success: (Boolean) -> Unit,
+            fetchFacilityOccupancyOnResponse: (
+                    list: ArrayList<FacilityClass>,
+                    response: JSONArray,
+                    success: (Boolean) -> Unit
+            ) -> Unit) {
+        val facilityInfoRequest = object : JsonArrayRequest(
+                Method.GET,
+                FACILITY_INFO_ENDPOINT,
+                null,
+                Response.Listener { response ->
+                    Log.d("RESP2", response.toString())
+                    try {
+                        for (i in list.indices) {
+                            for (x in 0 until response.length()) {
+                                val obj = response.getJSONObject(x)
+                                if (obj.getString("id") == list[i].id) {
+                                    val f = list[i]
+                                    if (obj.has("campusLocation")) {
+                                        f.setLocation(obj.getString("campusLocation"))
+                                    }
 
-                            if (obj.has("description")) {
-                                f.description = obj.getString("description")
-                            }
+                                    if (obj.has("description")) {
+                                        f.description = obj.getString("description")
+                                    }
 
-                            if (obj.has("closingAt")) {
-                                f.setClosingAt(obj.getLong("closingAt"))
-                            }
+                                    if (obj.has("closingAt")) {
+                                        f.setClosingAt(obj.getLong("closingAt"))
+                                    }
 
-                            list[i] = f
+                                    list[i] = f
+                                }
+                            }
                         }
+                        fetchFacilityOccupancy(list, success, fetchFacilityOccupancyOnResponse)
+                    } catch (e: JSONException) {
+                        success(false)
+                        e.printStackTrace()
                     }
+                },
+                Response.ErrorListener { error ->
+                    Log.d("ERROR MESSAGE", error.toString())
+                    success(false)
                 }
-                fetchFacilityOccupancy(list, success)
-            } catch (e: JSONException) {
-                success(false)
-                e.printStackTrace()
-            }
-        }, Response.ErrorListener { error ->
-            Log.d("ERROR MESSAGE", error.toString())
-            success(false)
-        }) {
+        ) {
             override fun getHeaders(): Map<String, String> {
                 val headers = HashMap<String, String>()
                 headers["Authorization"] = "Bearer $idToken"
@@ -104,14 +109,27 @@ class API(context: Context) {
         queue.add(facilityInfoRequest)
     }
 
-    private fun fetchFacilityOccupancy(list: ArrayList<FacilityClass>, success: (Boolean) -> Unit) {
-        val facilityOccupancyRequest = object : JsonArrayRequest(Method.GET, HOW_DENSE_ENDPOINT, null, Response.Listener { response ->
-            Log.d("RESP3", response.toString())
-            fetchFacilityOccupancyOnResponse(list, response, success)
-        }, Response.ErrorListener { error ->
-            success(false)
-            Log.d("ERROR MESSAGE", error.toString())
-        }) {
+    private fun fetchFacilityOccupancy(
+            list: ArrayList<FacilityClass>,
+            success: (Boolean) -> Unit,
+            fetchFacilityOccupancyOnResponse: (
+                    list: ArrayList<FacilityClass>,
+                    response: JSONArray,
+                    success: (Boolean) -> Unit
+            ) -> Unit) {
+        val facilityOccupancyRequest = object : JsonArrayRequest(
+                Method.GET,
+                HOW_DENSE_ENDPOINT,
+                null,
+                Response.Listener { response ->
+                    Log.d("RESP3", response.toString())
+                    fetchFacilityOccupancyOnResponse(list, response, success)
+                },
+                Response.ErrorListener { error ->
+                    success(false)
+                    Log.d("ERROR MESSAGE", error.toString())
+                }
+        ) {
             override fun getHeaders(): Map<String, String> {
                 val headers = HashMap<String, String>()
                 headers["Authorization"] = "Bearer  $idToken"
@@ -122,39 +140,39 @@ class API(context: Context) {
     }
 
     private fun fetchOperatingHours(
-        day: String,
-        facilityId: String,
-        fetchOperatingHoursOnResponse: (response: JSONArray, day: String) -> Unit
+            day: String,
+            facilityId: String,
+            fetchOperatingHoursOnResponse: (response: JSONArray, day: String) -> Unit
     ) {
         val operatingHoursRequest = object : JsonArrayRequest(
-            Method.GET,
-            "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=${FluxUtil.getDate(day)}&endDate=${FluxUtil.getDate(day)}",
-            null,
-            Response.Listener { response -> fetchOperatingHoursOnResponse(response, day) },
-            Response.ErrorListener { error -> Log.d("ERROR MESSAGE", error.toString()) }
+                Method.GET,
+                "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=${FluxUtil.getDate(day)}&endDate=${FluxUtil.getDate(day)}",
+                null,
+                Response.Listener { response -> fetchOperatingHoursOnResponse(response, day) },
+                Response.ErrorListener { error -> Log.d("ERROR MESSAGE", error.toString()) }
         ) {
-                override fun getHeaders(): Map<String, String> {
-                    val headers = HashMap<String, String>()
-                    headers["Authorization"] = "Bearer $idToken"
-                    return headers
+            override fun getHeaders(): Map<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Authorization"] = "Bearer $idToken"
+                return headers
             }
         }
         queue.add(operatingHoursRequest)
     }
 
     fun fetchHistoricalJSON(
-        day: String,
-        facilityId: String,
-        fetchOperatingHoursOnResponse: (response: JSONArray, day: String) -> Unit,
-        fetchHistoricalJSONOnResponse: (response: JSONArray, day: String) -> Unit
+            day: String,
+            facilityId: String,
+            fetchOperatingHoursOnResponse: (response: JSONArray, day: String) -> Unit,
+            fetchHistoricalJSONOnResponse: (response: JSONArray, day: String) -> Unit
     ) {
         fetchOperatingHours(day, facilityId, fetchOperatingHoursOnResponse)
         val historicalDataRequest = object : JsonArrayRequest(
-            Method.GET,
-            "$HISTORICAL_DATA_ENDPOINT?id=$facilityId",
-            null,
-            Response.Listener { response -> fetchHistoricalJSONOnResponse(response, day) },
-            Response.ErrorListener { error -> Log.d("ERROR MESSAGE", error.toString()) }
+                Method.GET,
+                "$HISTORICAL_DATA_ENDPOINT?id=$facilityId",
+                null,
+                Response.Listener { response -> fetchHistoricalJSONOnResponse(response, day) },
+                Response.ErrorListener { error -> Log.d("ERROR MESSAGE", error.toString()) }
         ) {
             override fun getHeaders(): Map<String, String> {
                 val headers = HashMap<String, String>()
