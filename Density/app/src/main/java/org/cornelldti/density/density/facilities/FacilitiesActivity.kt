@@ -131,7 +131,21 @@ class FacilitiesActivity : BaseActivity() {
         layoutManager = LinearLayoutManager(this)
         facilities.layoutManager = layoutManager
 
-        fetchFacilities(false) { }
+        fetchFacilities { }
+    }
+
+    private fun fetchFacilities(success: (Boolean) -> Unit) {
+        api.fetchFacilities(
+                success = success,
+                fetchFacilitiesOnResponse = { response, successCallback ->
+                    fetchFacilitiesOnResponse(
+                            response = response, refresh = false, success = successCallback
+                    )
+                },
+                fetchFacilitiesOnError = { error, successCallback ->
+                    fetchFacilitiesOnError(error = error, success = successCallback)
+                }
+        )
     }
 
     private fun setOnRefreshListener() {
@@ -139,13 +153,9 @@ class FacilitiesActivity : BaseActivity() {
             swipeRefresh.isRefreshing = true
             if (adapter == null) {
                 refreshToken()
-                fetchFacilities(refresh = false) {
-                    swipeRefresh.isRefreshing = false
-                }
+                fetchFacilities { swipeRefresh.isRefreshing = false }
             } else {
-                fetchFacilities(refresh = true) {
-                    swipeRefresh.isRefreshing = false
-                }
+                fetchFacilities { swipeRefresh.isRefreshing = false }
                 handleCheckChange(filterChips!!.checkedChipId)
             }
         }
@@ -191,10 +201,7 @@ class FacilitiesActivity : BaseActivity() {
 
     override fun updateUI() {
         Log.d("updatedMainUI", "success")
-        if (adapter == null)
-            fetchFacilities(false) { }
-        else
-            fetchFacilities(true) { }
+        fetchFacilities { }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
