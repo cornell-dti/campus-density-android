@@ -130,8 +130,6 @@ class FacilitiesActivity : BaseActivity() {
 
         layoutManager = LinearLayoutManager(this)
         facilities.layoutManager = layoutManager
-
-        fetchFacilities { }
     }
 
     private fun fetchFacilities(success: (Boolean) -> Unit) {
@@ -261,7 +259,16 @@ class FacilitiesActivity : BaseActivity() {
                 val facility = response.getJSONObject(i)
                 f.add(FacilityClass(facility.getString("displayName"), facility.getString("id")))
             }
-            fetchFacilityInfo(f, refresh, success)
+            api.fetchFacilityInfo(
+                    list = f,
+                    success = success)
+            { list, resp, _ ->
+                fetchFacilityOccupancyOnResponse(
+                        list = list,
+                        response = resp,
+                        refresh = false,
+                        success = success)
+            }
         } catch (e: JSONException) {
             success(false)
             e.printStackTrace()

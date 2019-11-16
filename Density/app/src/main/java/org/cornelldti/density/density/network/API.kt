@@ -132,7 +132,7 @@ class API(context: Context) {
         ) {
             override fun getHeaders(): Map<String, String> {
                 val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer  $idToken"
+                headers["Authorization"] = "Bearer $idToken"
                 return headers
             }
         }
