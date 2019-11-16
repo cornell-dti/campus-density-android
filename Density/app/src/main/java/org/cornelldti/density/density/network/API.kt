@@ -24,30 +24,9 @@ private const val HISTORICAL_DATA_ENDPOINT = "https://flux.api.internal.cornelld
 class API(context: Context) {
     private lateinit var idToken: String
     private var queue: RequestQueue = Volley.newRequestQueue(context)
-    private var allFacilityClasses: MutableList<FacilityClass> = ArrayList()
 
     fun setIdToken(idToken: String) {
         this.idToken = idToken
-    }
-
-    private fun fetchFacilitiesOnResponse(response: JSONArray, success: (Boolean) -> Unit) {
-        try {
-            val f = ArrayList<FacilityClass>()
-            for (i in 0 until response.length()) {
-                val facility = response.getJSONObject(i)
-                f.add(FacilityClass(facility.getString("displayName"), facility.getString("id")))
-            }
-            fetchFacilityInfo(f, success)
-        } catch (e: JSONException) {
-            success(false)
-            e.printStackTrace()
-        }
-
-    }
-
-    private fun fetchFacilitiesOnError(error: VolleyError, success: (Boolean) -> Unit) {
-        Log.d("ERROR", error.toString())
-        success(false)
     }
 
     private fun fetchFacilityOccupancyOnResponse(
@@ -55,33 +34,26 @@ class API(context: Context) {
             response: JSONArray,
             success: (Boolean) -> Unit
     ) {
-        try {
-            for (i in list.indices) {
-                for (x in 0 until response.length()) {
-                    val obj = response.getJSONObject(x)
-                    if (obj.getString("id") == list[i].id) {
-                        list[i] = list[i].setOccupancyRating(obj.getInt("density"))
-                    }
-                }
-            }
-
-            allFacilityClasses = list
-
-        } catch (e: JSONException) {
-            success(false)
-            e.printStackTrace()
-        }
-
+        // override
     }
 
     /**
      * @return
      */
-    fun fetchFacilities(success: (Boolean) -> Unit) {
-        val facilityListRequest = object : JsonArrayRequest(Method.GET, FACILITY_LIST_ENDPOINT, null, Response.Listener { response ->
-            Log.d("RESP1", response.toString())
-            fetchFacilitiesOnResponse(response, success)
-        }, Response.ErrorListener { error -> fetchFacilitiesOnError(error, success) }) {
+    fun fetchFacilities(
+            success: (Boolean) -> Unit,
+            fetchFacilitiesOnResponse: (response: JSONArray, success: (Boolean) -> Unit) -> Unit,
+            fetchFacilitiesOnError: (error: VolleyError, success: (Boolean) -> Unit) -> Unit
+    ) {
+        val facilityListRequest = object : JsonArrayRequest(
+                Method.GET,
+                FACILITY_LIST_ENDPOINT,
+                null,
+                Response.Listener { response ->
+                    Log.d("RESP1", response.toString())
+                    fetchFacilitiesOnResponse(response, success)
+                }, Response.ErrorListener { error -> fetchFacilitiesOnError(error, success) }
+        ) {
             override fun getHeaders(): Map<String, String> {
                 return hashMapOf("Authorization" to "Bearer $idToken")
             }
