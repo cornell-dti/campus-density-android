@@ -135,26 +135,6 @@ open class BaseActivity :
 
     // API HANDLING FUNCTIONS HERE
 
-    protected open fun fetchFacilitiesOnResponse(response: JSONArray, refresh: Boolean, success: (Boolean) -> Unit) {
-        try {
-            val f = ArrayList<FacilityClass>()
-            for (i in 0 until response.length()) {
-                val facility = response.getJSONObject(i)
-                f.add(FacilityClass(facility.getString("displayName"), facility.getString("id")))
-            }
-            fetchFacilityInfo(f, refresh, success)
-        } catch (e: JSONException) {
-            success(false)
-            e.printStackTrace()
-        }
-
-    }
-
-    protected open fun fetchFacilitiesOnError(error: VolleyError, success: (Boolean) -> Unit) {
-        Log.d("ERROR", error.toString())
-        success(false)
-    }
-
     protected open fun fetchFacilityOccupancyOnResponse(
             list: ArrayList<FacilityClass>,
             response: JSONArray,
@@ -201,71 +181,8 @@ open class BaseActivity :
         queue.add(facilityRequest)
     }
 
-    private fun fetchFacilityInfo(list: ArrayList<FacilityClass>, refresh: Boolean, success: (Boolean) -> Unit) {
-        val facilityInfoRequest = object : JsonArrayRequest(Method.GET, FACILITY_INFO_ENDPOINT, null, Response.Listener { response ->
-            Log.d("RESP2", response.toString())
-            try {
-                for (i in list.indices) {
-                    for (x in 0 until response.length()) {
-                        val obj = response.getJSONObject(x)
-                        if (obj.getString("id") == list[i].id) {
-                            val f = list[i]
-                            if (obj.has("campusLocation")) {
-                                f.setLocation(obj.getString("campusLocation"))
-                            }
-
-                            if (obj.has("description")) {
-                                f.description = obj.getString("description")
-                            }
-
-                            if (obj.has("closingAt")) {
-                                f.setClosingAt(obj.getLong("closingAt"))
-                            }
-
-                            list[i] = f
-                        }
-                    }
-                }
-                fetchFacilityOccupancy(list, refresh, success)
-            } catch (e: JSONException) {
-                success(false)
-                e.printStackTrace()
-            }
-        }, Response.ErrorListener { error ->
-            Toast.makeText(this@BaseActivity, "Please check internet connection", Toast.LENGTH_LONG).show()
-            Log.d("ERROR MESSAGE", error.toString())
-            success(false)
-        }) {
-            override fun getHeaders(): Map<String, String> {
-                val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer " + idToken!!
-                return headers
-            }
-        }
-        queue.add(facilityInfoRequest)
-    }
-
-    private fun fetchFacilityOccupancy(list: ArrayList<FacilityClass>, refresh: Boolean, success: (Boolean) -> Unit) {
-        val facilityOccupancyRequest = object : JsonArrayRequest(Method.GET, HOW_DENSE_ENDPOINT, null, Response.Listener { response ->
-            Log.d("RESP3", response.toString())
-            fetchFacilityOccupancyOnResponse(list, response, refresh, success)
-        }, Response.ErrorListener { error ->
-            success(false)
-            Toast.makeText(this@BaseActivity, "Please check internet connection", Toast.LENGTH_LONG).show()
-            Log.d("ERROR MESSAGE", error.toString())
-        }) {
-            override fun getHeaders(): Map<String, String> {
-                val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer " + idToken!!
-                return headers
-            }
-        }
-        queue.add(facilityOccupancyRequest)
-    }
-
     companion object {
 
-        private const val FACILITY_INFO_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityInfo"
         private const val HOW_DENSE_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/howDense"
 
     }

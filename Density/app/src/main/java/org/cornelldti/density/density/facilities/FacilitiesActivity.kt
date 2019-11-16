@@ -251,7 +251,7 @@ class FacilitiesActivity : BaseActivity() {
 
     // FETCH FUNCTIONS OVERRIDES
 
-    override fun fetchFacilitiesOnResponse(response: JSONArray, refresh: Boolean, success: (Boolean) -> Unit) {
+    private fun fetchFacilitiesOnResponse(response: JSONArray, refresh: Boolean, success: (Boolean) -> Unit) {
         try {
             failurePage.visibility = View.GONE
             val f = ArrayList<FacilityClass>()
@@ -276,8 +276,9 @@ class FacilitiesActivity : BaseActivity() {
 
     }
 
-    override fun fetchFacilitiesOnError(error: VolleyError, success: (Boolean) -> Unit) {
-        super.fetchFacilitiesOnError(error, success)
+    private fun fetchFacilitiesOnError(error: VolleyError, success: (Boolean) -> Unit) {
+        Log.d("ERROR", error.toString())
+        success(false)
         val handler = Handler()
         handler.postDelayed({
             // Do something after 10s = 10000ms
