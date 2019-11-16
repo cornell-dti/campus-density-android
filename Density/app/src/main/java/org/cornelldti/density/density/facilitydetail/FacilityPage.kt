@@ -66,7 +66,7 @@ class FacilityPage : BaseActivity() {
     }
 
     private fun refreshFacilityOccupancy(fac: FacilityClass): FacilityClass {
-        singleFacilityOccupancy(fac.id)
+        api.singleFacilityOccupancy(fac.id)
         return fac.setOccupancyRating(super.facilityOccupancyRating)
     }
 

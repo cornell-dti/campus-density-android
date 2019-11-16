@@ -6,7 +6,9 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
+import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import org.cornelldti.density.density.BaseActivity
 import org.cornelldti.density.density.DensityApplication
 import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.util.FluxUtil
@@ -181,5 +183,26 @@ class API(context: Context) {
             }
         }
         queue.add(historicalDataRequest)
+    }
+
+    // TODO Function returns a 403 Error Code!
+    fun singleFacilityOccupancy(facId: String) {
+        val facilityRequest = object : JsonObjectRequest(Method.GET, "$HOW_DENSE_ENDPOINT?=$facId", null, Response.Listener { response ->
+            Log.d("GOTOCCRATING", response.toString())
+            //                        try {
+            //                            facilityOccupancyRating = response.getInt("density");
+            //                        }
+            //                        catch(JSONException e)
+            //                        {
+            //                            e.printStackTrace();
+            //                        }
+        }, Response.ErrorListener { error -> Log.d("ERRORSON", error.toString()) }) {
+            override fun getHeaders(): Map<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Authorization"] = "Bearer $idToken"
+                return headers
+            }
+        }
+        queue.add(facilityRequest)
     }
 }

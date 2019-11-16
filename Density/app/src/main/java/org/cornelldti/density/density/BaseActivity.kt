@@ -37,12 +37,6 @@ open class BaseActivity :
     protected lateinit var api: API
 
     /**
-     * GETTER FUNCTION FOR ALL_FACILITIES LIST
-     */
-    var allFacilityClasses: ArrayList<FacilityClass>? = null
-        private set // KEEPS TRACK OF ALL FACILITIES
-
-    /**
      * GETTER FUNCTION FOR SELECTED FACILITY'S OCCUPANCY RATING
      */
     val facilityOccupancyRating: Int = 0 // KEEPS TRACK OF SELECTED FACILITY'S OCCUPANCY
@@ -131,60 +125,6 @@ open class BaseActivity :
                                 Toast.LENGTH_SHORT).show()
                     }
                 }
-    }
-
-    // API HANDLING FUNCTIONS HERE
-
-    protected open fun fetchFacilityOccupancyOnResponse(
-            list: ArrayList<FacilityClass>,
-            response: JSONArray,
-            refresh: Boolean,
-            success: (Boolean) -> Unit
-    ) {
-        try {
-            for (i in list.indices) {
-                for (x in 0 until response.length()) {
-                    val obj = response.getJSONObject(x)
-                    if (obj.getString("id") == list[i].id) {
-                        list[i] = list[i].setOccupancyRating(obj.getInt("density"))
-                    }
-                }
-            }
-
-            allFacilityClasses = list
-
-        } catch (e: JSONException) {
-            success(false)
-            e.printStackTrace()
-        }
-
-    }
-
-    // TODO Function returns a 403 Error Code!
-    protected fun singleFacilityOccupancy(facId: String) {
-        val facilityRequest = object : JsonObjectRequest(Method.GET, "$HOW_DENSE_ENDPOINT?=$facId", null, Response.Listener { response ->
-            Log.d("GOTOCCRATING", response.toString())
-            //                        try {
-            //                            facilityOccupancyRating = response.getInt("density");
-            //                        }
-            //                        catch(JSONException e)
-            //                        {
-            //                            e.printStackTrace();
-            //                        }
-        }, Response.ErrorListener { error -> Log.d("ERRORSON", error.toString()) }) {
-            override fun getHeaders(): Map<String, String> {
-                val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer " + idToken!!
-                return headers
-            }
-        }
-        queue.add(facilityRequest)
-    }
-
-    companion object {
-
-        private const val HOW_DENSE_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/howDense"
-
     }
 
 }

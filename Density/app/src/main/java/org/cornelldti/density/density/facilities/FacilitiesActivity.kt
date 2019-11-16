@@ -58,6 +58,8 @@ class FacilitiesActivity : BaseActivity() {
 
     private var loaded: Boolean = false
 
+    private var allFacilityClasses: ArrayList<FacilityClass>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         loaded = false
         super.onCreate(savedInstanceState)
@@ -289,13 +291,28 @@ class FacilitiesActivity : BaseActivity() {
         }, 10000)
     }
 
-    override fun fetchFacilityOccupancyOnResponse(
+    private fun fetchFacilityOccupancyOnResponse(
             list: ArrayList<FacilityClass>,
             response: JSONArray,
             refresh: Boolean,
             success: (Boolean) -> Unit
     ) {
-        super.fetchFacilityOccupancyOnResponse(list, response, refresh, success)
+        try {
+            for (i in list.indices) {
+                for (x in 0 until response.length()) {
+                    val obj = response.getJSONObject(x)
+                    if (obj.getString("id") == list[i].id) {
+                        list[i] = list[i].setOccupancyRating(obj.getInt("density"))
+                    }
+                }
+            }
+
+            allFacilityClasses = list
+
+        } catch (e: JSONException) {
+            success(false)
+            e.printStackTrace()
+        }
         if (!refresh) {
             this@FacilitiesActivity.adapter = FacilitiesListAdapter(allFacilityClasses!!)
             this@FacilitiesActivity.adapter!!.setOnItemClickListener(object : FacilitiesListAdapter.ClickListener {
