@@ -20,6 +20,7 @@ import org.json.JSONException
 import java.text.SimpleDateFormat
 import androidx.appcompat.app.AppCompatActivity
 import org.cornelldti.density.density.data.FacilityClass
+import org.cornelldti.density.density.network.API
 import java.util.Calendar
 import java.util.Locale
 
@@ -32,6 +33,7 @@ open class BaseActivity :
         private set
 
     private lateinit var auth: FirebaseAuth
+    protected lateinit var api: API
 
     /**
      * GETTER FUNCTION FOR ALL_FACILITIES LIST
@@ -50,6 +52,7 @@ open class BaseActivity :
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         super.onCreate(savedInstanceState)
         auth = FirebaseAuth.getInstance()
+        api = API(context = this)
         checkUserSignedIn()
         queue = Volley.newRequestQueue(this)
     }
@@ -89,6 +92,7 @@ open class BaseActivity :
                     if (task.isSuccessful) {
                         Log.d("checkpoint", "gotToken")
                         idToken = task.result?.token
+                        idToken?.let { api.setIdToken(it) }
                         updateUI()
                     } else {
                         Log.d("AUTH ERROR", "Error obtaining Firebase Auth ID token")

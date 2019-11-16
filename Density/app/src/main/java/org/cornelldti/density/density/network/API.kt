@@ -21,9 +21,14 @@ private const val OPERATING_HOURS_ENDPOINT = "https://flux.api.internal.cornelld
 
 private const val HISTORICAL_DATA_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/historicalData"
 
-class API(private val idToken: String, context: Context) {
+class API(context: Context) {
+    private lateinit var idToken: String
     private var queue: RequestQueue = Volley.newRequestQueue(context)
     private var allFacilityClasses: MutableList<FacilityClass> = ArrayList()
+
+    fun setIdToken(idToken: String) {
+        this.idToken = idToken
+    }
 
     private fun fetchFacilitiesOnResponse(response: JSONArray, success: (Boolean) -> Unit) {
         try {

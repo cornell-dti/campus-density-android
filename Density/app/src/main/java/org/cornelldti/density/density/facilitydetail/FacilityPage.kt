@@ -30,6 +30,7 @@ import androidx.core.content.ContextCompat
 import org.cornelldti.density.density.BaseActivity
 import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.R
+import org.cornelldti.density.density.network.API
 import java.util.Calendar
 import java.util.Locale
 import java.util.Date
@@ -248,7 +249,16 @@ class FacilityPage : BaseActivity() {
 
     override fun updateUI() {
         Log.d("updatedFPUI", "updating")
-        fetchHistoricalJSON({ }, selectedDay!!, facilityClass!!)
+        api.fetchHistoricalJSON(
+                day = selectedDay!!,
+                facilityId = facilityClass!!.id,
+                fetchHistoricalJSONOnResponse = { response, day ->
+                    fetchHistoricalJSONOnResponse(response = response, success = {}, day = day)
+                },
+                fetchOperatingHoursOnResponse = { response, day ->
+                    fetchOperatingHoursOnResponse(response = response, success = {}, day = day)
+                }
+        )
     }
 
     private fun getDate(day: String): String {
