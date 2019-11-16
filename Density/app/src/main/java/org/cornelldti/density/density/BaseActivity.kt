@@ -263,14 +263,6 @@ open class BaseActivity :
         queue.add(facilityOccupancyRequest)
     }
 
-    protected open fun fetchOperatingHoursOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
-        // OVERRIDE IN FACILITYPAGE
-    }
-
-    protected open fun fetchHistoricalJSONOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
-        // OVERRIDE IN FACILITYPAGE
-    }
-
     companion object {
 
         private const val FACILITY_INFO_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityInfo"

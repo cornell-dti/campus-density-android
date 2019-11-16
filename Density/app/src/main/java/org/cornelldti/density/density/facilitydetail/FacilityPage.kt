@@ -298,9 +298,7 @@ class FacilityPage : BaseActivity() {
 
     // OVERRIDE API FUNCTIONS
 
-
-    override fun fetchOperatingHoursOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
-        super.fetchOperatingHoursOnResponse(response, success, day)
+    private fun fetchOperatingHoursOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
         opHours = ArrayList()
         val operatingHours = ArrayList<String>()
         try {
@@ -320,7 +318,7 @@ class FacilityPage : BaseActivity() {
         success(true)
     }
 
-    override fun fetchHistoricalJSONOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
+    private fun fetchHistoricalJSONOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
         val historicalDensities = ArrayList<Double>()
         try {
             val facilityHistory = response.getJSONObject(0).getJSONObject("hours")
