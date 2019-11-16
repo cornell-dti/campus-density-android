@@ -8,6 +8,7 @@ import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import org.cornelldti.density.density.DensityApplication
 import org.cornelldti.density.density.data.FacilityClass
+import org.cornelldti.density.density.util.FluxUtil
 import org.json.JSONArray
 import org.json.JSONException
 
@@ -15,14 +16,14 @@ class API {
     private var queue: RequestQueue = Volley.newRequestQueue(DensityApplication.getAppContext())
     private lateinit var allFacilityClasses: ArrayList<FacilityClass>
 
-    protected open fun fetchFacilitiesOnResponse(response: JSONArray, refresh: Boolean, success: (Boolean) -> Unit) {
+    private fun fetchFacilitiesOnResponse(idToken: String, response: JSONArray, refresh: Boolean, success: (Boolean) -> Unit) {
         try {
             val f = ArrayList<FacilityClass>()
             for (i in 0 until response.length()) {
                 val facility = response.getJSONObject(i)
                 f.add(FacilityClass(facility.getString("displayName"), facility.getString("id")))
             }
-            fetchFacilityInfo(f, refresh, success)
+            fetchFacilityInfo(idToken, f, refresh, success)
         } catch (e: JSONException) {
             success(false)
             e.printStackTrace()
@@ -30,12 +31,12 @@ class API {
 
     }
 
-    protected open fun fetchFacilitiesOnError(error: VolleyError, success: (Boolean) -> Unit) {
+    private fun fetchFacilitiesOnError(error: VolleyError, success: (Boolean) -> Unit) {
         Log.d("ERROR", error.toString())
         success(false)
     }
 
-    protected open fun fetchFacilityOccupancyOnResponse(
+    private fun fetchFacilityOccupancyOnResponse(
             list: ArrayList<FacilityClass>,
             response: JSONArray,
             refresh: Boolean,
@@ -63,19 +64,19 @@ class API {
     /**
      * @return
      */
-    protected fun fetchFacilities(refresh: Boolean, success: (Boolean) -> Unit) {
+    private fun fetchFacilities(idToken: String, refresh: Boolean, success: (Boolean) -> Unit) {
         val facilityListRequest = object : JsonArrayRequest(Method.GET, FACILITY_LIST_ENDPOINT, null, Response.Listener { response ->
             Log.d("RESP1", response.toString())
-            fetchFacilitiesOnResponse(response, refresh, success)
+            fetchFacilitiesOnResponse(idToken, response, refresh, success)
         }, Response.ErrorListener { error -> fetchFacilitiesOnError(error, success) }) {
             override fun getHeaders(): Map<String, String> {
-                return hashMapOf("Authorization" to "Bearer ${idToken!!}")
+                return hashMapOf("Authorization" to "Bearer $idToken")
             }
         }
         queue.add(facilityListRequest)
     }
 
-    private fun fetchFacilityInfo(list: ArrayList<FacilityClass>, refresh: Boolean, success: (Boolean) -> Unit) {
+    private fun fetchFacilityInfo(idToken: String, list: ArrayList<FacilityClass>, refresh: Boolean, success: (Boolean) -> Unit) {
         val facilityInfoRequest = object : JsonArrayRequest(Method.GET, FACILITY_INFO_ENDPOINT, null, Response.Listener { response ->
             Log.d("RESP2", response.toString())
             try {
@@ -100,7 +101,7 @@ class API {
                         }
                     }
                 }
-                fetchFacilityOccupancy(list, refresh, success)
+                fetchFacilityOccupancy(idToken, list, refresh, success)
             } catch (e: JSONException) {
                 success(false)
                 e.printStackTrace()
@@ -111,14 +112,14 @@ class API {
         }) {
             override fun getHeaders(): Map<String, String> {
                 val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer " + idToken!!
+                headers["Authorization"] = "Bearer $idToken"
                 return headers
             }
         }
         queue.add(facilityInfoRequest)
     }
 
-    private fun fetchFacilityOccupancy(list: ArrayList<FacilityClass>, refresh: Boolean, success: (Boolean) -> Unit) {
+    private fun fetchFacilityOccupancy(idToken: String, list: ArrayList<FacilityClass>, refresh: Boolean, success: (Boolean) -> Unit) {
         val facilityOccupancyRequest = object : JsonArrayRequest(Method.GET, HOW_DENSE_ENDPOINT, null, Response.Listener { response ->
             Log.d("RESP3", response.toString())
             fetchFacilityOccupancyOnResponse(list, response, refresh, success)
@@ -128,38 +129,38 @@ class API {
         }) {
             override fun getHeaders(): Map<String, String> {
                 val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer " + idToken!!
+                headers["Authorization"] = "Bearer  $idToken"
                 return headers
             }
         }
         queue.add(facilityOccupancyRequest)
     }
 
-    protected open fun fetchOperatingHoursOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
+    private fun fetchOperatingHoursOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
         // OVERRIDE IN FACILITYPAGE
     }
 
-    protected open fun fetchHistoricalJSONOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
+    private fun fetchHistoricalJSONOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
         // OVERRIDE IN FACILITYPAGE
     }
 
-    private fun fetchOperatingHours(success: (Boolean) -> Unit, day: String, facilityClass: FacilityClass) {
-        val operatingHoursRequest = object : JsonArrayRequest(Method.GET, "$OPERATING_HOURS_ENDPOINT?id=${facilityClass.id}&startDate=${getDate(day)}&endDate=${getDate(day)}", null, Response.Listener { response -> fetchOperatingHoursOnResponse(response, success, day) }, Response.ErrorListener { error ->
+    private fun fetchOperatingHours(idToken: String, success: (Boolean) -> Unit, day: String, facilityClass: FacilityClass) {
+        val operatingHoursRequest = object : JsonArrayRequest(Method.GET, "$OPERATING_HOURS_ENDPOINT?id=${facilityClass.id}&startDate=${FluxUtil.getDate(day)}&endDate=${FluxUtil.getDate(day)}", null, Response.Listener { response -> fetchOperatingHoursOnResponse(response, success, day) }, Response.ErrorListener { error ->
             // Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
             Log.d("ERROR MESSAGE", error.toString())
             success(false)
         }) {
             override fun getHeaders(): Map<String, String> {
                 val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer " + idToken!!
+                headers["Authorization"] = "Bearer $idToken"
                 return headers
             }
         }
         queue.add(operatingHoursRequest)
     }
 
-    private fun fetchHistoricalJSON(success: (Boolean) -> Unit, day: String, facilityClass: FacilityClass) {
-        fetchOperatingHours({ }, day, facilityClass)
+    private fun fetchHistoricalJSON(idToken: String, success: (Boolean) -> Unit, day: String, facilityClass: FacilityClass) {
+        fetchOperatingHours(idToken, { }, day, facilityClass)
         val historicalDataRequest = object : JsonArrayRequest(Method.GET, "$HISTORICAL_DATA_ENDPOINT?id=${facilityClass.id}", null, Response.Listener { response -> fetchHistoricalJSONOnResponse(response, success, day) }, Response.ErrorListener { error ->
             // Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
             Log.d("ERROR MESSAGE", error.toString())
@@ -167,12 +168,13 @@ class API {
         }) {
             override fun getHeaders(): Map<String, String> {
                 val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer " + idToken!!
+                headers["Authorization"] = "Bearer $idToken"
                 return headers
             }
         }
         queue.add(historicalDataRequest)
     }
+
     companion object {
 
         private const val FACILITY_LIST_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityList"
