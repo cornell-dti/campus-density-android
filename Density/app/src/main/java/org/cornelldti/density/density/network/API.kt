@@ -144,25 +144,18 @@ class API(private val idToken: String, context: Context) {
         queue.add(facilityOccupancyRequest)
     }
 
-    private fun fetchOperatingHoursOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
-        // OVERRIDE IN FACILITYPAGE
-    }
-
-    private fun fetchHistoricalJSONOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
-        // OVERRIDE IN FACILITYPAGE
-    }
-
-    private fun fetchOperatingHours(success: (Boolean) -> Unit, day: String, facilityId: String) {
+    private fun fetchOperatingHours(
+        day: String,
+        facilityId: String,
+        fetchOperatingHoursOnResponse: (response: JSONArray, day: String) -> Unit
+    ) {
         val operatingHoursRequest = object : JsonArrayRequest(
             Method.GET,
             "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=${FluxUtil.getDate(day)}&endDate=${FluxUtil.getDate(day)}",
             null,
-            Response.Listener { response -> fetchOperatingHoursOnResponse(response, success, day) },
-            Response.ErrorListener { error ->
-                // Toast.makeText(FacilityPage.this, "Please check internet connection", Toast.LENGTH_LONG).show();
-                Log.d("ERROR MESSAGE", error.toString())
-                success(false)
-            }) {
+            Response.Listener { response -> fetchOperatingHoursOnResponse(response, day) },
+            Response.ErrorListener { error -> Log.d("ERROR MESSAGE", error.toString()) }
+        ) {
                 override fun getHeaders(): Map<String, String> {
                     val headers = HashMap<String, String>()
                     headers["Authorization"] = "Bearer $idToken"
@@ -172,17 +165,19 @@ class API(private val idToken: String, context: Context) {
         queue.add(operatingHoursRequest)
     }
 
-    fun fetchHistoricalJSON(success: (Boolean) -> Unit, day: String, facilityId: String) {
-        fetchOperatingHours({ }, day, facilityId)
+    fun fetchHistoricalJSON(
+        day: String,
+        facilityId: String,
+        fetchOperatingHoursOnResponse: (response: JSONArray, day: String) -> Unit,
+        fetchHistoricalJSONOnResponse: (response: JSONArray, day: String) -> Unit
+    ) {
+        fetchOperatingHours(day, facilityId, fetchOperatingHoursOnResponse)
         val historicalDataRequest = object : JsonArrayRequest(
             Method.GET,
             "$HISTORICAL_DATA_ENDPOINT?id=$facilityId",
             null,
-            Response.Listener { response -> fetchHistoricalJSONOnResponse(response, success, day) },
-            Response.ErrorListener { error ->
-                Log.d("ERROR MESSAGE", error.toString())
-                success(false)
-            }
+            Response.Listener { response -> fetchHistoricalJSONOnResponse(response, day) },
+            Response.ErrorListener { error -> Log.d("ERROR MESSAGE", error.toString()) }
         ) {
             override fun getHeaders(): Map<String, String> {
                 val headers = HashMap<String, String>()
