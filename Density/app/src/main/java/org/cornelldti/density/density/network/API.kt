@@ -74,8 +74,7 @@ class API(context: Context) {
             success: (Boolean) -> Unit,
             fetchFacilityOccupancyOnResponse: (
                     list: MutableList<FacilityClass>,
-                    response: JSONArray,
-                    success: (Boolean) -> Unit
+                    response: JSONArray
             ) -> Unit) {
         val facilityInfoRequest = object : JsonArrayRequest(
                 Method.GET,
@@ -130,8 +129,7 @@ class API(context: Context) {
             success: (Boolean) -> Unit,
             fetchFacilityOccupancyOnResponse: (
                     list: MutableList<FacilityClass>,
-                    response: JSONArray,
-                    success: (Boolean) -> Unit
+                    response: JSONArray
             ) -> Unit) {
         val facilityOccupancyRequest = object : JsonArrayRequest(
                 Method.GET,
@@ -139,7 +137,7 @@ class API(context: Context) {
                 null,
                 Response.Listener { response ->
                     Log.d("RESP3", response.toString())
-                    fetchFacilityOccupancyOnResponse(list, response, success)
+                    fetchFacilityOccupancyOnResponse(list, response)
                 },
                 Response.ErrorListener { error ->
                     success(false)
