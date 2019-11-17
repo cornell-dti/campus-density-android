@@ -35,20 +35,14 @@ class API(context: Context) {
             onResponse: (facilities: MutableList<FacilityClass>?) -> Unit,
             onError: (error: VolleyError) -> Unit
     ) {
-        val facilityListRequest = object : JsonArrayRequest(
-                Method.GET,
-                FACILITY_LIST_ENDPOINT,
-                null,
-                Response.Listener { response ->
-                    Log.d("RESP1", response.toString())
-                    val facilities = parseFacilitiesJson(jsonArray = response)
-                    onResponse(facilities)
-                }, Response.ErrorListener { error -> onError(error) }
-        ) {
-            override fun getHeaders(): Map<String, String> {
-                return hashMapOf("Authorization" to "Bearer $idToken")
-            }
-        }
+        val facilityListRequest = getRequest(
+            url = FACILITY_LIST_ENDPOINT,
+            onResponse = { response ->
+                Log.d("RESP1", response.toString())
+                onResponse(parseFacilitiesJson(jsonArray = response))
+            },
+            onError = onError
+        )
         queue.add(facilityListRequest)
     }
 
@@ -76,11 +70,9 @@ class API(context: Context) {
                     list: MutableList<FacilityClass>,
                     response: JSONArray
             ) -> Unit) {
-        val facilityInfoRequest = object : JsonArrayRequest(
-                Method.GET,
-                FACILITY_INFO_ENDPOINT,
-                null,
-                Response.Listener { response ->
+        val facilityInfoRequest = getRequest(
+                url = FACILITY_INFO_ENDPOINT,
+                onResponse = { response ->
                     Log.d("RESP2", response.toString())
                     try {
                         for (i in list.indices) {
@@ -110,17 +102,11 @@ class API(context: Context) {
                         e.printStackTrace()
                     }
                 },
-                Response.ErrorListener { error ->
+                onError = { error ->
                     Log.d("ERROR MESSAGE", error.toString())
                     success(false)
                 }
-        ) {
-            override fun getHeaders(): Map<String, String> {
-                val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer $idToken"
-                return headers
-            }
-        }
+        )
         queue.add(facilityInfoRequest)
     }
 
@@ -131,25 +117,17 @@ class API(context: Context) {
                     list: MutableList<FacilityClass>,
                     response: JSONArray
             ) -> Unit) {
-        val facilityOccupancyRequest = object : JsonArrayRequest(
-                Method.GET,
-                HOW_DENSE_ENDPOINT,
-                null,
-                Response.Listener { response ->
-                    Log.d("RESP3", response.toString())
-                    fetchFacilityOccupancyOnResponse(list, response)
-                },
-                Response.ErrorListener { error ->
-                    success(false)
-                    Log.d("ERROR MESSAGE", error.toString())
-                }
-        ) {
-            override fun getHeaders(): Map<String, String> {
-                val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer $idToken"
-                return headers
+        val facilityOccupancyRequest = getRequest(
+            url = HOW_DENSE_ENDPOINT,
+            onResponse = { response ->
+                Log.d("RESP3", response.toString())
+                fetchFacilityOccupancyOnResponse(list, response)
+            },
+            onError = { error ->
+                success(false)
+                Log.d("ERROR MESSAGE", error.toString())
             }
-        }
+        )
         queue.add(facilityOccupancyRequest)
     }
 
@@ -158,21 +136,13 @@ class API(context: Context) {
             facilityId: String,
             fetchOperatingHoursOnResponse: (operatingHours: List<String>) -> Unit
     ) {
-        val operatingHoursRequest = object : JsonArrayRequest(
-                Method.GET,
-                "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=${FluxUtil.getDate(day)}&endDate=${FluxUtil.getDate(day)}",
-                null,
-                Response.Listener { response ->
+        val operatingHoursRequest = getRequest(
+                url = "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=${FluxUtil.getDate(day)}&endDate=${FluxUtil.getDate(day)}",
+                onResponse = { response ->
                     fetchOperatingHoursOnResponse(parseOperatingHoursJson(response))
                 },
-                Response.ErrorListener { error -> Log.d("ERROR MESSAGE", error.toString()) }
-        ) {
-            override fun getHeaders(): Map<String, String> {
-                val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer $idToken"
-                return headers
-            }
-        }
+                onError = { error -> Log.d("ERROR MESSAGE", error.toString()) }
+        )
         queue.add(operatingHoursRequest)
     }
 
@@ -183,21 +153,13 @@ class API(context: Context) {
             fetchHistoricalJSONOnResponse: (densities: List<Double>) -> Unit
     ) {
         fetchOperatingHours(day, facilityId, fetchOperatingHoursOnResponse)
-        val historicalDataRequest = object : JsonArrayRequest(
-                Method.GET,
-                "$HISTORICAL_DATA_ENDPOINT?id=$facilityId",
-                null,
-                Response.Listener { response ->
-                    fetchHistoricalJSONOnResponse(parseHistoricalJson(response, day))
-                },
-                Response.ErrorListener { error -> Log.d("ERROR MESSAGE", error.toString()) }
-        ) {
-            override fun getHeaders(): Map<String, String> {
-                val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer $idToken"
-                return headers
-            }
-        }
+        val historicalDataRequest = getRequest(
+            url = "$HISTORICAL_DATA_ENDPOINT?id=$facilityId",
+            onResponse = { response ->
+                fetchHistoricalJSONOnResponse(parseHistoricalJson(response, day))
+            },
+            onError = { error -> Log.d("ERROR MESSAGE", error.toString()) }
+        )
         queue.add(historicalDataRequest)
     }
 
@@ -244,22 +206,33 @@ class API(context: Context) {
 
     // TODO Function returns a 403 Error Code!
     fun singleFacilityOccupancy(facId: String) {
-        val facilityRequest = object : JsonObjectRequest(Method.GET, "$HOW_DENSE_ENDPOINT?=$facId", null, Response.Listener { response ->
-            Log.d("GOTOCCRATING", response.toString())
-            //                        try {
-            //                            facilityOccupancyRating = response.getInt("density");
-            //                        }
-            //                        catch(JSONException e)
-            //                        {
-            //                            e.printStackTrace();
-            //                        }
-        }, Response.ErrorListener { error -> Log.d("ERRORSON", error.toString()) }) {
-            override fun getHeaders(): Map<String, String> {
-                val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer $idToken"
-                return headers
-            }
-        }
+        val facilityRequest = getRequest(
+            url = "$HOW_DENSE_ENDPOINT?=$facId",
+            onResponse = { response ->
+                Log.d("GOTOCCRATING", response.toString())
+                // try {
+                //   facilityOccupancyRating = response.getInt("density");
+                // } catch(JSONException e) {
+                //   e.printStackTrace();
+                // }
+            },
+            onError = { error -> Log.d("ERRORSON", error.toString()) }
+        )
         queue.add(facilityRequest)
+    }
+
+    private fun getRequest(
+        url: String,
+        onResponse: (jsonArray: JSONArray) -> Unit,
+        onError: (error: VolleyError) -> Unit
+    ): JsonArrayRequest = object : JsonArrayRequest(
+        Method.GET,
+        url,
+        null,
+        Response.Listener(onResponse),
+        Response.ErrorListener(onError)
+    ) {
+        override fun getHeaders(): Map<String, String> =
+            hashMapOf("Authorization" to "Bearer $idToken")
     }
 }
