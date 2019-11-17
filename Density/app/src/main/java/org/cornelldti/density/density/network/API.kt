@@ -174,14 +174,16 @@ class API(context: Context) {
             day: String,
             facilityId: String,
             fetchOperatingHoursOnResponse: (operatingHours: List<String>) -> Unit,
-            fetchHistoricalJSONOnResponse: (response: JSONArray, day: String) -> Unit
+            fetchHistoricalJSONOnResponse: (densities: List<Double>) -> Unit
     ) {
         fetchOperatingHours(day, facilityId, fetchOperatingHoursOnResponse)
         val historicalDataRequest = object : JsonArrayRequest(
                 Method.GET,
                 "$HISTORICAL_DATA_ENDPOINT?id=$facilityId",
                 null,
-                Response.Listener { response -> fetchHistoricalJSONOnResponse(response, day) },
+                Response.Listener { response ->
+                    fetchHistoricalJSONOnResponse(parseHistoricalJson(response, day))
+                },
                 Response.ErrorListener { error -> Log.d("ERROR MESSAGE", error.toString()) }
         ) {
             override fun getHeaders(): Map<String, String> {
@@ -207,6 +209,20 @@ class API(context: Context) {
             e.printStackTrace()
         }
         return operatingHours
+    }
+
+    private fun parseHistoricalJson(jsonArray: JSONArray, day: String): List<Double> {
+        val densities = arrayListOf<Double>()
+        try {
+            val facilityHistory = jsonArray.getJSONObject(0).getJSONObject("hours")
+            val facOnDay = facilityHistory.getJSONObject(day)
+            for (hour in 7..23) {
+                densities.add(facOnDay.getDouble(hour.toString()))
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        return densities
     }
 
     private fun parseTime(timestamp: Long): String {

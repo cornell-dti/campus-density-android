@@ -256,7 +256,10 @@ class FacilityPage : BaseActivity() {
         api.fetchHistoricalJSON(
                 day = day,
                 facilityId = facilityId,
-                fetchHistoricalJSONOnResponse = this::fetchHistoricalJSONOnResponse,
+                fetchHistoricalJSONOnResponse = { historicalDensities ->
+                    densities = historicalDensities
+                    setupBarChart()
+                },
                 fetchOperatingHoursOnResponse = { operatingHours ->
                     opHours = operatingHours
                     setOperatingHours(day)
@@ -265,23 +268,6 @@ class FacilityPage : BaseActivity() {
     }
 
     override fun onBackPressed(): Unit = finish()
-
-    // OVERRIDE API FUNCTIONS
-
-    private fun fetchHistoricalJSONOnResponse(response: JSONArray, day: String) {
-        val historicalDensities = ArrayList<Double>()
-        try {
-            val facilityHistory = response.getJSONObject(0).getJSONObject("hours")
-            val facOnDay = facilityHistory.getJSONObject(day)
-            for (hour in 7..23) {
-                historicalDensities.add(facOnDay.getDouble(hour.toString()))
-            }
-            densities = historicalDensities
-            setupBarChart()
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-    }
 
     companion object {
         const val ARG_PARAM = "Facility_Object"
