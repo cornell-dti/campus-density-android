@@ -40,7 +40,7 @@ class API(context: Context) {
             url = FACILITY_LIST_ENDPOINT,
             onResponse = { response ->
                 Log.d("RESP1", response.toString())
-                val facilities = parseFacilitiesJson(jsonArray = response)
+                val facilities = JsonParser.parseFacilities(jsonArray = response)
                 if (facilities == null) {
                     success(false)
                 } else {
@@ -52,23 +52,6 @@ class API(context: Context) {
         )
         queue.add(facilityListRequest)
     }
-
-    private fun parseFacilitiesJson(jsonArray: JSONArray): MutableList<FacilityClass>? =
-        try {
-            val facilities = arrayListOf<FacilityClass>()
-            for (i in 0 until jsonArray.length()) {
-                val facilityJson = jsonArray.getJSONObject(i)
-                val facility = FacilityClass(
-                    name = facilityJson.getString("displayName"),
-                    id = facilityJson.getString("id")
-                )
-                facilities.add(facility)
-            }
-            facilities
-        } catch (e: JSONException) {
-            e.printStackTrace()
-            null
-        }
 
     private fun fetchFacilityInfo(
             list: MutableList<FacilityClass>,
@@ -155,7 +138,7 @@ class API(context: Context) {
         val operatingHoursRequest = getRequest(
                 url = "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=${FluxUtil.getDate(day)}&endDate=${FluxUtil.getDate(day)}",
                 onResponse = { response ->
-                    fetchOperatingHoursOnResponse(parseOperatingHoursJson(response))
+                    fetchOperatingHoursOnResponse(JsonParser.parseOperatingHours(response))
                 },
                 onError = { error -> Log.d("ERROR MESSAGE", error.toString()) }
         )
@@ -172,52 +155,11 @@ class API(context: Context) {
         val historicalDataRequest = getRequest(
             url = "$HISTORICAL_DATA_ENDPOINT?id=$facilityId",
             onResponse = { response ->
-                fetchHistoricalJSONOnResponse(parseHistoricalJson(response, day))
+                fetchHistoricalJSONOnResponse(JsonParser.parseHistorical(response, day))
             },
             onError = { error -> Log.d("ERROR MESSAGE", error.toString()) }
         )
         queue.add(historicalDataRequest)
-    }
-
-    private fun parseOperatingHoursJson(jsonArray: JSONArray): List<String> {
-        val operatingHours = arrayListOf<String>()
-        try {
-            val hours = jsonArray.getJSONObject(0).getJSONArray("hours")
-            for (i in 0 until hours.length()) {
-                val segment = hours.getJSONObject(i).getJSONObject("dailyHours")
-                val start = segment.getLong("startTimestamp")
-                val end = segment.getLong("endTimestamp")
-                operatingHours.add(parseTime(start) + " – " + parseTime(end))
-            }
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-        return operatingHours
-    }
-
-    private fun parseHistoricalJson(jsonArray: JSONArray, day: String): List<Double> {
-        val densities = arrayListOf<Double>()
-        try {
-            val facilityHistory = jsonArray.getJSONObject(0).getJSONObject("hours")
-            val facOnDay = facilityHistory.getJSONObject(day)
-            for (hour in 7..23) {
-                densities.add(facOnDay.getDouble(hour.toString()))
-            }
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-        return densities
-    }
-
-    private fun parseTime(timestamp: Long): String {
-        val timeZone = Calendar.getInstance().timeZone
-        var format = SimpleDateFormat("h:mma", Locale.US)
-        if (DateFormat.is24HourFormat(DensityApplication.getAppContext())) {
-            format = SimpleDateFormat("HH:mm", Locale.US)
-        }
-        format.timeZone = timeZone
-
-        return format.format(Date(timestamp * 1000)).toLowerCase(Locale.US)
     }
 
     // TODO Function returns a 403 Error Code!
