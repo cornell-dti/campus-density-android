@@ -71,7 +71,7 @@ class API(context: Context) {
             null
         }
 
-    fun fetchFacilityInfo(
+    private fun fetchFacilityInfo(
             list: MutableList<FacilityClass>,
             success: (Boolean) -> Unit,
             onResponse: (facilities: MutableList<FacilityClass>) -> Unit
