@@ -67,7 +67,6 @@ class API(context: Context) {
             list: MutableList<FacilityClass>,
             success: (Boolean) -> Unit,
             fetchFacilityOccupancyOnResponse: (
-                    list: MutableList<FacilityClass>,
                     response: JSONArray
             ) -> Unit) {
         val facilityInfoRequest = getRequest(
@@ -96,7 +95,7 @@ class API(context: Context) {
                                 }
                             }
                         }
-                        fetchFacilityOccupancy(list, success, fetchFacilityOccupancyOnResponse)
+                        fetchFacilityOccupancy(success, fetchFacilityOccupancyOnResponse)
                     } catch (e: JSONException) {
                         success(false)
                         e.printStackTrace()
@@ -111,17 +110,15 @@ class API(context: Context) {
     }
 
     private fun fetchFacilityOccupancy(
-            list: MutableList<FacilityClass>,
             success: (Boolean) -> Unit,
             fetchFacilityOccupancyOnResponse: (
-                    list: MutableList<FacilityClass>,
                     response: JSONArray
             ) -> Unit) {
         val facilityOccupancyRequest = getRequest(
             url = HOW_DENSE_ENDPOINT,
             onResponse = { response ->
                 Log.d("RESP3", response.toString())
-                fetchFacilityOccupancyOnResponse(list, response)
+                fetchFacilityOccupancyOnResponse(response)
             },
             onError = { error ->
                 success(false)

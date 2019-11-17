@@ -266,9 +266,9 @@ class FacilitiesActivity : BaseActivity() {
             return
         }
         failurePage.visibility = View.GONE
-        api.fetchFacilityInfo(list = facilities, success = success) { list, resp ->
+        api.fetchFacilityInfo(list = facilities, success = success) { resp ->
             fetchFacilityOccupancyOnResponse(
-                list = list,
+                list = facilities,
                 response = resp,
                 refresh = refresh,
                 success = success)
