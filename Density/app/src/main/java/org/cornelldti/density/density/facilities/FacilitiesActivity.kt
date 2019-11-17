@@ -19,11 +19,6 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 
-import org.json.JSONArray
-import org.json.JSONException
-
-import java.util.ArrayList
-
 import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,7 +28,6 @@ import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.LockableAppBarLayoutBehavior
 import org.cornelldti.density.density.R
 import org.cornelldti.density.density.facilitydetail.FacilityPage
-import org.cornelldti.density.density.network.API
 import kotlin.math.absoluteValue
 
 class FacilitiesActivity : BaseActivity() {
@@ -137,7 +131,7 @@ class FacilitiesActivity : BaseActivity() {
     private fun fetchFacilities(refresh: Boolean, success: (Boolean) -> Unit) {
         api.fetchFacilities(
                 success = success,
-                onBasicFacilityFetched = { failurePage.visibility = View.GONE },
+                onBasicFacilitiesFetched = { failurePage.visibility = View.GONE },
                 onResponse = { list ->
                     fetchFacilityOnResponse(list = list, refresh = refresh, success = success)
                 },

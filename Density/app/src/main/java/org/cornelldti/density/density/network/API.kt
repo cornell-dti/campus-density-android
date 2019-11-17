@@ -7,7 +7,6 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.cornelldti.density.density.DensityApplication
 import org.cornelldti.density.density.data.FacilityClass
@@ -33,7 +32,7 @@ class API(context: Context) {
      */
     fun fetchFacilities(
             success: (Boolean) -> Unit,
-            onBasicFacilityFetched: () -> Unit,
+            onBasicFacilitiesFetched: () -> Unit,
             onResponse: (facilities: MutableList<FacilityClass>) -> Unit,
             onError: (error: VolleyError) -> Unit
     ) {
@@ -45,7 +44,7 @@ class API(context: Context) {
                 if (facilities == null) {
                     success(false)
                 } else {
-                    onBasicFacilityFetched()
+                    onBasicFacilitiesFetched()
                     fetchFacilityInfo(list = facilities, success = success, onResponse = onResponse)
                 }
             },
