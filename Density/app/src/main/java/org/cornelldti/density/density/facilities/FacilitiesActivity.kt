@@ -261,7 +261,7 @@ class FacilitiesActivity : BaseActivity() {
     }
 
     private fun fetchFacilityOnResponse(
-            list: MutableList<FacilityClass>,
+            list: List<FacilityClass>,
             refresh: Boolean,
             success: (Boolean) -> Unit
     ) {

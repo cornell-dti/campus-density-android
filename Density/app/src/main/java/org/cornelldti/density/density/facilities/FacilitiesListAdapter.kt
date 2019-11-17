@@ -17,7 +17,7 @@ import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.R
 import java.util.*
 
-class FacilitiesListAdapter(data: MutableList<FacilityClass>) : RecyclerView.Adapter<FacilitiesListAdapter.ViewHolder>(), Filterable {
+class FacilitiesListAdapter(data: List<FacilityClass>) : RecyclerView.Adapter<FacilitiesListAdapter.ViewHolder>(), Filterable {
 
     private var facilityClasses: List<FacilityClass>? = null
     var dataSet: List<FacilityClass>? = null
@@ -134,8 +134,8 @@ class FacilitiesListAdapter(data: MutableList<FacilityClass>) : RecyclerView.Ada
         notifyDataSetChanged()
     }
 
-    fun setDataSet(f: MutableList<FacilityClass>) {
-        this.facilityClasses = ArrayList(f).apply { sort() }
+    fun setDataSet(f: List<FacilityClass>) {
+        this.facilityClasses = f.sorted()
         this.dataSet = this.facilityClasses
         notifyDataSetChanged()
     }

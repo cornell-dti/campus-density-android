@@ -33,7 +33,7 @@ class API(context: Context) {
     fun fetchFacilities(
             success: (Boolean) -> Unit,
             onBasicFacilitiesFetched: () -> Unit,
-            onResponse: (facilities: MutableList<FacilityClass>) -> Unit,
+            onResponse: (facilities: List<FacilityClass>) -> Unit,
             onError: (error: VolleyError) -> Unit
     ) {
         val facilityListRequest = getRequest(
@@ -56,7 +56,7 @@ class API(context: Context) {
     private fun fetchFacilityInfo(
             list: MutableList<FacilityClass>,
             success: (Boolean) -> Unit,
-            onResponse: (facilities: MutableList<FacilityClass>) -> Unit
+            onResponse: (facilities: List<FacilityClass>) -> Unit
     ) {
         val facilityInfoRequest = getRequest(
                 url = FACILITY_INFO_ENDPOINT,
