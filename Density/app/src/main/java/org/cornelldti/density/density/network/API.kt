@@ -24,6 +24,7 @@ private const val OPERATING_HOURS_ENDPOINT = "https://flux.api.internal.cornelld
 private const val HISTORICAL_DATA_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/historicalData"
 
 class API(context: Context) {
+    @Transient
     private lateinit var idToken: String
     private var queue: RequestQueue = Volley.newRequestQueue(context)
 
@@ -36,7 +37,8 @@ class API(context: Context) {
      */
     fun fetchFacilities(
             success: (Boolean) -> Unit,
-            fetchFacilitiesOnResponse: (response: JSONArray, success: (Boolean) -> Unit) -> Unit,
+            refresh: Boolean,
+            fetchFacilitiesOnResponse: (response: JSONArray, refresh: Boolean, success: (Boolean) -> Unit) -> Unit,
             fetchFacilitiesOnError: (error: VolleyError, success: (Boolean) -> Unit) -> Unit
     ) {
         val facilityListRequest = object : JsonArrayRequest(
@@ -45,7 +47,7 @@ class API(context: Context) {
                 null,
                 Response.Listener { response ->
                     Log.d("RESP1", response.toString())
-                    fetchFacilitiesOnResponse(response, success)
+                    fetchFacilitiesOnResponse(response, refresh, success)
                 }, Response.ErrorListener { error -> fetchFacilitiesOnError(error, success) }
         ) {
             override fun getHeaders(): Map<String, String> {

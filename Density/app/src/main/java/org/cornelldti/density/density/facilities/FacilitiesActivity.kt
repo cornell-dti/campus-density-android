@@ -134,12 +134,13 @@ class FacilitiesActivity : BaseActivity() {
         facilities.layoutManager = layoutManager
     }
 
-    private fun fetchFacilities(success: (Boolean) -> Unit) {
+    private fun fetchFacilities(refresh: Boolean, success: (Boolean) -> Unit) {
         api.fetchFacilities(
                 success = success,
-                fetchFacilitiesOnResponse = { response, successCallback ->
+                refresh = refresh,
+                fetchFacilitiesOnResponse = { response, _, successCallback ->
                     fetchFacilitiesOnResponse(
-                            response = response, refresh = false, success = successCallback
+                            response = response, refresh = refresh, success = successCallback
                     )
                 },
                 fetchFacilitiesOnError = { error, successCallback ->
@@ -153,9 +154,9 @@ class FacilitiesActivity : BaseActivity() {
             swipeRefresh.isRefreshing = true
             if (adapter == null) {
                 refreshToken()
-                fetchFacilities { swipeRefresh.isRefreshing = false }
+                fetchFacilities(refresh = false) { swipeRefresh.isRefreshing = false }
             } else {
-                fetchFacilities { swipeRefresh.isRefreshing = false }
+                fetchFacilities(refresh = true) { swipeRefresh.isRefreshing = false }
                 handleCheckChange(filterChips!!.checkedChipId)
             }
         }
@@ -201,7 +202,10 @@ class FacilitiesActivity : BaseActivity() {
 
     override fun updateUI() {
         Log.d("updatedMainUI", "success")
-        fetchFacilities { }
+        if (adapter == null)
+            fetchFacilities(false) { }
+        else
+            fetchFacilities(true) { }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -268,7 +272,7 @@ class FacilitiesActivity : BaseActivity() {
                 fetchFacilityOccupancyOnResponse(
                         list = list,
                         response = resp,
-                        refresh = false,
+                        refresh = refresh,
                         success = success)
             }
         } catch (e: JSONException) {
