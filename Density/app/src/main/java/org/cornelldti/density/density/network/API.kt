@@ -1,22 +1,16 @@
 package org.cornelldti.density.density.network
 
 import android.content.Context
-import android.text.format.DateFormat
 import android.util.Log
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
-import org.cornelldti.density.density.DensityApplication
 import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.util.FluxUtil
 import org.json.JSONArray
 import org.json.JSONException
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 class API(context: Context) {
     @Transient
@@ -45,7 +39,7 @@ class API(context: Context) {
                     success(false)
                 } else {
                     onBasicFacilitiesFetched()
-                    fetchFacilityInfo(list = facilities, success = success, onResponse = onResponse)
+                    fetchFacilityInfo(list = facilities, success = success, onResponse = onResponse, onError = onError)
                 }
             },
             onError = onError
@@ -56,7 +50,8 @@ class API(context: Context) {
     private fun fetchFacilityInfo(
             list: MutableList<FacilityClass>,
             success: (Boolean) -> Unit,
-            onResponse: (facilities: List<FacilityClass>) -> Unit
+            onResponse: (facilities: List<FacilityClass>) -> Unit,
+            onError: (error: VolleyError) -> Unit
     ) {
         val facilityInfoRequest = getRequest(
                 url = FACILITY_INFO_ENDPOINT,
@@ -84,16 +79,13 @@ class API(context: Context) {
                                 }
                             }
                         }
-                        fetchFacilityOccupancy(list, success, onResponse)
+                        fetchFacilityOccupancy(list, success, onResponse, onError)
                     } catch (e: JSONException) {
                         success(false)
                         e.printStackTrace()
                     }
                 },
-                onError = { error ->
-                    Log.d("ERROR MESSAGE", error.toString())
-                    success(false)
-                }
+                onError = onError
         )
         queue.add(facilityInfoRequest)
     }
@@ -101,7 +93,8 @@ class API(context: Context) {
     private fun fetchFacilityOccupancy(
             list: MutableList<FacilityClass>,
             success: (Boolean) -> Unit,
-            onResponse: (facilities: MutableList<FacilityClass>) -> Unit
+            onResponse: (facilities: MutableList<FacilityClass>) -> Unit,
+            onError: (error: VolleyError) -> Unit
     ) {
         val facilityOccupancyRequest = getRequest(
             url = HOW_DENSE_ENDPOINT,
@@ -122,10 +115,7 @@ class API(context: Context) {
                 }
                 onResponse(list)
             },
-            onError = { error ->
-                success(false)
-                Log.d("ERROR MESSAGE", error.toString())
-            }
+            onError = onError
         )
         queue.add(facilityOccupancyRequest)
     }

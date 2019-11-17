@@ -4,26 +4,10 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-
-import com.android.volley.RequestQueue
-import com.android.volley.Response
-import com.android.volley.VolleyError
-import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-
-import org.json.JSONArray
-import org.json.JSONException
-
-import java.text.SimpleDateFormat
-import androidx.appcompat.app.AppCompatActivity
-import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.network.API
-import org.cornelldti.density.density.util.FluxUtil
-import java.util.Calendar
-import java.util.Locale
 
 
 open class BaseActivity :
