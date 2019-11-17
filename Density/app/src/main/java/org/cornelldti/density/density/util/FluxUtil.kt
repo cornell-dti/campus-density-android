@@ -1,6 +1,7 @@
 package org.cornelldti.density.density.util
 
-import java.util.Calendar
+import java.text.SimpleDateFormat
+import java.util.*
 
 object FluxUtil {
 
@@ -25,5 +26,19 @@ object FluxUtil {
         "SAT" -> "Saturday"
         "SUN" -> "Sunday"
         else -> ""
+    }
+
+    fun getDate(day: String): String {
+        val current = Calendar.getInstance()
+        val format = SimpleDateFormat("MM-dd-yy", Locale.US)
+        val checkFormat = SimpleDateFormat("E", Locale.US)
+
+        var dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
+        while (dayCheck != day) {
+            current.add(Calendar.DAY_OF_MONTH, 1)
+            dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
+        }
+
+        return format.format(current.time)
     }
 }

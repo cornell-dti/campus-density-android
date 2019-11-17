@@ -1,4 +1,4 @@
-package org.cornelldti.density.density
+package org.cornelldti.density.density.facilities
 
 import android.content.Context
 import android.graphics.PorterDuff
@@ -13,12 +13,14 @@ import android.widget.TextView
 import androidx.arch.core.util.Function
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import org.cornelldti.density.density.data.FacilityClass
+import org.cornelldti.density.density.R
 import java.util.*
 
-class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<FacilitiesListAdapter.ViewHolder>(), Filterable {
+class FacilitiesListAdapter(data: List<FacilityClass>) : RecyclerView.Adapter<FacilitiesListAdapter.ViewHolder>(), Filterable {
 
-    private var facilities: List<Facility>? = null
-    var dataSet: List<Facility>? = null
+    private var facilityClasses: List<FacilityClass>? = null
+    var dataSet: List<FacilityClass>? = null
         private set
 
     private var clickListener: ClickListener? = null
@@ -47,7 +49,7 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
         }
     }
 
-    inner class DescriptionViewHolder(v: View) : FacilitiesListAdapter.ViewHolder(v) {
+    inner class DescriptionViewHolder(v: View) : ViewHolder(v) {
         internal var description: TextView = v.findViewById(R.id.description_phrase)
 
     }
@@ -61,12 +63,12 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
     }
 
     init {
-        this.facilities = ArrayList(data).apply { sort() }
-        this.dataSet = facilities
+        this.facilityClasses = ArrayList(data).apply { sort() }
+        this.dataSet = facilityClasses
     }
 
     override fun onCreateViewHolder(parent: ViewGroup,
-                                    viewType: Int): FacilitiesListAdapter.ViewHolder {
+                                    viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context)
                 .inflate(R.layout.facility_card_layout, parent, false)
 
@@ -91,8 +93,8 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
             override fun performFiltering(charSequence: CharSequence): FilterResults {
                 val charString = charSequence.toString().toLowerCase(Locale.US)
                 dataSet = if (charString.isNotEmpty()) {
-                    val filteredList = ArrayList<Facility>()
-                    for (f in facilities!!) {
+                    val filteredList = ArrayList<FacilityClass>()
+                    for (f in facilityClasses!!) {
                         if (f.name.toLowerCase(Locale.US).contains(charString.toLowerCase(Locale.US))) {
                             filteredList.add(f)
                         }
@@ -100,7 +102,7 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
                     Collections.sort(filteredList, SEARCH_SORT.apply(charString))
                     filteredList
                 } else {
-                    val mutFacilities = facilities!!.toMutableList()
+                    val mutFacilities = facilityClasses!!.toMutableList()
                     mutFacilities.sort()
                     mutFacilities
                 }
@@ -110,15 +112,15 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
             }
 
             override fun publishResults(charSequence: CharSequence, filterResults: FilterResults) {
-                dataSet = filterResults.values as List<Facility>
+                dataSet = filterResults.values as List<FacilityClass>
                 notifyDataSetChanged()
             }
         }
     }
 
-    fun filterFacilitiesByLocation(location: Facility.CampusLocation) {
-        val filteredList = ArrayList<Facility>()
-        for (f in facilities!!) {
+    fun filterFacilitiesByLocation(location: FacilityClass.CampusLocation) {
+        val filteredList = ArrayList<FacilityClass>()
+        for (f in facilityClasses!!) {
             if (f.location == location) {
                 filteredList.add(f)
             }
@@ -128,13 +130,13 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
     }
 
     fun showAllLocations() {
-        this.dataSet = facilities
+        this.dataSet = facilityClasses
         notifyDataSetChanged()
     }
 
-    fun setDataSet(f: ArrayList<Facility>) {
-        this.facilities = ArrayList(f).apply { sort() }
-        this.dataSet = this.facilities
+    fun setDataSet(f: List<FacilityClass>) {
+        this.facilityClasses = f.sorted()
+        this.dataSet = this.facilityClasses
         notifyDataSetChanged()
     }
 
@@ -209,11 +211,11 @@ class FacilitiesListAdapter(data: ArrayList<Facility>) : RecyclerView.Adapter<Fa
 
     companion object {
 
-        private val SEARCH_SORT: Function<String, Comparator<Facility>>
+        private val SEARCH_SORT: Function<String, Comparator<FacilityClass>>
 
         init {
             SEARCH_SORT = Function { charString: String ->
-                Comparator { a: Facility, b: Facility ->
+                Comparator { a: FacilityClass, b: FacilityClass ->
                     val lowerA = a.name.toLowerCase(Locale.US)
                     val lowerB = b.name.toLowerCase(Locale.US)
                     if (lowerA.startsWith(charString) && !lowerB.startsWith(charString)) {

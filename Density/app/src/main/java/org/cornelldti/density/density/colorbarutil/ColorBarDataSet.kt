@@ -1,4 +1,4 @@
-package org.cornelldti.density.density.util
+package org.cornelldti.density.density.colorbarutil
 
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry

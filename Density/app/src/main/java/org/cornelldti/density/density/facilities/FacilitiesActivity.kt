@@ -1,4 +1,4 @@
-package org.cornelldti.density.density
+package org.cornelldti.density.density.facilities
 
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -19,19 +19,18 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 
-import org.json.JSONArray
-import org.json.JSONException
-
-import java.util.ArrayList
-
 import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import org.cornelldti.density.density.BaseActivity
+import org.cornelldti.density.density.data.FacilityClass
+import org.cornelldti.density.density.LockableAppBarLayoutBehavior
+import org.cornelldti.density.density.R
+import org.cornelldti.density.density.facilitydetail.FacilityPage
 import kotlin.math.absoluteValue
 
-class MainActivity : BaseActivity() {
+class FacilitiesActivity : BaseActivity() {
 
     private lateinit var spinner: ProgressBar
 
@@ -125,8 +124,20 @@ class MainActivity : BaseActivity() {
 
         layoutManager = LinearLayoutManager(this)
         facilities.layoutManager = layoutManager
+    }
 
-        fetchFacilities(false) { }
+    private fun fetchFacilities(refresh: Boolean, success: (Boolean) -> Unit) {
+        api.fetchFacilities(
+                success = success,
+                onBasicFacilitiesFetched = { failurePage.visibility = View.GONE },
+                onResponse = { list ->
+                    fetchFacilityOnResponse(list = list, refresh = refresh, success = success)
+                },
+                onError = { error ->
+                    success(false)
+                    fetchFacilitiesOnError(error = error)
+                }
+        )
     }
 
     private fun setOnRefreshListener() {
@@ -134,13 +145,9 @@ class MainActivity : BaseActivity() {
             swipeRefresh.isRefreshing = true
             if (adapter == null) {
                 refreshToken()
-                fetchFacilities(false) { _ ->
-                    swipeRefresh.isRefreshing = false
-                }
+                fetchFacilities(refresh = false) { swipeRefresh.isRefreshing = false }
             } else {
-                fetchFacilities(true) { _ ->
-                    swipeRefresh.isRefreshing = false
-                }
+                fetchFacilities(refresh = true) { swipeRefresh.isRefreshing = false }
                 handleCheckChange(filterChips!!.checkedChipId)
             }
         }
@@ -163,19 +170,19 @@ class MainActivity : BaseActivity() {
             }
 
             R.id.north -> {
-                adapter!!.filterFacilitiesByLocation(Facility.CampusLocation.NORTH)
+                adapter!!.filterFacilitiesByLocation(FacilityClass.CampusLocation.NORTH)
                 wasChecked = R.id.north
                 Log.d("SIZENORTH", adapter!!.itemCount.toString())
             }
 
             R.id.west -> {
-                adapter!!.filterFacilitiesByLocation(Facility.CampusLocation.WEST)
+                adapter!!.filterFacilitiesByLocation(FacilityClass.CampusLocation.WEST)
                 wasChecked = R.id.west
                 Log.d("SIZEWEST", adapter!!.itemCount.toString())
             }
 
             R.id.central -> {
-                adapter!!.filterFacilitiesByLocation(Facility.CampusLocation.CENTRAL)
+                adapter!!.filterFacilitiesByLocation(FacilityClass.CampusLocation.CENTRAL)
                 wasChecked = R.id.central
                 Log.d("SIZECENTRAL", adapter!!.itemCount.toString())
             }
@@ -241,24 +248,8 @@ class MainActivity : BaseActivity() {
 
     // FETCH FUNCTIONS OVERRIDES
 
-    override fun fetchFacilitiesOnResponse(response: JSONArray, refresh: Boolean, success: (Boolean) -> Unit) {
-        try {
-            failurePage.visibility = View.GONE
-            val f = ArrayList<Facility>()
-            for (i in 0 until response.length()) {
-                val facility = response.getJSONObject(i)
-                f.add(Facility(facility.getString("displayName"), facility.getString("id")))
-            }
-            fetchFacilityInfo(f, refresh, success)
-        } catch (e: JSONException) {
-            success(false)
-            e.printStackTrace()
-        }
-
-    }
-
-    override fun fetchFacilitiesOnError(error: VolleyError, success: (Boolean) -> Unit) {
-        super.fetchFacilitiesOnError(error, success)
+    private fun fetchFacilitiesOnError(error: VolleyError) {
+        Log.d("ERROR", error.toString())
         val handler = Handler()
         handler.postDelayed({
             // Do something after 10s = 10000ms
@@ -269,45 +260,39 @@ class MainActivity : BaseActivity() {
         }, 10000)
     }
 
-    override fun fetchFacilityOccupancyOnResponse(
-            list: ArrayList<Facility>,
-            response: JSONArray,
+    private fun fetchFacilityOnResponse(
+            list: List<FacilityClass>,
             refresh: Boolean,
             success: (Boolean) -> Unit
     ) {
-        super.fetchFacilityOccupancyOnResponse(list, response, refresh, success)
         if (!refresh) {
-            this@MainActivity.adapter = FacilitiesListAdapter(allFacilities!!)
-            this@MainActivity.adapter!!.setOnItemClickListener(object : FacilitiesListAdapter.ClickListener {
+            val adapter = FacilitiesListAdapter(list)
+            adapter.setOnItemClickListener(object : FacilitiesListAdapter.ClickListener {
                 override fun onItemClick(position: Int, v: View) {
-                    val intent = Intent(this@MainActivity, FacilityPage::class.java)
+                    val intent = Intent(this@FacilitiesActivity, FacilityPage::class.java)
                     val b = Bundle()
-                    b.putSerializable(FacilityPage.ARG_PARAM, adapter!!.dataSet!![position])
+                    b.putSerializable(FacilityPage.ARG_PARAM, adapter.dataSet!![position])
                     intent.putExtras(b)
                     startActivity(intent)
                 }
             })
-
-            this@MainActivity.facilities.adapter = adapter
-            this@MainActivity.spinner.visibility = View.GONE
-            this@MainActivity.facilities.visibility = View.VISIBLE
+            this.adapter = adapter
+            this.facilities.adapter = adapter
+            this.spinner.visibility = View.GONE
+            this.facilities.visibility = View.VISIBLE
             success(true)
             setChipOnClickListener()
         } else {
-            this@MainActivity.adapter!!.setDataSet(allFacilities!!)
+            val adapter = this.adapter!!
+            adapter.setDataSet(list)
             success(true)
             when (filterChips!!.checkedChipId) {
-                R.id.all -> adapter!!.showAllLocations()
-
-                R.id.north -> adapter!!.filterFacilitiesByLocation(Facility.CampusLocation.NORTH)
-
-                R.id.west -> adapter!!.filterFacilitiesByLocation(Facility.CampusLocation.WEST)
-
-                R.id.central -> adapter!!.filterFacilitiesByLocation(Facility.CampusLocation.CENTRAL)
-
+                R.id.all -> adapter.showAllLocations()
+                R.id.north -> adapter.filterFacilitiesByLocation(FacilityClass.CampusLocation.NORTH)
+                R.id.west -> adapter.filterFacilitiesByLocation(FacilityClass.CampusLocation.WEST)
+                R.id.central -> adapter.filterFacilitiesByLocation(FacilityClass.CampusLocation.CENTRAL)
                 -1 -> all!!.isChecked = true
             }
         }
     }
-
 }

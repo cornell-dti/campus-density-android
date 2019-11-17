@@ -17,7 +17,7 @@
         <activity android:name=".BaseActivity" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".facilities.FacilitiesActivity"
             android:parentActivityName=".BaseActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -33,7 +33,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FacilityPage">
+        <activity android:name=".facilitydetail.FacilityPage">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -43,7 +43,7 @@
                 <data
                     android:scheme="https"
                     android:host="www.cornelldti.org"
-                    android:pathPrefix="/facility" />
+                    android:pathPrefix="/facilityClass" />
             </intent-filter>
         </activity>
     </application>
