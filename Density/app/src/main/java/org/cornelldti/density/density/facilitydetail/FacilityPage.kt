@@ -256,12 +256,8 @@ class FacilityPage : BaseActivity() {
         api.fetchHistoricalJSON(
                 day = day,
                 facilityId = facilityId,
-                fetchHistoricalJSONOnResponse = { response, d ->
-                    fetchHistoricalJSONOnResponse(response = response, success = {}, day = d)
-                },
-                fetchOperatingHoursOnResponse = { response, d ->
-                    fetchOperatingHoursOnResponse(response = response, success = {}, day = d)
-                }
+                fetchHistoricalJSONOnResponse = this::fetchHistoricalJSONOnResponse,
+                fetchOperatingHoursOnResponse = this::fetchOperatingHoursOnResponse
         )
     }
 
@@ -280,7 +276,7 @@ class FacilityPage : BaseActivity() {
 
     // OVERRIDE API FUNCTIONS
 
-    private fun fetchOperatingHoursOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
+    private fun fetchOperatingHoursOnResponse(response: JSONArray, day: String) {
         opHours = ArrayList()
         val operatingHours = ArrayList<String>()
         try {
@@ -296,11 +292,9 @@ class FacilityPage : BaseActivity() {
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-
-        success(true)
     }
 
-    private fun fetchHistoricalJSONOnResponse(response: JSONArray, success: (Boolean) -> Unit, day: String) {
+    private fun fetchHistoricalJSONOnResponse(response: JSONArray, day: String) {
         val historicalDensities = ArrayList<Double>()
         try {
             val facilityHistory = response.getJSONObject(0).getJSONObject("hours")
@@ -313,8 +307,6 @@ class FacilityPage : BaseActivity() {
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-
-        success(true)
     }
 
     companion object {
