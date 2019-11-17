@@ -32,10 +32,8 @@ class API(context: Context) {
      * @return
      */
     fun fetchFacilities(
-            success: (Boolean) -> Unit,
-            refresh: Boolean,
-            fetchFacilitiesOnResponse: (response: JSONArray, refresh: Boolean, success: (Boolean) -> Unit) -> Unit,
-            fetchFacilitiesOnError: (error: VolleyError, success: (Boolean) -> Unit) -> Unit
+            onResponse: (facilities: MutableList<FacilityClass>?) -> Unit,
+            onError: (error: VolleyError) -> Unit
     ) {
         val facilityListRequest = object : JsonArrayRequest(
                 Method.GET,
@@ -43,8 +41,9 @@ class API(context: Context) {
                 null,
                 Response.Listener { response ->
                     Log.d("RESP1", response.toString())
-                    fetchFacilitiesOnResponse(response, refresh, success)
-                }, Response.ErrorListener { error -> fetchFacilitiesOnError(error, success) }
+                    val facilities = parseFacilitiesJson(jsonArray = response)
+                    onResponse(facilities)
+                }, Response.ErrorListener { error -> onError(error) }
         ) {
             override fun getHeaders(): Map<String, String> {
                 return hashMapOf("Authorization" to "Bearer $idToken")
@@ -53,11 +52,28 @@ class API(context: Context) {
         queue.add(facilityListRequest)
     }
 
+    private fun parseFacilitiesJson(jsonArray: JSONArray): MutableList<FacilityClass>? =
+        try {
+            val facilities = arrayListOf<FacilityClass>()
+            for (i in 0 until jsonArray.length()) {
+                val facilityJson = jsonArray.getJSONObject(i)
+                val facility = FacilityClass(
+                    name = facilityJson.getString("displayName"),
+                    id = facilityJson.getString("id")
+                )
+                facilities.add(facility)
+            }
+            facilities
+        } catch (e: JSONException) {
+            e.printStackTrace()
+            null
+        }
+
     fun fetchFacilityInfo(
-            list: ArrayList<FacilityClass>,
+            list: MutableList<FacilityClass>,
             success: (Boolean) -> Unit,
             fetchFacilityOccupancyOnResponse: (
-                    list: ArrayList<FacilityClass>,
+                    list: MutableList<FacilityClass>,
                     response: JSONArray,
                     success: (Boolean) -> Unit
             ) -> Unit) {
@@ -110,10 +126,10 @@ class API(context: Context) {
     }
 
     private fun fetchFacilityOccupancy(
-            list: ArrayList<FacilityClass>,
+            list: MutableList<FacilityClass>,
             success: (Boolean) -> Unit,
             fetchFacilityOccupancyOnResponse: (
-                    list: ArrayList<FacilityClass>,
+                    list: MutableList<FacilityClass>,
                     response: JSONArray,
                     success: (Boolean) -> Unit
             ) -> Unit) {

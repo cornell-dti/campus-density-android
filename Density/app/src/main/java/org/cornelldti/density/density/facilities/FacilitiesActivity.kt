@@ -58,7 +58,7 @@ class FacilitiesActivity : BaseActivity() {
 
     private var loaded: Boolean = false
 
-    private var allFacilityClasses: ArrayList<FacilityClass>? = null
+    private var allFacilityClasses: MutableList<FacilityClass>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         loaded = false
@@ -136,15 +136,14 @@ class FacilitiesActivity : BaseActivity() {
 
     private fun fetchFacilities(refresh: Boolean, success: (Boolean) -> Unit) {
         api.fetchFacilities(
-                success = success,
-                refresh = refresh,
-                fetchFacilitiesOnResponse = { response, _, successCallback ->
+                onResponse = { facilities ->
                     fetchFacilitiesOnResponse(
-                            response = response, refresh = refresh, success = successCallback
+                        facilities = facilities, refresh = refresh, success = success
                     )
                 },
-                fetchFacilitiesOnError = { error, successCallback ->
-                    fetchFacilitiesOnError(error = error, success = successCallback)
+                onError = { error ->
+                    success(false)
+                    fetchFacilitiesOnError(error=error)
                 }
         )
     }
@@ -257,34 +256,30 @@ class FacilitiesActivity : BaseActivity() {
 
     // FETCH FUNCTIONS OVERRIDES
 
-    private fun fetchFacilitiesOnResponse(response: JSONArray, refresh: Boolean, success: (Boolean) -> Unit) {
-        try {
-            failurePage.visibility = View.GONE
-            val f = ArrayList<FacilityClass>()
-            for (i in 0 until response.length()) {
-                val facility = response.getJSONObject(i)
-                f.add(FacilityClass(facility.getString("displayName"), facility.getString("id")))
-            }
-            api.fetchFacilityInfo(
-                    list = f,
-                    success = success)
-            { list, resp, _ ->
-                fetchFacilityOccupancyOnResponse(
-                        list = list,
-                        response = resp,
-                        refresh = refresh,
-                        success = success)
-            }
-        } catch (e: JSONException) {
+    private fun fetchFacilitiesOnResponse(
+        facilities: MutableList<FacilityClass>?,
+        refresh: Boolean,
+        success: (Boolean) -> Unit
+    ) {
+        if (facilities == null) {
             success(false)
-            e.printStackTrace()
+            return
         }
-
+        failurePage.visibility = View.GONE
+        api.fetchFacilityInfo(
+            list = facilities,
+            success = success)
+        { list, resp, _ ->
+            fetchFacilityOccupancyOnResponse(
+                list = list,
+                response = resp,
+                refresh = refresh,
+                success = success)
+        }
     }
 
-    private fun fetchFacilitiesOnError(error: VolleyError, success: (Boolean) -> Unit) {
+    private fun fetchFacilitiesOnError(error: VolleyError) {
         Log.d("ERROR", error.toString())
-        success(false)
         val handler = Handler()
         handler.postDelayed({
             // Do something after 10s = 10000ms
@@ -296,7 +291,7 @@ class FacilitiesActivity : BaseActivity() {
     }
 
     private fun fetchFacilityOccupancyOnResponse(
-            list: ArrayList<FacilityClass>,
+            list: MutableList<FacilityClass>,
             response: JSONArray,
             refresh: Boolean,
             success: (Boolean) -> Unit
