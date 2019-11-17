@@ -265,20 +265,6 @@ class FacilityPage : BaseActivity() {
         )
     }
 
-    private fun getDate(day: String): String {
-        val current = Calendar.getInstance()
-        val format = SimpleDateFormat("MM-dd-yy", Locale.US)
-        val checkFormat = SimpleDateFormat("E", Locale.US)
-
-        var dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
-        while (dayCheck != day) {
-            current.add(Calendar.DAY_OF_MONTH, 1)
-            dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
-        }
-
-        return format.format(current.time)
-    }
-
     private fun parseTime(timestamp: Long): String {
         val timeZone = Calendar.getInstance().timeZone
         var format = SimpleDateFormat("h:mma", Locale.US)
