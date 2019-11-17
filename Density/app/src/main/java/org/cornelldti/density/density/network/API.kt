@@ -130,28 +130,19 @@ class API(context: Context) {
         queue.add(facilityOccupancyRequest)
     }
 
-    private fun fetchOperatingHours(
-            day: String,
-            facilityId: String,
-            fetchOperatingHoursOnResponse: (operatingHours: List<String>) -> Unit
-    ) {
-        val operatingHoursRequest = getRequest(
-                url = "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=${FluxUtil.getDate(day)}&endDate=${FluxUtil.getDate(day)}",
-                onResponse = { response ->
-                    fetchOperatingHoursOnResponse(JsonParser.parseOperatingHours(response))
-                },
-                onError = { error -> Log.d("ERROR MESSAGE", error.toString()) }
-        )
-        queue.add(operatingHoursRequest)
-    }
-
     fun fetchHistoricalJSON(
             day: String,
             facilityId: String,
             fetchOperatingHoursOnResponse: (operatingHours: List<String>) -> Unit,
             fetchHistoricalJSONOnResponse: (densities: List<Double>) -> Unit
     ) {
-        fetchOperatingHours(day, facilityId, fetchOperatingHoursOnResponse)
+        val operatingHoursRequest = getRequest(
+            url = "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=${FluxUtil.getDate(day)}&endDate=${FluxUtil.getDate(day)}",
+            onResponse = { response ->
+                fetchOperatingHoursOnResponse(JsonParser.parseOperatingHours(response))
+            },
+            onError = { error -> Log.d("ERROR MESSAGE", error.toString()) }
+        )
         val historicalDataRequest = getRequest(
             url = "$HISTORICAL_DATA_ENDPOINT?id=$facilityId",
             onResponse = { response ->
@@ -159,6 +150,7 @@ class API(context: Context) {
             },
             onError = { error -> Log.d("ERROR MESSAGE", error.toString()) }
         )
+        queue.add(operatingHoursRequest)
         queue.add(historicalDataRequest)
     }
 
