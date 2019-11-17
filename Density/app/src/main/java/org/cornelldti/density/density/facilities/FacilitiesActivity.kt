@@ -52,8 +52,6 @@ class FacilitiesActivity : BaseActivity() {
 
     private var loaded: Boolean = false
 
-    private var allFacilityClasses: MutableList<FacilityClass>? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         loaded = false
         super.onCreate(savedInstanceState)
@@ -267,39 +265,34 @@ class FacilitiesActivity : BaseActivity() {
             refresh: Boolean,
             success: (Boolean) -> Unit
     ) {
-        allFacilityClasses = list
         if (!refresh) {
-            this@FacilitiesActivity.adapter = FacilitiesListAdapter(allFacilityClasses!!)
-            this@FacilitiesActivity.adapter!!.setOnItemClickListener(object : FacilitiesListAdapter.ClickListener {
+            val adapter = FacilitiesListAdapter(list)
+            adapter.setOnItemClickListener(object : FacilitiesListAdapter.ClickListener {
                 override fun onItemClick(position: Int, v: View) {
                     val intent = Intent(this@FacilitiesActivity, FacilityPage::class.java)
                     val b = Bundle()
-                    b.putSerializable(FacilityPage.ARG_PARAM, adapter!!.dataSet!![position])
+                    b.putSerializable(FacilityPage.ARG_PARAM, adapter.dataSet!![position])
                     intent.putExtras(b)
                     startActivity(intent)
                 }
             })
-
-            this@FacilitiesActivity.facilities.adapter = adapter
-            this@FacilitiesActivity.spinner.visibility = View.GONE
-            this@FacilitiesActivity.facilities.visibility = View.VISIBLE
+            this.adapter = adapter
+            this.facilities.adapter = adapter
+            this.spinner.visibility = View.GONE
+            this.facilities.visibility = View.VISIBLE
             success(true)
             setChipOnClickListener()
         } else {
-            this@FacilitiesActivity.adapter!!.setDataSet(allFacilityClasses!!)
+            val adapter = this.adapter!!
+            adapter.setDataSet(list)
             success(true)
             when (filterChips!!.checkedChipId) {
-                R.id.all -> adapter!!.showAllLocations()
-
-                R.id.north -> adapter!!.filterFacilitiesByLocation(FacilityClass.CampusLocation.NORTH)
-
-                R.id.west -> adapter!!.filterFacilitiesByLocation(FacilityClass.CampusLocation.WEST)
-
-                R.id.central -> adapter!!.filterFacilitiesByLocation(FacilityClass.CampusLocation.CENTRAL)
-
+                R.id.all -> adapter.showAllLocations()
+                R.id.north -> adapter.filterFacilitiesByLocation(FacilityClass.CampusLocation.NORTH)
+                R.id.west -> adapter.filterFacilitiesByLocation(FacilityClass.CampusLocation.WEST)
+                R.id.central -> adapter.filterFacilitiesByLocation(FacilityClass.CampusLocation.CENTRAL)
                 -1 -> all!!.isChecked = true
             }
         }
     }
-
 }
