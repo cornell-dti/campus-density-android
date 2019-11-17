@@ -29,11 +29,6 @@ import java.util.Locale
 open class BaseActivity :
         AppCompatActivity(), FirebaseAuth.IdTokenListener, FirebaseAuth.AuthStateListener {
 
-    @Transient
-    var idToken: String? = null
-        private set
-
-    private lateinit var auth: FirebaseAuth
     protected lateinit var api: API
 
     /**
@@ -41,15 +36,11 @@ open class BaseActivity :
      */
     val facilityOccupancyRating: Int = 0 // KEEPS TRACK OF SELECTED FACILITY'S OCCUPANCY
 
-    private lateinit var queue: RequestQueue
-
     override fun onCreate(savedInstanceState: Bundle?) {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         super.onCreate(savedInstanceState)
-        auth = FirebaseAuth.getInstance()
         api = API(context = this)
         checkUserSignedIn()
-        queue = Volley.newRequestQueue(this)
     }
 
     override fun onRestart() {
@@ -77,7 +68,7 @@ open class BaseActivity :
     }
 
     protected fun refreshToken() {
-        requestToken(auth.currentUser!!)
+        requestToken(FirebaseAuth.getInstance().currentUser!!)
     }
 
     private fun requestToken(user: FirebaseUser) {
@@ -86,8 +77,7 @@ open class BaseActivity :
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d("checkpoint", "gotToken")
-                        idToken = task.result?.token
-                        idToken?.let { api.setIdToken(it) }
+                        task.result?.token?.let { api.setIdToken(it) }
                         updateUI()
                     } else {
                         Log.d("AUTH ERROR", "Error obtaining Firebase Auth ID token")
@@ -98,6 +88,7 @@ open class BaseActivity :
     private fun checkUserSignedIn() {
         Log.d("checkpoint", "checkUserSignedIn")
         //        auth.addIdTokenListener(this);
+        val auth = FirebaseAuth.getInstance()
         auth.addAuthStateListener(this)
         val user = auth.currentUser
         if (user == null) {
@@ -105,13 +96,13 @@ open class BaseActivity :
         } else {
             requestToken(user)
         }
-
     }
 
     private fun signIn() {
         Log.d("checkpoint", "signIn")
+        val auth = FirebaseAuth.getInstance()
         auth.signInAnonymously()
-                .addOnCompleteListener(this) { task ->
+                .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d("checkpoint", "signIn = success")
                         Log.d("Firebase", "signInAnonymously:success")

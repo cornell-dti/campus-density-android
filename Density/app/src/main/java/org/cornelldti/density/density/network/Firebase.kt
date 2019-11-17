@@ -5,8 +5,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
 class Firebase : FirebaseAuth.IdTokenListener, FirebaseAuth.AuthStateListener {
-    var idToken: String? = null
-        private set
+    private var idToken: String? = null
 
     // Invoked whenever ID Token changed!
     override fun onIdTokenChanged(auth: FirebaseAuth) {
