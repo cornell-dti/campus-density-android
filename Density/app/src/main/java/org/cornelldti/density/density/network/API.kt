@@ -26,7 +26,7 @@ private const val HISTORICAL_DATA_ENDPOINT = "https://flux.api.internal.cornelld
 class API(context: Context) {
     @Transient
     private lateinit var idToken: String
-    private var queue: RequestQueue = Volley.newRequestQueue(context)
+    private val queue: RequestQueue = Volley.newRequestQueue(context)
 
     fun setIdToken(idToken: String) {
         this.idToken = idToken
