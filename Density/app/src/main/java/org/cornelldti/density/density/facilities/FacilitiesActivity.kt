@@ -136,14 +136,14 @@ class FacilitiesActivity : BaseActivity() {
 
     private fun fetchFacilities(refresh: Boolean, success: (Boolean) -> Unit) {
         api.fetchFacilities(
-                onResponse = { facilities ->
-                    fetchFacilitiesOnResponse(
-                        facilities = facilities, refresh = refresh, success = success
-                    )
+                success = success,
+                onBasicFacilityFetched = { failurePage.visibility = View.GONE },
+                onResponse = { list ->
+                    fetchFacilityOnResponse(list = list, refresh = refresh, success = success)
                 },
                 onError = { error ->
                     success(false)
-                    fetchFacilitiesOnError(error=error)
+                    fetchFacilitiesOnError(error = error)
                 }
         )
     }
@@ -256,21 +256,6 @@ class FacilitiesActivity : BaseActivity() {
 
     // FETCH FUNCTIONS OVERRIDES
 
-    private fun fetchFacilitiesOnResponse(
-        facilities: MutableList<FacilityClass>?,
-        refresh: Boolean,
-        success: (Boolean) -> Unit
-    ) {
-        if (facilities == null) {
-            success(false)
-            return
-        }
-        failurePage.visibility = View.GONE
-        api.fetchFacilityInfo(list = facilities, success = success) {
-            fetchFacilityOccupancyOnResponse(list = facilities, refresh = refresh, success = success)
-        }
-    }
-
     private fun fetchFacilitiesOnError(error: VolleyError) {
         Log.d("ERROR", error.toString())
         val handler = Handler()
@@ -283,7 +268,7 @@ class FacilitiesActivity : BaseActivity() {
         }, 10000)
     }
 
-    private fun fetchFacilityOccupancyOnResponse(
+    private fun fetchFacilityOnResponse(
             list: MutableList<FacilityClass>,
             refresh: Boolean,
             success: (Boolean) -> Unit

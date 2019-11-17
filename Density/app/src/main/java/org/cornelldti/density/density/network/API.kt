@@ -32,14 +32,22 @@ class API(context: Context) {
      * @return
      */
     fun fetchFacilities(
-            onResponse: (facilities: MutableList<FacilityClass>?) -> Unit,
+            success: (Boolean) -> Unit,
+            onBasicFacilityFetched: () -> Unit,
+            onResponse: (facilities: MutableList<FacilityClass>) -> Unit,
             onError: (error: VolleyError) -> Unit
     ) {
         val facilityListRequest = getRequest(
             url = FACILITY_LIST_ENDPOINT,
             onResponse = { response ->
                 Log.d("RESP1", response.toString())
-                onResponse(parseFacilitiesJson(jsonArray = response))
+                val facilities = parseFacilitiesJson(jsonArray = response)
+                if (facilities == null) {
+                    success(false)
+                } else {
+                    onBasicFacilityFetched()
+                    fetchFacilityInfo(list = facilities, success = success, onResponse = onResponse)
+                }
             },
             onError = onError
         )
@@ -66,7 +74,7 @@ class API(context: Context) {
     fun fetchFacilityInfo(
             list: MutableList<FacilityClass>,
             success: (Boolean) -> Unit,
-            onSuccess: () -> Unit
+            onResponse: (facilities: MutableList<FacilityClass>) -> Unit
     ) {
         val facilityInfoRequest = getRequest(
                 url = FACILITY_INFO_ENDPOINT,
@@ -94,7 +102,7 @@ class API(context: Context) {
                                 }
                             }
                         }
-                        fetchFacilityOccupancy(list, success, onSuccess)
+                        fetchFacilityOccupancy(list, success, onResponse)
                     } catch (e: JSONException) {
                         success(false)
                         e.printStackTrace()
@@ -111,7 +119,7 @@ class API(context: Context) {
     private fun fetchFacilityOccupancy(
             list: MutableList<FacilityClass>,
             success: (Boolean) -> Unit,
-            onSuccess: () -> Unit
+            onResponse: (facilities: MutableList<FacilityClass>) -> Unit
     ) {
         val facilityOccupancyRequest = getRequest(
             url = HOW_DENSE_ENDPOINT,
@@ -130,7 +138,7 @@ class API(context: Context) {
                     success(false)
                     e.printStackTrace()
                 }
-                onSuccess()
+                onResponse(list)
             },
             onError = { error ->
                 success(false)
