@@ -266,12 +266,8 @@ class FacilitiesActivity : BaseActivity() {
             return
         }
         failurePage.visibility = View.GONE
-        api.fetchFacilityInfo(list = facilities, success = success) { resp ->
-            fetchFacilityOccupancyOnResponse(
-                list = facilities,
-                response = resp,
-                refresh = refresh,
-                success = success)
+        api.fetchFacilityInfo(list = facilities, success = success) {
+            fetchFacilityOccupancyOnResponse(list = facilities, refresh = refresh, success = success)
         }
     }
 
@@ -289,26 +285,10 @@ class FacilitiesActivity : BaseActivity() {
 
     private fun fetchFacilityOccupancyOnResponse(
             list: MutableList<FacilityClass>,
-            response: JSONArray,
             refresh: Boolean,
             success: (Boolean) -> Unit
     ) {
-        try {
-            for (i in list.indices) {
-                for (x in 0 until response.length()) {
-                    val obj = response.getJSONObject(x)
-                    if (obj.getString("id") == list[i].id) {
-                        list[i] = list[i].setOccupancyRating(obj.getInt("density"))
-                    }
-                }
-            }
-
-            allFacilityClasses = list
-
-        } catch (e: JSONException) {
-            success(false)
-            e.printStackTrace()
-        }
+        allFacilityClasses = list
         if (!refresh) {
             this@FacilitiesActivity.adapter = FacilitiesListAdapter(allFacilityClasses!!)
             this@FacilitiesActivity.adapter!!.setOnItemClickListener(object : FacilitiesListAdapter.ClickListener {

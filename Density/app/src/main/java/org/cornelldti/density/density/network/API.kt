@@ -66,9 +66,8 @@ class API(context: Context) {
     fun fetchFacilityInfo(
             list: MutableList<FacilityClass>,
             success: (Boolean) -> Unit,
-            fetchFacilityOccupancyOnResponse: (
-                    response: JSONArray
-            ) -> Unit) {
+            onSuccess: () -> Unit
+    ) {
         val facilityInfoRequest = getRequest(
                 url = FACILITY_INFO_ENDPOINT,
                 onResponse = { response ->
@@ -95,7 +94,7 @@ class API(context: Context) {
                                 }
                             }
                         }
-                        fetchFacilityOccupancy(success, fetchFacilityOccupancyOnResponse)
+                        fetchFacilityOccupancy(list, success, onSuccess)
                     } catch (e: JSONException) {
                         success(false)
                         e.printStackTrace()
@@ -110,15 +109,28 @@ class API(context: Context) {
     }
 
     private fun fetchFacilityOccupancy(
+            list: MutableList<FacilityClass>,
             success: (Boolean) -> Unit,
-            fetchFacilityOccupancyOnResponse: (
-                    response: JSONArray
-            ) -> Unit) {
+            onSuccess: () -> Unit
+    ) {
         val facilityOccupancyRequest = getRequest(
             url = HOW_DENSE_ENDPOINT,
             onResponse = { response ->
                 Log.d("RESP3", response.toString())
-                fetchFacilityOccupancyOnResponse(response)
+                try {
+                    for (i in list.indices) {
+                        for (x in 0 until response.length()) {
+                            val obj = response.getJSONObject(x)
+                            if (obj.getString("id") == list[i].id) {
+                                list[i] = list[i].setOccupancyRating(obj.getInt("density"))
+                            }
+                        }
+                    }
+                } catch (e: JSONException) {
+                    success(false)
+                    e.printStackTrace()
+                }
+                onSuccess()
             },
             onError = { error ->
                 success(false)
