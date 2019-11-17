@@ -257,42 +257,16 @@ class FacilityPage : BaseActivity() {
                 day = day,
                 facilityId = facilityId,
                 fetchHistoricalJSONOnResponse = this::fetchHistoricalJSONOnResponse,
-                fetchOperatingHoursOnResponse = this::fetchOperatingHoursOnResponse
+                fetchOperatingHoursOnResponse = { operatingHours ->
+                    opHours = operatingHours
+                    setOperatingHours(day)
+                }
         )
-    }
-
-    private fun parseTime(timestamp: Long): String {
-        val timeZone = Calendar.getInstance().timeZone
-        var format = SimpleDateFormat("h:mma", Locale.US)
-        if (DateFormat.is24HourFormat(applicationContext)) {
-            format = SimpleDateFormat("HH:mm", Locale.US)
-        }
-        format.timeZone = timeZone
-
-        return format.format(Date(timestamp * 1000)).toLowerCase(Locale.US)
     }
 
     override fun onBackPressed(): Unit = finish()
 
     // OVERRIDE API FUNCTIONS
-
-    private fun fetchOperatingHoursOnResponse(response: JSONArray, day: String) {
-        opHours = ArrayList()
-        val operatingHours = ArrayList<String>()
-        try {
-            val hours = response.getJSONObject(0).getJSONArray("hours")
-            for (i in 0 until hours.length()) {
-                val segment = hours.getJSONObject(i).getJSONObject("dailyHours")
-                val start = segment.getLong("startTimestamp")
-                val end = segment.getLong("endTimestamp")
-                operatingHours.add(parseTime(start) + " – " + parseTime(end))
-            }
-            opHours = operatingHours
-            setOperatingHours(day)
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-    }
 
     private fun fetchHistoricalJSONOnResponse(response: JSONArray, day: String) {
         val historicalDensities = ArrayList<Double>()

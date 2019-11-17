@@ -1,6 +1,7 @@
 package org.cornelldti.density.density.network
 
 import android.content.Context
+import android.text.format.DateFormat
 import android.util.Log
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -8,12 +9,15 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import org.cornelldti.density.density.BaseActivity
 import org.cornelldti.density.density.DensityApplication
 import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.util.FluxUtil
 import org.json.JSONArray
 import org.json.JSONException
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 private const val FACILITY_LIST_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityList"
 private const val FACILITY_INFO_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/facilityInfo"
@@ -146,13 +150,15 @@ class API(context: Context) {
     private fun fetchOperatingHours(
             day: String,
             facilityId: String,
-            fetchOperatingHoursOnResponse: (response: JSONArray, day: String) -> Unit
+            fetchOperatingHoursOnResponse: (operatingHours: List<String>) -> Unit
     ) {
         val operatingHoursRequest = object : JsonArrayRequest(
                 Method.GET,
                 "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=${FluxUtil.getDate(day)}&endDate=${FluxUtil.getDate(day)}",
                 null,
-                Response.Listener { response -> fetchOperatingHoursOnResponse(response, day) },
+                Response.Listener { response ->
+                    fetchOperatingHoursOnResponse(parseOperatingHoursJson(response))
+                },
                 Response.ErrorListener { error -> Log.d("ERROR MESSAGE", error.toString()) }
         ) {
             override fun getHeaders(): Map<String, String> {
@@ -167,7 +173,7 @@ class API(context: Context) {
     fun fetchHistoricalJSON(
             day: String,
             facilityId: String,
-            fetchOperatingHoursOnResponse: (response: JSONArray, day: String) -> Unit,
+            fetchOperatingHoursOnResponse: (operatingHours: List<String>) -> Unit,
             fetchHistoricalJSONOnResponse: (response: JSONArray, day: String) -> Unit
     ) {
         fetchOperatingHours(day, facilityId, fetchOperatingHoursOnResponse)
@@ -185,6 +191,33 @@ class API(context: Context) {
             }
         }
         queue.add(historicalDataRequest)
+    }
+
+    private fun parseOperatingHoursJson(jsonArray: JSONArray): List<String> {
+        val operatingHours = arrayListOf<String>()
+        try {
+            val hours = jsonArray.getJSONObject(0).getJSONArray("hours")
+            for (i in 0 until hours.length()) {
+                val segment = hours.getJSONObject(i).getJSONObject("dailyHours")
+                val start = segment.getLong("startTimestamp")
+                val end = segment.getLong("endTimestamp")
+                operatingHours.add(parseTime(start) + " – " + parseTime(end))
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        return operatingHours
+    }
+
+    private fun parseTime(timestamp: Long): String {
+        val timeZone = Calendar.getInstance().timeZone
+        var format = SimpleDateFormat("h:mma", Locale.US)
+        if (DateFormat.is24HourFormat(DensityApplication.getAppContext())) {
+            format = SimpleDateFormat("HH:mm", Locale.US)
+        }
+        format.timeZone = timeZone
+
+        return format.format(Date(timestamp * 1000)).toLowerCase(Locale.US)
     }
 
     // TODO Function returns a 403 Error Code!
