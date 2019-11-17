@@ -276,11 +276,7 @@ class FacilityPage : BaseActivity() {
         return format.format(Date(timestamp * 1000)).toLowerCase(Locale.US)
     }
 
-    override fun onBackPressed() {
-        //        Intent intent = new Intent(FacilityPage.this, FacilitiesActivity.class);
-        //        startActivity(intent);
-        finish()
-    }
+    override fun onBackPressed(): Unit = finish()
 
     // OVERRIDE API FUNCTIONS
 
