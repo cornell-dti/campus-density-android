@@ -1,7 +1,5 @@
 package org.cornelldti.density.density.facilities
 
-import kotlinx.android.synthetic.main.activity_main.*
-
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -12,22 +10,21 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
-
+import androidx.appcompat.widget.SearchView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.VolleyError
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-
-import androidx.appcompat.widget.SearchView
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.facilities_activity.*
 import org.cornelldti.density.density.BaseActivity
-import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.LockableAppBarLayoutBehavior
 import org.cornelldti.density.density.R
-import org.cornelldti.density.density.facilitydetail.FacilityPage
+import org.cornelldti.density.density.data.FacilityClass
+import org.cornelldti.density.density.facilitydetail.FacilityInfoPage
 import kotlin.math.absoluteValue
 
 class FacilitiesActivity : BaseActivity() {
@@ -55,7 +52,7 @@ class FacilitiesActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         loaded = false
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.facilities_activity)
 
         spinner = findViewById(R.id.progressBar)
 
@@ -269,9 +266,9 @@ class FacilitiesActivity : BaseActivity() {
             val adapter = FacilitiesListAdapter(list)
             adapter.setOnItemClickListener(object : FacilitiesListAdapter.ClickListener {
                 override fun onItemClick(position: Int, v: View) {
-                    val intent = Intent(this@FacilitiesActivity, FacilityPage::class.java)
+                    val intent = Intent(this@FacilitiesActivity, FacilityInfoPage::class.java)
                     val b = Bundle()
-                    b.putSerializable(FacilityPage.ARG_PARAM, adapter.dataSet!![position])
+                    b.putSerializable(FacilityInfoPage.ARG_PARAM, adapter.dataSet!![position])
                     intent.putExtras(b)
                     startActivity(intent)
                 }

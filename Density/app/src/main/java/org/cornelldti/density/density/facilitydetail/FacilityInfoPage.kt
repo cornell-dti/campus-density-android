@@ -1,7 +1,5 @@
 package org.cornelldti.density.density.facilitydetail
 
-import kotlinx.android.synthetic.main.facility_page.*
-
 import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateFormat
@@ -9,33 +7,23 @@ import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
-
+import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-
+import kotlinx.android.synthetic.main.facility_info_page.*
+import org.cornelldti.density.density.BaseActivity
+import org.cornelldti.density.density.R
 import org.cornelldti.density.density.colorbarutil.ColorBarChartRenderer
 import org.cornelldti.density.density.colorbarutil.ColorBarDataSet
 import org.cornelldti.density.density.colorbarutil.ColorBarMarkerView
+import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.util.FluxUtil
 import org.cornelldti.density.density.util.ValueFormatter
-import org.json.JSONArray
-import org.json.JSONException
 
-import java.text.SimpleDateFormat
-
-import androidx.core.content.ContextCompat
-import org.cornelldti.density.density.BaseActivity
-import org.cornelldti.density.density.data.FacilityClass
-import org.cornelldti.density.density.R
-import org.cornelldti.density.density.network.API
-import java.util.Calendar
-import java.util.Locale
-import java.util.Date
-
-class FacilityPage : BaseActivity() {
+class FacilityInfoPage : BaseActivity() {
 
     private var selectedDay: String? = null
 
@@ -49,7 +37,7 @@ class FacilityPage : BaseActivity() {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.facility_page)
+        setContentView(R.layout.facility_info_page)
 
         val b = intent.extras
         if (b != null) {
