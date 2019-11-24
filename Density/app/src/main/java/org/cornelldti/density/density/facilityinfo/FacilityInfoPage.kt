@@ -1,4 +1,4 @@
-package org.cornelldti.density.density.facilitydetail
+package org.cornelldti.density.density.facilityinfo
 
 import android.graphics.Color
 import android.os.Bundle

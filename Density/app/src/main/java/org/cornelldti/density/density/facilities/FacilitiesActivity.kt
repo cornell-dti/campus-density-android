@@ -24,7 +24,7 @@ import org.cornelldti.density.density.BaseActivity
 import org.cornelldti.density.density.LockableAppBarLayoutBehavior
 import org.cornelldti.density.density.R
 import org.cornelldti.density.density.data.FacilityClass
-import org.cornelldti.density.density.facilitydetail.FacilityInfoPage
+import org.cornelldti.density.density.facilityinfo.FacilityInfoPage
 import kotlin.math.absoluteValue
 
 class FacilitiesActivity : BaseActivity() {
@@ -123,15 +123,15 @@ class FacilitiesActivity : BaseActivity() {
         facilities.layoutManager = layoutManager
     }
 
-    private fun fetchFacilities(refresh: Boolean, success: (Boolean) -> Unit) {
+    private fun fetchFacilities(refresh: Boolean, success: () -> Unit) {
         api.fetchFacilities(
                 success = success,
-                onBasicFacilitiesFetched = { failurePage.visibility = View.GONE },
-                onResponse = { list ->
+                onDone = { list ->
+                    failurePage.visibility = View.GONE
                     fetchFacilityOnResponse(list = list, refresh = refresh, success = success)
                 },
                 onError = { error ->
-                    success(false)
+                    success()
                     fetchFacilitiesOnError(error = error)
                 }
         )
@@ -260,7 +260,7 @@ class FacilitiesActivity : BaseActivity() {
     private fun fetchFacilityOnResponse(
             list: List<FacilityClass>,
             refresh: Boolean,
-            success: (Boolean) -> Unit
+            success: () -> Unit
     ) {
         if (!refresh) {
             val adapter = FacilitiesListAdapter(list)
@@ -277,12 +277,12 @@ class FacilitiesActivity : BaseActivity() {
             this.facilities.adapter = adapter
             this.spinner.visibility = View.GONE
             this.facilities.visibility = View.VISIBLE
-            success(true)
+            success()
             setChipOnClickListener()
         } else {
             val adapter = this.adapter!!
             adapter.setDataSet(list)
-            success(true)
+            success()
             when (filterChips!!.checkedChipId) {
                 R.id.all -> adapter.showAllLocations()
                 R.id.north -> adapter.filterFacilitiesByLocation(FacilityClass.CampusLocation.NORTH)
