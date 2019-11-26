@@ -20,6 +20,7 @@ import org.cornelldti.density.density.colorbarutil.ColorBarChartRenderer
 import org.cornelldti.density.density.colorbarutil.ColorBarDataSet
 import org.cornelldti.density.density.colorbarutil.ColorBarMarkerView
 import org.cornelldti.density.density.data.FacilityClass
+import org.cornelldti.density.density.data.MenuClass
 import org.cornelldti.density.density.util.FluxUtil
 import org.cornelldti.density.density.util.ValueFormatter
 
@@ -28,6 +29,8 @@ class FacilityInfoPage : BaseActivity() {
     private var selectedDay: String? = null
 
     private lateinit var feedback: TextView
+    private lateinit var menuTextView: TextView
+
     private var facilityClass: FacilityClass? = null
 
     private var wasChecked: Int = 0
@@ -47,6 +50,7 @@ class FacilityInfoPage : BaseActivity() {
         //     facilityClass = refreshFacilityOccupancy(facilityClass);
 
         feedback = findViewById(R.id.accuracy)
+        menuTextView = findViewById((R.id.menuTextView))
 
         densityChart.setNoDataText("")
 
@@ -177,6 +181,7 @@ class FacilityInfoPage : BaseActivity() {
         backButton.setOnClickListener { onBackPressed() }
 
         fetchHistoricalJSON(day = FluxUtil.dayString, facilityId = facilityClass!!.id)
+        fetchMenuJSON(day = FluxUtil.dayString, facilityId = facilityClass!!.id)
         setToday(FluxUtil.dayString)
         setChipOnClickListener()
         setPills()
@@ -253,6 +258,55 @@ class FacilityInfoPage : BaseActivity() {
                     setOperatingHours(day)
                 }
         )
+    }
+
+    private fun fetchMenuJSON(day: String, facilityId: String) {
+        api.fetchMenuJSON(
+                day = day,
+                facilityId = facilityId,
+                fetchMenuJSONOnResponse = { menu ->
+                    Log.d("MENU", "BLAH")
+                    showMenu(menu)
+                }
+        )
+    }
+
+    private fun showMenu(menu : MenuClass?) {
+        var menuText = ""
+        if(menu != null) {
+            if(menu.breakfastItems != null) {
+                menuText.plus("Breakfast:" + "\n")
+                for(i in 0 until menu.breakfastItems!!.size) {
+                    menuText.plus(menu.breakfastItems!![i].stringify())
+                }
+            }
+            if(menu.brunchItems != null) {
+                menuText.plus("Brunch:" + "\n")
+                for(i in 0 until menu.brunchItems!!.size) {
+                    menuText.plus(menu.brunchItems!!.get(i).stringify())
+                }
+            }
+            if(menu.lunchItems != null) {
+                menuText.plus("Lunch:" + "\n")
+                for(i in 0 until menu.lunchItems!!.size) {
+                    menuText.plus(menu.lunchItems!!.get(i).stringify())
+                }
+            }
+            if(menu.liteLunchItems != null) {
+                menuText.plus("Lite Lunch:" + "\n")
+                for(i in 0 until menu.liteLunchItems!!.size) {
+                    menuText.plus(menu.liteLunchItems!!.get(i).stringify())
+                }
+            }
+            if(menu.dinnerItems != null) {
+                menuText.plus("Dinner:" + "\n")
+                for(i in 0 until menu.dinnerItems!!.size) {
+                    menuText.plus(menu.dinnerItems!!.get(i).stringify())
+                }
+            }
+            Log.d("MENUU", menuText)
+            menuTextView.setText(menuText)
+        }
     }
 
     override fun onBackPressed(): Unit = finish()

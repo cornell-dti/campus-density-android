@@ -61,6 +61,7 @@ open class BaseActivity :
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d("checkpoint", "gotToken")
+                        Log.d("TOKEN1", task.result?.token)
                         task.result?.token?.let { api.setIdToken(it) }
                         updateUI()
                     } else {
