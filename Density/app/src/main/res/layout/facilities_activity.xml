@@ -46,7 +46,9 @@
                     android:layout_height="match_parent"
                     android:checked="true"
                     android:text="@string/all"
-                    android:textAppearance="@style/ChipTextStyle"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="13sp"
                     app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
                 <com.google.android.material.chip.Chip
@@ -55,7 +57,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="@string/north"
-                    android:textAppearance="@style/ChipTextStyle"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="13sp"
                     app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
                 <com.google.android.material.chip.Chip
@@ -64,7 +68,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="@string/west"
-                    android:textAppearance="@style/ChipTextStyle"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="13sp"
                     app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
                 <com.google.android.material.chip.Chip
@@ -73,7 +79,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="@string/central"
-                    android:textAppearance="@style/ChipTextStyle"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="13sp"
                     app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
             </com.google.android.material.chip.ChipGroup>

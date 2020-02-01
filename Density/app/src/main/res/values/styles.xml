@@ -36,10 +36,6 @@
         <item name="queryBackground">@android:color/transparent</item>
     </style>
 
-    <style name="ChipTextStyle">
-        <item name="android:textSize">13sp</item>
-    </style>
-
     <style name="FullScreenDialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowIsTranslucent">false</item>
 
