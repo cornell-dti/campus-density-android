@@ -3,4 +3,5 @@
     <dimen name="chip_group_margin">5dp</dimen>
     <dimen name="chip_day_padding">5dp</dimen>
     <dimen name="chip_day_group_margin">0dp</dimen>
+    <dimen name="chip_text_size">13sp</dimen>
 </resources>

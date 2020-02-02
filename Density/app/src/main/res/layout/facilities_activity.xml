@@ -48,7 +48,7 @@
                     android:text="@string/all"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/chip_text_size"
                     app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
                 <com.google.android.material.chip.Chip
@@ -59,7 +59,7 @@
                     android:text="@string/north"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/chip_text_size"
                     app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
                 <com.google.android.material.chip.Chip
@@ -70,7 +70,7 @@
                     android:text="@string/west"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/chip_text_size"
                     app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
                 <com.google.android.material.chip.Chip
@@ -81,7 +81,7 @@
                     android:text="@string/central"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/chip_text_size"
                     app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
             </com.google.android.material.chip.ChipGroup>

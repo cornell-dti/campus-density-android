@@ -251,7 +251,7 @@
                         android:text="@string/M"
                         android:textAlignment="center"
                         android:textColor="@android:color/black"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/chip_text_size"
                         app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
                     <com.google.android.material.chip.Chip
@@ -262,7 +262,7 @@
                         android:text="@string/Tu"
                         android:textAlignment="center"
                         android:textColor="@android:color/black"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/chip_text_size"
                         app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
                     <com.google.android.material.chip.Chip
@@ -273,7 +273,7 @@
                         android:text="@string/W"
                         android:textAlignment="center"
                         android:textColor="@android:color/black"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/chip_text_size"
                         app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
                     <com.google.android.material.chip.Chip
@@ -284,7 +284,7 @@
                         android:text="@string/Th"
                         android:textAlignment="center"
                         android:textColor="@android:color/black"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/chip_text_size"
                         app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
                     <com.google.android.material.chip.Chip
@@ -295,7 +295,7 @@
                         android:text="@string/F"
                         android:textAlignment="center"
                         android:textColor="@android:color/black"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/chip_text_size"
                         app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
                     <com.google.android.material.chip.Chip
@@ -306,7 +306,7 @@
                         android:text="@string/Sa"
                         android:textAlignment="center"
                         android:textColor="@android:color/black"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/chip_text_size"
                         app:chipBackgroundColor="@drawable/chip_color_toggle" />
 
                     <com.google.android.material.chip.Chip
@@ -317,7 +317,7 @@
                         android:text="@string/Su"
                         android:textAlignment="center"
                         android:textColor="@android:color/black"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/chip_text_size"
                         app:chipBackgroundColor="@drawable/chip_color_toggle" />
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
