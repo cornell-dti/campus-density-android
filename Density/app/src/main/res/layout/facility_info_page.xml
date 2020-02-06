@@ -233,7 +233,7 @@
                     android:id="@+id/dayChips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:chipSpacing="@dimen/chip_day_padding"
+                    app:chipSpacingHorizontal="@dimen/chip_day_padding"
                     app:singleLine="true"
                     app:singleSelection="true">
 
