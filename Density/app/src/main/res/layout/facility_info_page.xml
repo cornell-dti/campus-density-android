@@ -78,61 +78,16 @@
             android:orientation="horizontal"
             android:padding="16dp">
 
-            <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingTop="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <TextView
+                android:id="@+id/now_header"
+                style="@style/DTI.Headline6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/now"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toStartOf="@id/currentOccupancy"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/now_header">
-
-                <ImageView
-                    android:id="@+id/firstPill"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="1"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/first_pill_content"
-                    android:src="@drawable/rounded_box" />
-
-                <ImageView
-                    android:id="@+id/secondPill"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="1"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/second_pill_content"
-                    android:src="@drawable/rounded_box" />
-
-                <ImageView
-                    android:id="@+id/thirdPill"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="1"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/third_pill_content"
-                    android:src="@drawable/rounded_box" />
-
-                <ImageView
-                    android:id="@+id/fourthPill"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/fourth_pill_content"
-                    android:src="@drawable/rounded_box" />
-            </LinearLayout>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/currentOccupancy"
@@ -142,19 +97,59 @@
                 android:gravity="end"
                 android:text="Status"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+                app:layout_constraintBottom_toBottomOf="@id/now_header"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@id/now_header" />
 
-            <TextView
-                android:id="@+id/now_header"
-                style="@style/DTI.Headline6"
-                android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/firstPill"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/now"
-                android:textSize="18sp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="4dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/first_pill_content"
+                android:src="@drawable/rounded_box"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/secondPill"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/now_header" />
+
+            <ImageView
+                android:id="@+id/secondPill"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/second_pill_content"
+                android:src="@drawable/rounded_box"
+                app:layout_constraintEnd_toStartOf="@id/thirdPill"
+                app:layout_constraintStart_toEndOf="@id/firstPill"
+                app:layout_constraintTop_toTopOf="@id/firstPill" />
+
+            <ImageView
+                android:id="@+id/thirdPill"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/third_pill_content"
+                android:src="@drawable/rounded_box"
+                app:layout_constraintEnd_toStartOf="@id/fourthPill"
+                app:layout_constraintStart_toEndOf="@id/secondPill"
+                app:layout_constraintTop_toTopOf="@id/secondPill" />
+
+            <ImageView
+                android:id="@+id/fourthPill"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/fourth_pill_content"
+                android:src="@drawable/rounded_box"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/thirdPill"
+                app:layout_constraintTop_toTopOf="@id/thirdPill" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -238,7 +233,7 @@
                     android:id="@+id/dayChips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:chipSpacing="@dimen/chip_day_padding"
+                    app:chipSpacingHorizontal="@dimen/chip_day_padding"
                     app:singleLine="true"
                     app:singleSelection="true">
 

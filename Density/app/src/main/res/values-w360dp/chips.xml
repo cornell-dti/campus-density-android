@@ -1,6 +1,0 @@
-<resources>
-    <dimen name="chip_padding">20dp</dimen>
-    <dimen name="chip_group_margin">16dp</dimen>
-    <dimen name="chip_day_padding">10dp</dimen>
-    <dimen name="chip_day_group_margin">0dp</dimen>
-</resources>
