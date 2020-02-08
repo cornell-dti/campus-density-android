@@ -28,6 +28,9 @@ object FluxUtil {
         else -> ""
     }
 
+    /**
+     * getDate(day) provides the date for historical endpoint request.
+     */
     fun getDate(day: String): String {
         val current = Calendar.getInstance()
         val format = SimpleDateFormat("MM-dd-yy", Locale.US)
@@ -39,6 +42,15 @@ object FluxUtil {
             dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
         }
 
+        return format.format(current.time)
+    }
+
+    /**
+     * getCurrentDate() provides the current date for the menu endpoint request.
+     */
+    fun getCurrentDate(): String {
+        val current = Calendar.getInstance()
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         return format.format(current.time)
     }
 }

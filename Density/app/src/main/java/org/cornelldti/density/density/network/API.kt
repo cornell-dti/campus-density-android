@@ -127,7 +127,6 @@ class API(context: Context) {
             fetchOperatingHoursOnResponse: (operatingHours: List<String>) -> Unit,
             fetchHistoricalJSONOnResponse: (densities: List<Double>) -> Unit
     ) {
-//        Log.d("TOKEN3", idToken)
         val operatingHoursRequest = getRequest(
             url = "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=${FluxUtil.getDate(day)}&endDate=${FluxUtil.getDate(day)}",
             onResponse = { response ->
@@ -168,13 +167,18 @@ class API(context: Context) {
             day: String,
             fetchMenuJSONOnResponse: ((menu: MenuClass?) -> Unit)
     ) {
-//        Log.d("TOKEN2", idToken)
         val menuRequest = getRequest(
                 url = "$MENU_DATA_ENDPOINT?facility=$facilityId&date=$day",
                 onResponse = {response ->
+                    Log.d("HEY", response.toString())
+                    Log.d("facId", facilityId)
+                    Log.d("date", day)
                     fetchMenuJSONOnResponse(JsonParser.parseMenu(response, facilityId, day))
                 },
-                onError = { error -> Log.d("Error Fetching Menu", error.toString()) }
+                onError = {
+                    error -> Log.d("Error Fetching Menu", error.networkResponse.toString())
+                    Log.e("Token", idToken)
+                }
         )
         queue.add(menuRequest)
     }

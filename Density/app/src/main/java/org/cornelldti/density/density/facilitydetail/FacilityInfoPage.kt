@@ -2,12 +2,17 @@ package org.cornelldti.density.density.facilitydetail
 
 import android.graphics.Color
 import android.os.Bundle
+import androidx.core.widget.NestedScrollView
 import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.util.Log
+import android.view.View
+import android.view.MotionEvent
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
@@ -29,7 +34,10 @@ class FacilityInfoPage : BaseActivity() {
     private var selectedDay: String? = null
 
     private lateinit var feedback: TextView
-    private lateinit var menuTextView: TextView
+
+    private lateinit var menuItemList: RecyclerView
+    private lateinit var menuItemListViewAdapter: RecyclerView.Adapter<*>
+    private lateinit var menuItemListViewManager: RecyclerView.LayoutManager
 
     private var facilityClass: FacilityClass? = null
 
@@ -37,6 +45,8 @@ class FacilityInfoPage : BaseActivity() {
 
     private var opHours: List<String> = ArrayList() // KEEPS TRACK OF OPERATING HOURS FOR FACILITY
     private var densities: List<Double> = ArrayList() // KEEPS TRACK OF HISTORICAL DENSITIES
+
+    private var scrollView: NestedScrollView? = null
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +60,6 @@ class FacilityInfoPage : BaseActivity() {
         //     facilityClass = refreshFacilityOccupancy(facilityClass);
 
         feedback = findViewById(R.id.accuracy)
-        menuTextView = findViewById((R.id.menuTextView))
 
         densityChart.setNoDataText("")
 
@@ -97,6 +106,8 @@ class FacilityInfoPage : BaseActivity() {
                 entries.add(BarEntry(i.toFloat(), 0f))
             }
         }
+
+        Log.d("TESTT", "TESTT" )
 
         val dataSet = ColorBarDataSet(entries, "Results")
         dataSet.setDrawValues(false)
@@ -156,6 +167,16 @@ class FacilityInfoPage : BaseActivity() {
         densityChart.xAxis.setDrawGridLines(false)
         densityChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
 
+//        densityChart.setOnTouchListener(object: View.OnTouchListener {
+//            override fun onTouch(v: View?, event:y MotionEvent?): Boolean {
+//                when (event?.action) {
+//                    MotionEvent.ACTION_DOWN -> scrollView!!.requestDisallowInterceptTouchEvent(true)
+//                    MotionEvent.ACTION_UP -> scrollView!!.requestDisallowInterceptTouchEvent(false)
+//                }
+//                return false
+//            }
+//        })
+
         densityChart.xAxis.valueFormatter = IndexAxisValueFormatter(xAxis)
         densityChart.xAxis.labelCount = xAxis.size
         if (!isClosed)
@@ -177,11 +198,12 @@ class FacilityInfoPage : BaseActivity() {
         facilityName.text = facilityClass!!.name
         currentOccupancy.text = getString(facilityClass!!.densityResId)
         feedback.movementMethod = LinkMovementMethod.getInstance()
+        scrollView = findViewById(R.id.nestedScrollView)
 
         backButton.setOnClickListener { onBackPressed() }
 
-        fetchHistoricalJSON(day = FluxUtil.dayString, facilityId = facilityClass!!.id)
-        fetchMenuJSON(day = FluxUtil.dayString, facilityId = facilityClass!!.id)
+//        fetchHistoricalJSON(day = FluxUtil.dayString, facilityId = facilityClass!!.id)
+//        fetchMenuJSON(day = FluxUtil.dayString, facilityId = facilityClass!!.id)
         setToday(FluxUtil.dayString)
         setChipOnClickListener()
         setPills()
@@ -243,6 +265,7 @@ class FacilityInfoPage : BaseActivity() {
     override fun updateUI() {
         Log.d("updatedFPUI", "updating")
         fetchHistoricalJSON(day = selectedDay!!, facilityId = facilityClass!!.id)
+        fetchMenuJSON(day = FluxUtil.getCurrentDate(), facilityId = facilityClass!!.id)
     }
 
     private fun fetchHistoricalJSON(day: String, facilityId: String) {
@@ -265,47 +288,63 @@ class FacilityInfoPage : BaseActivity() {
                 day = day,
                 facilityId = facilityId,
                 fetchMenuJSONOnResponse = { menu ->
-                    Log.d("MENU", "BLAH")
                     showMenu(menu)
                 }
         )
     }
 
     private fun showMenu(menu : MenuClass?) {
-        var menuText = ""
         if(menu != null) {
-            if(menu.breakfastItems != null) {
-                menuText.plus("Breakfast:" + "\n")
-                for(i in 0 until menu.breakfastItems!!.size) {
-                    menuText.plus(menu.breakfastItems!![i].stringify())
-                }
+            menuItemListViewManager = LinearLayoutManager(this)
+            menuItemListViewAdapter = MenuListAdapter(menu, this)
+
+            menuItemList = findViewById<RecyclerView>(R.id.menuItemsList).apply {
+                // use this setting to improve performance if you know that changes
+                // in content do not change the layout size of the RecyclerView
+                setHasFixedSize(true)
+
+                layoutManager = menuItemListViewManager
+
+                adapter = menuItemListViewAdapter
+
             }
-            if(menu.brunchItems != null) {
-                menuText.plus("Brunch:" + "\n")
-                for(i in 0 until menu.brunchItems!!.size) {
-                    menuText.plus(menu.brunchItems!!.get(i).stringify())
-                }
-            }
-            if(menu.lunchItems != null) {
-                menuText.plus("Lunch:" + "\n")
-                for(i in 0 until menu.lunchItems!!.size) {
-                    menuText.plus(menu.lunchItems!!.get(i).stringify())
-                }
-            }
-            if(menu.liteLunchItems != null) {
-                menuText.plus("Lite Lunch:" + "\n")
-                for(i in 0 until menu.liteLunchItems!!.size) {
-                    menuText.plus(menu.liteLunchItems!!.get(i).stringify())
-                }
-            }
-            if(menu.dinnerItems != null) {
-                menuText.plus("Dinner:" + "\n")
-                for(i in 0 until menu.dinnerItems!!.size) {
-                    menuText.plus(menu.dinnerItems!!.get(i).stringify())
-                }
-            }
-            Log.d("MENUU", menuText)
-            menuTextView.setText(menuText)
+//            if(menu.breakfastItems != null) {
+//                menuText.plus("Breakfast:" + "\n")
+//                for(i in 0 until menu.breakfastItems!!.size) {
+//                    menuText.plus(menu.breakfastItems!![i].stringify())
+//                }
+//            }
+//            if(menu.brunchItems != null) {
+//                menuText.plus("Brunch:" + "\n")
+//                for(i in 0 until menu.brunchItems!!.size) {
+//                    menuText.plus(menu.brunchItems!!.get(i).stringify())
+//                }
+//            }
+//            if(menu.lunchItems != null) {
+//                menuText.plus("Lunch:" + "\n")
+//                for(i in 0 until menu.lunchItems!!.size) {
+//                    menuText.plus(menu.lunchItems!!.get(i).stringify())
+//                }
+//                Log.d("menutext", menuText)
+//            }
+//            if(menu.liteLunchItems != null) {
+//                menuText.plus("Lite Lunch:" + "\n")
+//                for(i in 0 until menu.liteLunchItems!!.size) {
+//                    menuText.plus(menu.liteLunchItems!!.get(i).stringify())
+//                }
+//            }
+//            if(menu.dinnerItems != null) {
+//                menuText.plus("Dinner:" + "\n")
+//                for(i in 0 until menu.dinnerItems!!.size) {
+//                    menuText.plus(menu.dinnerItems!!.get(i).stringify())
+//                }
+//            }
+//            menuTextView.setText(menuText)
+
+
+        }
+        else {
+            Log.d("Menu", "Null")
         }
     }
 

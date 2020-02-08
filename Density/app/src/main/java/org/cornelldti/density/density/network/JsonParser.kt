@@ -34,15 +34,13 @@ object JsonParser {
             if (dayMenus != null) {
                 for (i in 0 until dayMenus.length()) {
                     val categoryItemsJSONArray = dayMenus.getJSONObject(i).getJSONArray("menu")
-                    val categoryItems = arrayListOf<MenuClass.CategoryItems>()
+                    val categoryItems = arrayListOf<MenuClass.CategoryItem>()
                     for (j in 0 until categoryItemsJSONArray.length()) {
                         val category = categoryItemsJSONArray.getJSONObject(j).getString("category")
                         val itemsJSONArray = categoryItemsJSONArray.getJSONObject(j).getJSONArray("items")
-                        val itemsArray = arrayListOf<String>()
                         for (k in 0 until itemsJSONArray.length()) {
-                            itemsArray.add(itemsJSONArray.getString(k))
+                            categoryItems.add(MenuClass.CategoryItem(category, itemsJSONArray.getString(k)))
                         }
-                        categoryItems.add(MenuClass.CategoryItems(category, itemsArray))
                     }
                     when(dayMenus.getJSONObject(i).getString("description")) {
                         "Breakfast" -> menu.breakfastItems = categoryItems
