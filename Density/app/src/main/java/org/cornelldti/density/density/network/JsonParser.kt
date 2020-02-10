@@ -1,13 +1,14 @@
 package org.cornelldti.density.density.network
 
 import android.text.format.DateFormat
+import android.view.Menu
 import org.cornelldti.density.density.DensityApplication
-import org.cornelldti.density.density.data.FacilityClass
-import org.cornelldti.density.density.data.MenuClass
+import org.cornelldti.density.density.data.*
 import org.json.JSONArray
 import org.json.JSONException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 object JsonParser {
     fun parseFacilities(jsonArray: JSONArray): MutableList<FacilityClass>? =
@@ -34,20 +35,26 @@ object JsonParser {
             if (dayMenus != null) {
                 for (i in 0 until dayMenus.length()) {
                     val categoryItemsJSONArray = dayMenus.getJSONObject(i).getJSONArray("menu")
-                    val categoryItems = arrayListOf<MenuClass.CategoryItem>()
+                    val menuItems = arrayListOf<MenuItem>()
                     for (j in 0 until categoryItemsJSONArray.length()) {
                         val category = categoryItemsJSONArray.getJSONObject(j).getString("category")
-                        val itemsJSONArray = categoryItemsJSONArray.getJSONObject(j).getJSONArray("items")
-                        for (k in 0 until itemsJSONArray.length()) {
-                            categoryItems.add(MenuClass.CategoryItem(category, itemsJSONArray.getString(k)))
+                        val categoryItem = CategoryItem()
+                        categoryItem.category = category
+                        menuItems.add(categoryItem)
+                        val foodItemJSONArray = categoryItemsJSONArray.getJSONObject(j).getJSONArray("items")
+                        for (k in 0 until foodItemJSONArray.length()) {
+                            val food = foodItemJSONArray.getString(k)
+                            val foodItem = FoodItem()
+                            foodItem.food = food
+                            menuItems.add(foodItem)
                         }
                     }
                     when(dayMenus.getJSONObject(i).getString("description")) {
-                        "Breakfast" -> menu.breakfastItems = categoryItems
-                        "Brunch" -> menu.brunchItems = categoryItems
-                        "Lunch" -> menu.lunchItems = categoryItems
-                        "Lite Lunch" -> menu.liteLunchItems = categoryItems
-                        "Dinner" -> menu.dinnerItems = categoryItems
+                        "Breakfast" -> menu.breakfastItems = menuItems
+                        "Brunch" -> menu.brunchItems = menuItems
+                        "Lunch" -> menu.lunchItems = menuItems
+                        "Lite Lunch" -> menu.liteLunchItems = menuItems
+                        "Dinner" -> menu.dinnerItems = menuItems
                     }
                 }
             }

@@ -2,15 +2,13 @@ package org.cornelldti.density.density.facilitydetail
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.core.widget.NestedScrollView
 import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.util.Log
-import android.view.View
-import android.view.MotionEvent
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.Chart
@@ -29,6 +27,7 @@ import org.cornelldti.density.density.data.MenuClass
 import org.cornelldti.density.density.util.FluxUtil
 import org.cornelldti.density.density.util.ValueFormatter
 
+
 class FacilityInfoPage : BaseActivity() {
 
     private var selectedDay: String? = null
@@ -45,8 +44,6 @@ class FacilityInfoPage : BaseActivity() {
 
     private var opHours: List<String> = ArrayList() // KEEPS TRACK OF OPERATING HOURS FOR FACILITY
     private var densities: List<Double> = ArrayList() // KEEPS TRACK OF HISTORICAL DENSITIES
-
-    private var scrollView: NestedScrollView? = null
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +68,8 @@ class FacilityInfoPage : BaseActivity() {
         return fac.setOccupancyRating(super.facilityOccupancyRating)
     }
 
-    private fun setChipOnClickListener() {
+
+    private fun setDayChipOnClickListener() {
         dayChips.setOnCheckedChangeListener { _, checkedId -> setDay(checkedId) }
     }
 
@@ -106,8 +104,6 @@ class FacilityInfoPage : BaseActivity() {
                 entries.add(BarEntry(i.toFloat(), 0f))
             }
         }
-
-        Log.d("TESTT", "TESTT" )
 
         val dataSet = ColorBarDataSet(entries, "Results")
         dataSet.setDrawValues(false)
@@ -166,17 +162,6 @@ class FacilityInfoPage : BaseActivity() {
         densityChart.axisRight.isEnabled = false
         densityChart.xAxis.setDrawGridLines(false)
         densityChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-
-//        densityChart.setOnTouchListener(object: View.OnTouchListener {
-//            override fun onTouch(v: View?, event:y MotionEvent?): Boolean {
-//                when (event?.action) {
-//                    MotionEvent.ACTION_DOWN -> scrollView!!.requestDisallowInterceptTouchEvent(true)
-//                    MotionEvent.ACTION_UP -> scrollView!!.requestDisallowInterceptTouchEvent(false)
-//                }
-//                return false
-//            }
-//        })
-
         densityChart.xAxis.valueFormatter = IndexAxisValueFormatter(xAxis)
         densityChart.xAxis.labelCount = xAxis.size
         if (!isClosed)
@@ -198,14 +183,11 @@ class FacilityInfoPage : BaseActivity() {
         facilityName.text = facilityClass!!.name
         currentOccupancy.text = getString(facilityClass!!.densityResId)
         feedback.movementMethod = LinkMovementMethod.getInstance()
-        scrollView = findViewById(R.id.nestedScrollView)
 
         backButton.setOnClickListener { onBackPressed() }
 
-//        fetchHistoricalJSON(day = FluxUtil.dayString, facilityId = facilityClass!!.id)
-//        fetchMenuJSON(day = FluxUtil.dayString, facilityId = facilityClass!!.id)
         setToday(FluxUtil.dayString)
-        setChipOnClickListener()
+        setDayChipOnClickListener()
         setPills()
     }
 
@@ -288,15 +270,76 @@ class FacilityInfoPage : BaseActivity() {
                 day = day,
                 facilityId = facilityId,
                 fetchMenuJSONOnResponse = { menu ->
-                    showMenu(menu)
+                    if(menu?.breakfastItems?.size == 0) {
+                        breakfast.isVisible = false
+                    }
+                    if(menu?.brunchItems?.size == 0) {
+                        brunch.isVisible = false
+                    }
+                    if(menu?.lunchItems?.size == 0) {
+                        lunch.isVisible = false
+                    }
+                    if(menu?.liteLunchItems?.size == 0) {
+                        lite_lunch.isVisible = false
+                    }
+                    if(menu?.dinnerItems?.size == 0) {
+                        dinner.isVisible = false
+                    }
+                    showMenu(menu, firstVisibleChipId(menu))
+                    menuChips.setOnCheckedChangeListener{_, checkedId -> showMenu(menu, checkedId) }
                 }
         )
     }
 
-    private fun showMenu(menu : MenuClass?) {
+    /**
+     * Helper function that selects first visible chip and returns its ID
+     */
+    private fun firstVisibleChipId(menu: MenuClass?): Int {
+        if(menu?.breakfastItems?.size == 0) {
+            if(menu?.brunchItems?.size == 0) {
+                if(menu?.lunchItems?.size == 0) {
+                    if(menu?.liteLunchItems?.size == 0) {
+                        if(menu?.dinnerItems?.size == 0) {
+                            return -1
+                        }
+                        else {
+                            dinner.isChecked = true
+                            return R.id.dinner
+                        }
+                    }
+                    else {
+                        lite_lunch.isChecked = true
+                        return R.id.lite_lunch
+                    }
+                }
+                else {
+                    lunch.isChecked = true
+                    return R.id.lunch
+                }
+            }
+            else {
+                brunch.isChecked = true
+                return R.id.brunch
+            }
+        }
+        else {
+            breakfast.isChecked = true
+            return R.id.breakfast
+        }
+    }
+
+
+    private fun showMenu(menu : MenuClass?, mealOfDay: Int) {
         if(menu != null) {
             menuItemListViewManager = LinearLayoutManager(this)
-            menuItemListViewAdapter = MenuListAdapter(menu, this)
+            when(mealOfDay) {
+                R.id.breakfast -> menuItemListViewAdapter = MenuListAdapter(menu.breakfastItems, this)
+                R.id.brunch -> menuItemListViewAdapter = MenuListAdapter(menu.brunchItems, this)
+                R.id.lunch -> menuItemListViewAdapter = MenuListAdapter(menu.lunchItems, this)
+                R.id.lite_lunch -> menuItemListViewAdapter = MenuListAdapter(menu.liteLunchItems, this)
+                R.id.dinner -> menuItemListViewAdapter = MenuListAdapter(menu.dinnerItems, this)
+                else -> menuItemListViewAdapter = MenuListAdapter(ArrayList(), this)
+            }
 
             menuItemList = findViewById<RecyclerView>(R.id.menuItemsList).apply {
                 // use this setting to improve performance if you know that changes
@@ -308,39 +351,6 @@ class FacilityInfoPage : BaseActivity() {
                 adapter = menuItemListViewAdapter
 
             }
-//            if(menu.breakfastItems != null) {
-//                menuText.plus("Breakfast:" + "\n")
-//                for(i in 0 until menu.breakfastItems!!.size) {
-//                    menuText.plus(menu.breakfastItems!![i].stringify())
-//                }
-//            }
-//            if(menu.brunchItems != null) {
-//                menuText.plus("Brunch:" + "\n")
-//                for(i in 0 until menu.brunchItems!!.size) {
-//                    menuText.plus(menu.brunchItems!!.get(i).stringify())
-//                }
-//            }
-//            if(menu.lunchItems != null) {
-//                menuText.plus("Lunch:" + "\n")
-//                for(i in 0 until menu.lunchItems!!.size) {
-//                    menuText.plus(menu.lunchItems!!.get(i).stringify())
-//                }
-//                Log.d("menutext", menuText)
-//            }
-//            if(menu.liteLunchItems != null) {
-//                menuText.plus("Lite Lunch:" + "\n")
-//                for(i in 0 until menu.liteLunchItems!!.size) {
-//                    menuText.plus(menu.liteLunchItems!!.get(i).stringify())
-//                }
-//            }
-//            if(menu.dinnerItems != null) {
-//                menuText.plus("Dinner:" + "\n")
-//                for(i in 0 until menu.dinnerItems!!.size) {
-//                    menuText.plus(menu.dinnerItems!!.get(i).stringify())
-//                }
-//            }
-//            menuTextView.setText(menuText)
-
 
         }
         else {

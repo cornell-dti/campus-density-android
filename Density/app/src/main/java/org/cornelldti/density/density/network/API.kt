@@ -34,7 +34,6 @@ class API(context: Context) {
         val facilityListRequest = getRequest(
             url = FACILITY_LIST_ENDPOINT,
             onResponse = { response ->
-                Log.d("RESP1", response.toString())
                 val facilities = JsonParser.parseFacilities(jsonArray = response)
                 if (facilities == null) {
                     success(false)
@@ -57,7 +56,6 @@ class API(context: Context) {
         val facilityInfoRequest = getRequest(
                 url = FACILITY_INFO_ENDPOINT,
                 onResponse = { response ->
-                    Log.d("RESP2", response.toString())
                     try {
                         for (i in list.indices) {
                             for (x in 0 until response.length()) {
@@ -100,7 +98,6 @@ class API(context: Context) {
         val facilityOccupancyRequest = getRequest(
             url = HOW_DENSE_ENDPOINT,
             onResponse = { response ->
-                Log.d("RESP3", response.toString())
                 try {
                     for (i in list.indices) {
                         for (x in 0 until response.length()) {
@@ -170,14 +167,10 @@ class API(context: Context) {
         val menuRequest = getRequest(
                 url = "$MENU_DATA_ENDPOINT?facility=$facilityId&date=$day",
                 onResponse = {response ->
-                    Log.d("HEY", response.toString())
-                    Log.d("facId", facilityId)
-                    Log.d("date", day)
                     fetchMenuJSONOnResponse(JsonParser.parseMenu(response, facilityId, day))
                 },
                 onError = {
                     error -> Log.d("Error Fetching Menu", error.networkResponse.toString())
-                    Log.e("Token", idToken)
                 }
         )
         queue.add(menuRequest)
