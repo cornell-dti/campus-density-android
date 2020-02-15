@@ -40,7 +40,8 @@ class FacilityInfoPage : BaseActivity() {
 
     private var facilityClass: FacilityClass? = null
 
-    private var wasChecked: Int = 0
+    private var wasCheckedDay: Int = 0
+    private var wasCheckedMenu: Int = 0
 
     private var opHours: List<String> = ArrayList() // KEEPS TRACK OF OPERATING HOURS FOR FACILITY
     private var densities: List<Double> = ArrayList() // KEEPS TRACK OF HISTORICAL DENSITIES
@@ -68,7 +69,6 @@ class FacilityInfoPage : BaseActivity() {
         return fac.setOccupancyRating(super.facilityOccupancyRating)
     }
 
-
     private fun setDayChipOnClickListener() {
         dayChips.setOnCheckedChangeListener { _, checkedId -> setDay(checkedId) }
     }
@@ -83,10 +83,10 @@ class FacilityInfoPage : BaseActivity() {
             R.id.thu -> day = "THU"
             R.id.fri -> day = "FRI"
             R.id.sat -> day = "SAT"
-            -1 -> dayChips.check(wasChecked)
+            -1 -> dayChips.check(wasCheckedDay)
         }
-        if (checkedId != -1 && wasChecked != checkedId) {
-            wasChecked = checkedId
+        if (checkedId != -1 && wasCheckedDay != checkedId) {
+            wasCheckedDay = checkedId
             selectedDay = day
             fetchHistoricalJSON(day, facilityClass!!.id)
         }
@@ -230,7 +230,7 @@ class FacilityInfoPage : BaseActivity() {
             "FRI" -> fri.isChecked = true
             "SAT" -> sat.isChecked = true
         }
-        wasChecked = dayChips.checkedChipId
+        wasCheckedDay = dayChips.checkedChipId
     }
 
     private fun setOperatingHours(day: String) {
@@ -285,7 +285,8 @@ class FacilityInfoPage : BaseActivity() {
                     if(menu?.dinnerItems?.size == 0) {
                         dinner.isVisible = false
                     }
-                    showMenu(menu, firstVisibleChipId(menu))
+                    wasCheckedMenu = firstVisibleChipId(menu)
+                    showMenu(menu, wasCheckedMenu)
                     menuChips.setOnCheckedChangeListener{_, checkedId -> showMenu(menu, checkedId) }
                 }
         )
@@ -338,7 +339,10 @@ class FacilityInfoPage : BaseActivity() {
                 R.id.lunch -> menuItemListViewAdapter = MenuListAdapter(menu.lunchItems, this)
                 R.id.lite_lunch -> menuItemListViewAdapter = MenuListAdapter(menu.liteLunchItems, this)
                 R.id.dinner -> menuItemListViewAdapter = MenuListAdapter(menu.dinnerItems, this)
-                else -> menuItemListViewAdapter = MenuListAdapter(ArrayList(), this)
+                -1 -> menuChips.check(wasCheckedMenu)
+            }
+            if (mealOfDay != -1 && wasCheckedMenu != mealOfDay) {
+                wasCheckedMenu = mealOfDay
             }
 
             menuItemList = findViewById<RecyclerView>(R.id.menuItemsList).apply {
