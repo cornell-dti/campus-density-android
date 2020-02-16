@@ -180,11 +180,11 @@ class FacilityInfoPage : BaseActivity() {
     }
 
     private fun initializeView() {
-        facilityName.text = facilityClass!!.name
+        topBar.title = facilityClass!!.name
         currentOccupancy.text = getString(facilityClass!!.densityResId)
         feedback.movementMethod = LinkMovementMethod.getInstance()
 
-        backButton.setOnClickListener { onBackPressed() }
+        topBar.setNavigationOnClickListener { onBackPressed() }
 
         setToday(FluxUtil.dayString)
         setDayChipOnClickListener()
