@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,8 +7,8 @@
     android:clickable="true"
     android:fillViewport="true"
     android:focusable="true"
-    android:orientation="vertical">
-
+    android:orientation="vertical"
+    tools:context=".facilitydetail.FacilityInfoPage">
 
     <LinearLayout
         android:id="@+id/topView"
@@ -343,8 +341,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="Menu"
                         android:padding="8dp"
+                        android:text="Menu"
                         android:textSize="18sp" />
 
                     <com.google.android.material.chip.ChipGroup
