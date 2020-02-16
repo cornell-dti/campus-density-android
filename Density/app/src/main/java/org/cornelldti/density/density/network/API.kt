@@ -8,6 +8,7 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import org.cornelldti.density.density.data.FacilityClass
+import org.cornelldti.density.density.data.MenuClass
 import org.cornelldti.density.density.util.FluxUtil
 import org.json.JSONArray
 import org.json.JSONException
@@ -51,7 +52,6 @@ class API(context: Context) {
         val facilityInfoRequest = getRequest(
                 url = FACILITY_INFO_ENDPOINT,
                 onResponse = { response ->
-                    Log.d("RESP2", response.toString())
                     try {
                         for (i in list.indices) {
                             for (x in 0 until response.length()) {
@@ -154,6 +154,23 @@ class API(context: Context) {
                 onError = { error -> Log.d("ERRORSON", error.toString()) }
         )
         queue.add(facilityRequest)
+    }
+
+    fun fetchMenuJSON(
+            facilityId: String,
+            day: String,
+            fetchMenuJSONOnResponse: ((menu: MenuClass?) -> Unit)
+    ) {
+        val menuRequest = getRequest(
+                url = "$MENU_DATA_ENDPOINT?facility=$facilityId&date=$day",
+                onResponse = {response ->
+                    fetchMenuJSONOnResponse(JsonParser.parseMenu(response, facilityId, day))
+                },
+                onError = {
+                    error -> Log.d("Error Fetching Menu", error.networkResponse.toString())
+                }
+        )
+        queue.add(menuRequest)
     }
 
     private fun getRequest(

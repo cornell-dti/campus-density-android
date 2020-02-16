@@ -1,14 +1,14 @@
 package org.cornelldti.density.density.network
 
 import android.text.format.DateFormat
+import android.view.Menu
 import org.cornelldti.density.density.DensityApplication
-import org.cornelldti.density.density.data.FacilityClass
+import org.cornelldti.density.density.data.*
 import org.json.JSONArray
 import org.json.JSONException
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import java.util.*
+import kotlin.collections.ArrayList
 
 object JsonParser {
     fun parseFacilities(jsonArray: JSONArray): MutableList<FacilityClass>? =
@@ -27,6 +27,59 @@ object JsonParser {
             e.printStackTrace()
             null
         }
+
+    fun parseMenu(jsonArray: JSONArray, facility: String, day: String): MenuClass? {
+        try {
+            val dayMenus = getDayMenu(jsonArray, day)
+            val menu = MenuClass(facility)
+            if (dayMenus != null) {
+                for (i in 0 until dayMenus.length()) {
+                    val categoryItemsJSONArray = dayMenus.getJSONObject(i).getJSONArray("menu")
+                    val menuItems = arrayListOf<MenuItem>()
+                    for (j in 0 until categoryItemsJSONArray.length()) {
+                        val category = categoryItemsJSONArray.getJSONObject(j).getString("category")
+                        val categoryItem = CategoryItem()
+                        categoryItem.category = category
+                        menuItems.add(categoryItem)
+                        val foodItemJSONArray = categoryItemsJSONArray.getJSONObject(j).getJSONArray("items")
+                        for (k in 0 until foodItemJSONArray.length()) {
+                            val food = foodItemJSONArray.getString(k)
+                            val foodItem = FoodItem()
+                            foodItem.food = food
+                            menuItems.add(foodItem)
+                        }
+                    }
+                    when(dayMenus.getJSONObject(i).getString("description")) {
+                        "Breakfast" -> menu.breakfastItems = menuItems
+                        "Brunch" -> menu.brunchItems = menuItems
+                        "Lunch" -> menu.lunchItems = menuItems
+                        "Lite Lunch" -> menu.liteLunchItems = menuItems
+                        "Dinner" -> menu.dinnerItems = menuItems
+                    }
+                }
+            }
+            return menu
+        } catch (e: JSONException) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    // Helper function that gets menus for specific day
+    private fun getDayMenu(jsonArray: JSONArray, day: String): JSONArray? {
+        try {
+            val weeksMenus = jsonArray.getJSONObject(0).getJSONArray("weeksMenus")
+            for (i in 0 until weeksMenus.length()) {
+                if (weeksMenus.getJSONObject(i).getString("date") == day) {
+                    return weeksMenus.getJSONObject(i).getJSONArray("menus")
+                }
+            }
+            return null
+        } catch (e: JSONException) {
+            e.printStackTrace()
+            return null
+        }
+    }
 
     fun parseOperatingHours(jsonArray: JSONArray): List<String> {
         val operatingHours = arrayListOf<String>()

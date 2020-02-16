@@ -1,4 +1,4 @@
-package org.cornelldti.density.density.facilityinfo
+package org.cornelldti.density.density.facilitydetail
 
 import android.graphics.Color
 import android.os.Bundle
@@ -8,6 +8,9 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
@@ -20,17 +23,25 @@ import org.cornelldti.density.density.colorbarutil.ColorBarChartRenderer
 import org.cornelldti.density.density.colorbarutil.ColorBarDataSet
 import org.cornelldti.density.density.colorbarutil.ColorBarMarkerView
 import org.cornelldti.density.density.data.FacilityClass
+import org.cornelldti.density.density.data.MenuClass
 import org.cornelldti.density.density.util.FluxUtil
 import org.cornelldti.density.density.util.ValueFormatter
+
 
 class FacilityInfoPage : BaseActivity() {
 
     private var selectedDay: String? = null
 
     private lateinit var feedback: TextView
+
+    private lateinit var menuItemList: RecyclerView
+    private lateinit var menuItemListViewAdapter: RecyclerView.Adapter<*>
+    private lateinit var menuItemListViewManager: RecyclerView.LayoutManager
+
     private var facilityClass: FacilityClass? = null
 
-    private var wasChecked: Int = 0
+    private var wasCheckedDay: Int = -1
+    private var wasCheckedMenu: Int = -1
 
     private var opHours: List<String> = ArrayList() // KEEPS TRACK OF OPERATING HOURS FOR FACILITY
     private var densities: List<Double> = ArrayList() // KEEPS TRACK OF HISTORICAL DENSITIES
@@ -58,7 +69,7 @@ class FacilityInfoPage : BaseActivity() {
         return fac.setOccupancyRating(super.facilityOccupancyRating)
     }
 
-    private fun setChipOnClickListener() {
+    private fun setDayChipOnClickListener() {
         dayChips.setOnCheckedChangeListener { _, checkedId -> setDay(checkedId) }
     }
 
@@ -72,10 +83,10 @@ class FacilityInfoPage : BaseActivity() {
             R.id.thu -> day = "THU"
             R.id.fri -> day = "FRI"
             R.id.sat -> day = "SAT"
-            -1 -> dayChips.check(wasChecked)
+            -1 -> dayChips.check(wasCheckedDay)
         }
-        if (checkedId != -1 && wasChecked != checkedId) {
-            wasChecked = checkedId
+        if (checkedId != -1 && wasCheckedDay != checkedId) {
+            wasCheckedDay = checkedId
             selectedDay = day
             fetchHistoricalJSON(day, facilityClass!!.id)
         }
@@ -151,7 +162,6 @@ class FacilityInfoPage : BaseActivity() {
         densityChart.axisRight.isEnabled = false
         densityChart.xAxis.setDrawGridLines(false)
         densityChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-
         densityChart.xAxis.valueFormatter = IndexAxisValueFormatter(xAxis)
         densityChart.xAxis.labelCount = xAxis.size
         if (!isClosed)
@@ -170,15 +180,14 @@ class FacilityInfoPage : BaseActivity() {
     }
 
     private fun initializeView() {
-        facilityName.text = facilityClass!!.name
+        topBar.title = facilityClass!!.name
         currentOccupancy.text = getString(facilityClass!!.densityResId)
         feedback.movementMethod = LinkMovementMethod.getInstance()
 
-        backButton.setOnClickListener { onBackPressed() }
+        topBar.setNavigationOnClickListener { onBackPressed() }
 
-        fetchHistoricalJSON(day = FluxUtil.dayString, facilityId = facilityClass!!.id)
         setToday(FluxUtil.dayString)
-        setChipOnClickListener()
+        setDayChipOnClickListener()
         setPills()
     }
 
@@ -221,7 +230,7 @@ class FacilityInfoPage : BaseActivity() {
             "FRI" -> fri.isChecked = true
             "SAT" -> sat.isChecked = true
         }
-        wasChecked = dayChips.checkedChipId
+        wasCheckedDay = dayChips.checkedChipId
     }
 
     private fun setOperatingHours(day: String) {
@@ -238,6 +247,7 @@ class FacilityInfoPage : BaseActivity() {
     override fun updateUI() {
         Log.d("updatedFPUI", "updating")
         fetchHistoricalJSON(day = selectedDay!!, facilityId = facilityClass!!.id)
+        fetchMenuJSON(day = FluxUtil.getCurrentDate(), facilityId = facilityClass!!.id)
     }
 
     private fun fetchHistoricalJSON(day: String, facilityId: String) {
@@ -253,6 +263,98 @@ class FacilityInfoPage : BaseActivity() {
                     setOperatingHours(day)
                 }
         )
+    }
+
+    private fun fetchMenuJSON(day: String, facilityId: String) {
+        api.fetchMenuJSON(
+                day = day,
+                facilityId = facilityId,
+                fetchMenuJSONOnResponse = { menu ->
+                    if (menu?.breakfastItems?.size == 0) {
+                        breakfast.isVisible = false
+                    }
+                    if (menu?.brunchItems?.size == 0) {
+                        brunch.isVisible = false
+                    }
+                    if (menu?.lunchItems?.size == 0) {
+                        lunch.isVisible = false
+                    }
+                    if (menu?.liteLunchItems?.size == 0) {
+                        lite_lunch.isVisible = false
+                    }
+                    if (menu?.dinnerItems?.size == 0) {
+                        dinner.isVisible = false
+                    }
+                    wasCheckedMenu = firstVisibleChipId(menu)
+                    showMenu(menu, wasCheckedMenu)
+                    menuChips.setOnCheckedChangeListener { _, checkedId -> showMenu(menu, checkedId) }
+                }
+        )
+    }
+
+    /**
+     * Helper function that selects first visible chip and returns its ID
+     */
+    private fun firstVisibleChipId(menu: MenuClass?): Int {
+        if (menu?.breakfastItems?.size == 0) {
+            if (menu?.brunchItems?.size == 0) {
+                if (menu?.lunchItems?.size == 0) {
+                    if (menu?.liteLunchItems?.size == 0) {
+                        if (menu?.dinnerItems?.size == 0) {
+                            return -1
+                        } else {
+                            dinner.isChecked = true
+                            return R.id.dinner
+                        }
+                    } else {
+                        lite_lunch.isChecked = true
+                        return R.id.lite_lunch
+                    }
+                } else {
+                    lunch.isChecked = true
+                    return R.id.lunch
+                }
+            } else {
+                brunch.isChecked = true
+                return R.id.brunch
+            }
+        } else {
+            breakfast.isChecked = true
+            return R.id.breakfast
+        }
+    }
+
+
+    private fun showMenu(menu: MenuClass?, mealOfDay: Int) {
+        if (menu != null) {
+            menuItemListViewManager = LinearLayoutManager(this)
+            when (mealOfDay) {
+                R.id.breakfast -> menuItemListViewAdapter = MenuListAdapter(menu.breakfastItems, this)
+                R.id.brunch -> menuItemListViewAdapter = MenuListAdapter(menu.brunchItems, this)
+                R.id.lunch -> menuItemListViewAdapter = MenuListAdapter(menu.lunchItems, this)
+                R.id.lite_lunch -> menuItemListViewAdapter = MenuListAdapter(menu.liteLunchItems, this)
+                R.id.dinner -> menuItemListViewAdapter = MenuListAdapter(menu.dinnerItems, this)
+                -1 -> if (wasCheckedMenu != -1) menuChips.check(wasCheckedMenu)
+                else menuItemListViewAdapter = MenuListAdapter(ArrayList(), this)
+            }
+            if (mealOfDay != -1 && wasCheckedMenu != mealOfDay) {
+                wasCheckedMenu = mealOfDay
+            }
+
+            menuItemList = findViewById<RecyclerView>(R.id.menuItemsList).apply {
+                // use this setting to improve performance if you know that changes
+                // in content do not change the layout size of the RecyclerView
+                setHasFixedSize(true)
+
+                layoutManager = menuItemListViewManager
+
+                adapter = menuItemListViewAdapter
+
+            }
+
+        } else {
+            Log.d("Menu", "Null")
+        }
     }
 
     override fun onBackPressed(): Unit = finish()

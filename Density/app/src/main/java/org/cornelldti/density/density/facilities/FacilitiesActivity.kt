@@ -24,7 +24,7 @@ import org.cornelldti.density.density.BaseActivity
 import org.cornelldti.density.density.LockableAppBarLayoutBehavior
 import org.cornelldti.density.density.R
 import org.cornelldti.density.density.data.FacilityClass
-import org.cornelldti.density.density.facilityinfo.FacilityInfoPage
+import org.cornelldti.density.density.facilitydetail.FacilityInfoPage
 import kotlin.math.absoluteValue
 
 class FacilitiesActivity : BaseActivity() {

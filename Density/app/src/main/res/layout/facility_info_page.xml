@@ -1,325 +1,430 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
-    android:focusable="true"
-    tools:context=".facilityinfo.FacilityInfoPage">
+    android:orientation="vertical"
+    tools:context=".facilitydetail.FacilityInfoPage">
 
-    <LinearLayout
-        android:id="@+id/topView"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:clickable="true"
+        android:focusable="true">
 
-        <ImageButton
-            android:id="@+id/backButton"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/topBar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/back_button_desc"
-            android:padding="16dp"
-            android:src="@drawable/ic_arrow_back" />
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:navigationContentDescription="@string/back_button_desc"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="facilityName" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <TextView
-            android:id="@+id/facilityName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|start"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="Facility Name"
-            android:textColor="#000000"
-            android:textSize="20sp" />
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/accuracy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:gravity="end"
-        android:text="@string/accuracy"
-        android:textSize="12sp"
-        android:textStyle="italic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/current_view" />
-
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/current_view"
-        style="@style/MyCardView"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:clickable="false"
-        android:focusable="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topView">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/now_header"
-                style="@style/DTI.Headline6"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/current_view"
+                style="@style/MyCardView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/now"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toStartOf="@id/currentOccupancy"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/currentOccupancy"
-                style="@style/DTI.Subtitle2"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:gravity="end"
-                android:text="Status"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@id/now_header"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/now_header" />
-
-            <ImageView
-                android:id="@+id/firstPill"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="4dp"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/first_pill_content"
-                android:src="@drawable/rounded_box"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/secondPill"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/now_header" />
-
-            <ImageView
-                android:id="@+id/secondPill"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/second_pill_content"
-                android:src="@drawable/rounded_box"
-                app:layout_constraintEnd_toStartOf="@id/thirdPill"
-                app:layout_constraintStart_toEndOf="@id/firstPill"
-                app:layout_constraintTop_toTopOf="@id/firstPill" />
-
-            <ImageView
-                android:id="@+id/thirdPill"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/third_pill_content"
-                android:src="@drawable/rounded_box"
-                app:layout_constraintEnd_toStartOf="@id/fourthPill"
-                app:layout_constraintStart_toEndOf="@id/secondPill"
-                app:layout_constraintTop_toTopOf="@id/secondPill" />
-
-            <ImageView
-                android:id="@+id/fourthPill"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/fourth_pill_content"
-                android:src="@drawable/rounded_box"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/thirdPill"
-                app:layout_constraintTop_toTopOf="@id/thirdPill" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/bottomView"
-        style="@style/MyCardView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/accuracy">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:orientation="vertical"
-            android:padding="8dp"
-            android:paddingBottom="16dp">
-
-            <TextView
-                android:id="@+id/popular_times"
-                style="@style/DTI.Headline6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="@string/popular"
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/todayHours"
-                style="@style/DTI.Subtitle2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:gravity="center"
-                android:text=""
-                app:layout_constraintBottom_toTopOf="@id/facilityHours"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:clickable="false"
+                android:focusable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/densityChart" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/facilityHours"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="1dp"
-                android:gravity="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/todayHours" />
-
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/densityChart"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="4dp"
-                app:layout_constraintBottom_toTopOf="@+id/todayHours"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/chipScrollView" />
-
-            <HorizontalScrollView
-                android:id="@+id/chipScrollView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/popular_times">
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/dayChips"
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:chipSpacingHorizontal="@dimen/chip_day_padding"
-                    app:singleLine="true"
-                    app:singleSelection="true">
+                    android:orientation="horizontal"
+                    android:padding="16dp">
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/mon"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:checked="true"
-                        android:text="@string/M"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/chip_text_size"
-                        app:chipBackgroundColor="@drawable/chip_color_toggle" />
+                    <TextView
+                        android:id="@+id/now_header"
+                        style="@style/DTI.CardHeader"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/now"
+                        app:layout_constraintEnd_toStartOf="@id/currentOccupancy"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/tue"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                    <TextView
+                        android:id="@+id/currentOccupancy"
+                        style="@style/DTI.Subtitle2"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="@string/Tu"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/chip_text_size"
-                        app:chipBackgroundColor="@drawable/chip_color_toggle" />
+                        android:layout_height="0dp"
+                        android:gravity="end"
+                        android:text="Status"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="@id/now_header"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/now_header" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/wed"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="@string/W"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/chip_text_size"
-                        app:chipBackgroundColor="@drawable/chip_color_toggle" />
+                    <ImageView
+                        android:id="@+id/firstPill"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="4dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/first_pill_content"
+                        android:src="@drawable/rounded_box"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/secondPill"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/now_header" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/thu"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="@string/Th"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/chip_text_size"
-                        app:chipBackgroundColor="@drawable/chip_color_toggle" />
+                    <ImageView
+                        android:id="@+id/secondPill"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/second_pill_content"
+                        android:src="@drawable/rounded_box"
+                        app:layout_constraintEnd_toStartOf="@id/thirdPill"
+                        app:layout_constraintStart_toEndOf="@id/firstPill"
+                        app:layout_constraintTop_toTopOf="@id/firstPill" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/fri"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="@string/F"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/chip_text_size"
-                        app:chipBackgroundColor="@drawable/chip_color_toggle" />
+                    <ImageView
+                        android:id="@+id/thirdPill"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/third_pill_content"
+                        android:src="@drawable/rounded_box"
+                        app:layout_constraintEnd_toStartOf="@id/fourthPill"
+                        app:layout_constraintStart_toEndOf="@id/secondPill"
+                        app:layout_constraintTop_toTopOf="@id/secondPill" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/sat"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="@string/Sa"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/chip_text_size"
-                        app:chipBackgroundColor="@drawable/chip_color_toggle" />
+                    <ImageView
+                        android:id="@+id/fourthPill"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/fourth_pill_content"
+                        android:src="@drawable/rounded_box"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/thirdPill"
+                        app:layout_constraintTop_toTopOf="@id/thirdPill" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/sun"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/accuracy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="end"
+                android:text="@string/accuracy"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/current_view" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/historicalDataCard"
+                style="@style/MyCardView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/accuracy">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:padding="8dp"
+                    android:paddingBottom="16dp">
+
+                    <TextView
+                        android:id="@+id/popular_times"
+                        style="@style/DTI.CardHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:text="@string/popular"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <HorizontalScrollView
+                        android:id="@+id/chipScrollView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/popular_times">
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/dayChips"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:chipSpacingHorizontal="@dimen/chip_day_padding"
+                            app:singleLine="true"
+                            app:singleSelection="true">
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/mon"
+                                style="@style/Widget.MaterialComponents.Chip.Choice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:checked="true"
+                                android:text="@string/M"
+                                android:textAlignment="center"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/chip_text_size"
+                                app:chipBackgroundColor="@drawable/chip_color_toggle" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/tue"
+                                style="@style/Widget.MaterialComponents.Chip.Choice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/Tu"
+                                android:textAlignment="center"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/chip_text_size"
+                                app:chipBackgroundColor="@drawable/chip_color_toggle" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/wed"
+                                style="@style/Widget.MaterialComponents.Chip.Choice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/W"
+                                android:textAlignment="center"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/chip_text_size"
+                                app:chipBackgroundColor="@drawable/chip_color_toggle" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/thu"
+                                style="@style/Widget.MaterialComponents.Chip.Choice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/Th"
+                                android:textAlignment="center"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/chip_text_size"
+                                app:chipBackgroundColor="@drawable/chip_color_toggle" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/fri"
+                                style="@style/Widget.MaterialComponents.Chip.Choice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/F"
+                                android:textAlignment="center"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/chip_text_size"
+                                app:chipBackgroundColor="@drawable/chip_color_toggle" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/sat"
+                                style="@style/Widget.MaterialComponents.Chip.Choice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/Sa"
+                                android:textAlignment="center"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/chip_text_size"
+                                app:chipBackgroundColor="@drawable/chip_color_toggle" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/sun"
+                                style="@style/Widget.MaterialComponents.Chip.Choice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/Su"
+                                android:textAlignment="center"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/chip_text_size"
+                                app:chipBackgroundColor="@drawable/chip_color_toggle" />
+                        </com.google.android.material.chip.ChipGroup>
+                    </HorizontalScrollView>
+
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/densityChart"
+                        android:layout_width="match_parent"
+                        android:layout_height="275dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="4dp"
+                        app:layout_constraintBottom_toTopOf="@+id/todayHours"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/chipScrollView" />
+
+                    <TextView
+                        android:id="@+id/todayHours"
+                        style="@style/DTI.Subtitle2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:gravity="center"
+                        android:text=""
+                        app:layout_constraintBottom_toTopOf="@id/facilityHours"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/densityChart" />
+
+                    <TextView
+                        android:id="@+id/facilityHours"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="1dp"
+                        android:gravity="center"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/todayHours" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/menuCard"
+                style="@style/MyCardView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/historicalDataCard">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <TextView
+                        android:id="@+id/menu"
+                        style="@style/DTI.CardHeader"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="@string/Su"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/chip_text_size"
-                        app:chipBackgroundColor="@drawable/chip_color_toggle" />
-                </com.google.android.material.chip.ChipGroup>
-            </HorizontalScrollView>
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:text="@string/menu"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/menuChips"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:chipSpacingHorizontal="@dimen/chip_day_padding"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/menu"
+                        app:singleLine="true"
+                        app:singleSelection="true">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/breakfast"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="@string/breakfast"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/chip_text_size"
+                            app:chipBackgroundColor="@drawable/chip_color_toggle" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/brunch"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="@string/brunch"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/chip_text_size"
+                            app:chipBackgroundColor="@drawable/chip_color_toggle" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/lunch"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="@string/lunch"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/chip_text_size"
+                            app:chipBackgroundColor="@drawable/chip_color_toggle" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/lite_lunch"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="@string/lite_lunch"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/chip_text_size"
+                            app:chipBackgroundColor="@drawable/chip_color_toggle" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/dinner"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="@string/dinner"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/chip_text_size"
+                            app:chipBackgroundColor="@drawable/chip_color_toggle" />
+
+                    </com.google.android.material.chip.ChipGroup>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/menuItemsList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/menuChips">
+
+                    </androidx.recyclerview.widget.RecyclerView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+    </androidx.core.widget.NestedScrollView>
 
-    </androidx.cardview.widget.CardView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

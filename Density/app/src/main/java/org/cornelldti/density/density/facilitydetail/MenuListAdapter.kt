@@ -1,0 +1,64 @@
+package org.cornelldti.density.density.facilitydetail
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import org.cornelldti.density.density.R
+import androidx.recyclerview.widget.RecyclerView
+import org.cornelldti.density.density.data.MenuItem
+import kotlinx.android.synthetic.main.menu_category_list_item.view.*
+import kotlinx.android.synthetic.main.menu_food_list_item.view.*
+import org.cornelldti.density.density.data.CategoryItem
+import org.cornelldti.density.density.data.FoodItem
+
+
+class MenuListAdapter(private val menuItems: List<MenuItem>, private val context: Context)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+
+    open inner class CategoryViewHolder(v: View) : RecyclerView.ViewHolder(v){
+        private val categoryName = v.category_name
+
+        fun bind(categoryItem: CategoryItem) {
+            categoryName.text = categoryItem.category
+        }
+    }
+
+    open inner class FoodViewHolder(v: View) : RecyclerView.ViewHolder(v){
+        private val foodName = v.food_name
+
+        fun bind(foodItem: FoodItem) {
+            foodName.text = foodItem.food
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if (viewType == MenuItem.TYPE_CATEGORY) {
+            val itemView = LayoutInflater.from(context).inflate(R.layout.menu_category_list_item, parent, false)
+            return CategoryViewHolder(itemView)
+        } else {
+            val itemView = LayoutInflater.from(context).inflate(R.layout.menu_food_list_item, parent, false)
+            return FoodViewHolder(itemView)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return menuItems[position].getType()
+    }
+
+    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
+        val type = getItemViewType(position)
+        if(type == MenuItem.TYPE_CATEGORY) {
+            val categoryItem = menuItems[position] as CategoryItem
+            (viewHolder as CategoryViewHolder).bind(categoryItem)
+        }
+        else {
+            val foodItem = menuItems[position] as FoodItem
+            (viewHolder as FoodViewHolder).bind(foodItem)
+        }
+    }
+
+    override fun getItemCount(): Int = menuItems.size
+
+}
