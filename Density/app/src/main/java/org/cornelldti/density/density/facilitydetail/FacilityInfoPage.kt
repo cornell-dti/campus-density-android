@@ -40,8 +40,8 @@ class FacilityInfoPage : BaseActivity() {
 
     private var facilityClass: FacilityClass? = null
 
-    private var wasCheckedDay: Int = 0
-    private var wasCheckedMenu: Int = 0
+    private var wasCheckedDay: Int = -1
+    private var wasCheckedMenu: Int = -1
 
     private var opHours: List<String> = ArrayList() // KEEPS TRACK OF OPERATING HOURS FOR FACILITY
     private var densities: List<Double> = ArrayList() // KEEPS TRACK OF HISTORICAL DENSITIES
@@ -270,24 +270,24 @@ class FacilityInfoPage : BaseActivity() {
                 day = day,
                 facilityId = facilityId,
                 fetchMenuJSONOnResponse = { menu ->
-                    if(menu?.breakfastItems?.size == 0) {
+                    if (menu?.breakfastItems?.size == 0) {
                         breakfast.isVisible = false
                     }
-                    if(menu?.brunchItems?.size == 0) {
+                    if (menu?.brunchItems?.size == 0) {
                         brunch.isVisible = false
                     }
-                    if(menu?.lunchItems?.size == 0) {
+                    if (menu?.lunchItems?.size == 0) {
                         lunch.isVisible = false
                     }
-                    if(menu?.liteLunchItems?.size == 0) {
+                    if (menu?.liteLunchItems?.size == 0) {
                         lite_lunch.isVisible = false
                     }
-                    if(menu?.dinnerItems?.size == 0) {
+                    if (menu?.dinnerItems?.size == 0) {
                         dinner.isVisible = false
                     }
                     wasCheckedMenu = firstVisibleChipId(menu)
                     showMenu(menu, wasCheckedMenu)
-                    menuChips.setOnCheckedChangeListener{_, checkedId -> showMenu(menu, checkedId) }
+                    menuChips.setOnCheckedChangeListener { _, checkedId -> showMenu(menu, checkedId) }
                 }
         )
     }
@@ -296,50 +296,46 @@ class FacilityInfoPage : BaseActivity() {
      * Helper function that selects first visible chip and returns its ID
      */
     private fun firstVisibleChipId(menu: MenuClass?): Int {
-        if(menu?.breakfastItems?.size == 0) {
-            if(menu?.brunchItems?.size == 0) {
-                if(menu?.lunchItems?.size == 0) {
-                    if(menu?.liteLunchItems?.size == 0) {
-                        if(menu?.dinnerItems?.size == 0) {
+        if (menu?.breakfastItems?.size == 0) {
+            if (menu?.brunchItems?.size == 0) {
+                if (menu?.lunchItems?.size == 0) {
+                    if (menu?.liteLunchItems?.size == 0) {
+                        if (menu?.dinnerItems?.size == 0) {
                             return -1
-                        }
-                        else {
+                        } else {
                             dinner.isChecked = true
                             return R.id.dinner
                         }
-                    }
-                    else {
+                    } else {
                         lite_lunch.isChecked = true
                         return R.id.lite_lunch
                     }
-                }
-                else {
+                } else {
                     lunch.isChecked = true
                     return R.id.lunch
                 }
-            }
-            else {
+            } else {
                 brunch.isChecked = true
                 return R.id.brunch
             }
-        }
-        else {
+        } else {
             breakfast.isChecked = true
             return R.id.breakfast
         }
     }
 
 
-    private fun showMenu(menu : MenuClass?, mealOfDay: Int) {
-        if(menu != null) {
+    private fun showMenu(menu: MenuClass?, mealOfDay: Int) {
+        if (menu != null) {
             menuItemListViewManager = LinearLayoutManager(this)
-            when(mealOfDay) {
+            when (mealOfDay) {
                 R.id.breakfast -> menuItemListViewAdapter = MenuListAdapter(menu.breakfastItems, this)
                 R.id.brunch -> menuItemListViewAdapter = MenuListAdapter(menu.brunchItems, this)
                 R.id.lunch -> menuItemListViewAdapter = MenuListAdapter(menu.lunchItems, this)
                 R.id.lite_lunch -> menuItemListViewAdapter = MenuListAdapter(menu.liteLunchItems, this)
                 R.id.dinner -> menuItemListViewAdapter = MenuListAdapter(menu.dinnerItems, this)
-                -1 -> menuChips.check(wasCheckedMenu)
+                -1 -> if (wasCheckedMenu != -1) menuChips.check(wasCheckedMenu)
+                else menuItemListViewAdapter = MenuListAdapter(ArrayList(), this)
             }
             if (mealOfDay != -1 && wasCheckedMenu != mealOfDay) {
                 wasCheckedMenu = mealOfDay
@@ -356,8 +352,7 @@ class FacilityInfoPage : BaseActivity() {
 
             }
 
-        }
-        else {
+        } else {
             Log.d("Menu", "Null")
         }
     }
