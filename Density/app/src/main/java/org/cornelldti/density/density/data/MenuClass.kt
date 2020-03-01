@@ -1,25 +1,18 @@
 package org.cornelldti.density.density.data
 
 
-class MenuClass(facility: String) {
-    var facilityId: String? = null
-
-    var breakfastItems: ArrayList<MenuItem> = ArrayList()
-    var brunchItems: ArrayList<MenuItem> = ArrayList()
-    var lunchItems: ArrayList<MenuItem> = ArrayList()
-    var liteLunchItems: ArrayList<MenuItem> = ArrayList()
-    var dinnerItems: ArrayList<MenuItem> = ArrayList()
-
-    init {
-        facilityId = facility
-    }
-
+class MenuClass {
+    var breakfastItems: List<MenuItem> = ArrayList()
+    var brunchItems: List<MenuItem> = ArrayList()
+    var lunchItems: List<MenuItem> = ArrayList()
+    var liteLunchItems: List<MenuItem> = ArrayList()
+    var dinnerItems: List<MenuItem> = ArrayList()
 }
 
     abstract class MenuItem {
         companion object {
-            val TYPE_CATEGORY = 0
-            val TYPE_FOOD = 1
+            const val TYPE_CATEGORY = 0
+            const val TYPE_FOOD = 1
         }
         abstract fun getType(): Int
     }

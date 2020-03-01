@@ -1,14 +1,12 @@
 package org.cornelldti.density.density.network
 
 import android.text.format.DateFormat
-import android.view.Menu
 import org.cornelldti.density.density.DensityApplication
 import org.cornelldti.density.density.data.*
 import org.json.JSONArray
 import org.json.JSONException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 object JsonParser {
     fun parseFacilities(jsonArray: JSONArray): MutableList<FacilityClass>? =
@@ -28,10 +26,10 @@ object JsonParser {
             null
         }
 
-    fun parseMenu(jsonArray: JSONArray, facility: String, day: String): MenuClass? {
+    fun parseMenu(jsonArray: JSONArray, day: String): MenuClass? {
         try {
             val dayMenus = getDayMenu(jsonArray, day)
-            val menu = MenuClass(facility)
+            val menu = MenuClass()
             if (dayMenus != null) {
                 for (i in 0 until dayMenus.length()) {
                     val categoryItemsJSONArray = dayMenus.getJSONObject(i).getJSONArray("menu")

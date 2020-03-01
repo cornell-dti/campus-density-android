@@ -164,7 +164,7 @@ class API(context: Context) {
         val menuRequest = getRequest(
                 url = "$MENU_DATA_ENDPOINT?facility=$facilityId&date=$day",
                 onResponse = {response ->
-                    fetchMenuJSONOnResponse(JsonParser.parseMenu(response, facilityId, day))
+                    fetchMenuJSONOnResponse(JsonParser.parseMenu(response, day))
                 },
                 onError = {
                     error -> Log.d("Error Fetching Menu", error.networkResponse.toString())
