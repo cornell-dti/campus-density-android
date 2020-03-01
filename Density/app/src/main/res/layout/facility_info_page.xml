@@ -316,6 +316,7 @@
                 android:id="@+id/menuCard"
                 style="@style/MyCardView"
                 android:layout_width="0dp"
+                android:visibility="invisible"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"

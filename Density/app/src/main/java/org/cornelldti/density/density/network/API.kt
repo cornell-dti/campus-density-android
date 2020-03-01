@@ -165,6 +165,7 @@ class API(context: Context) {
                 url = "$MENU_DATA_ENDPOINT?facility=$facilityId&date=$day",
                 onResponse = {response ->
                     fetchMenuJSONOnResponse(JsonParser.parseMenu(response, facilityId, day))
+                    Log.d("RESPON", response.toString())
                 },
                 onError = {
                     error -> Log.d("Error Fetching Menu", error.networkResponse.toString())

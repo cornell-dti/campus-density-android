@@ -26,6 +26,8 @@ import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.data.MenuClass
 import org.cornelldti.density.density.util.FluxUtil
 import org.cornelldti.density.density.util.ValueFormatter
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class FacilityInfoPage : BaseActivity() {
@@ -70,19 +72,22 @@ class FacilityInfoPage : BaseActivity() {
     }
 
     private fun setDayChipOnClickListener() {
-        dayChips.setOnCheckedChangeListener { _, checkedId -> setDay(checkedId) }
+        dayChips.setOnCheckedChangeListener { _, checkedId ->
+            setDay(checkedId)
+            setDayMenu(checkedId)
+        }
     }
 
     private fun setDay(checkedId: Int) {
         var day = ""
         when (checkedId) {
-            R.id.sun -> day = "SUN"
-            R.id.mon -> day = "MON"
-            R.id.tue -> day = "TUE"
-            R.id.wed -> day = "WED"
-            R.id.thu -> day = "THU"
-            R.id.fri -> day = "FRI"
-            R.id.sat -> day = "SAT"
+            R.id.sun -> day = getString(R.string.SUN)
+            R.id.mon -> day = getString(R.string.MON)
+            R.id.tue -> day = getString(R.string.TUE)
+            R.id.wed -> day = getString(R.string.WED)
+            R.id.thu -> day = getString(R.string.THU)
+            R.id.fri -> day = getString(R.string.FRI)
+            R.id.sat -> day = getString(R.string.SAT)
             -1 -> dayChips.check(wasCheckedDay)
         }
         if (checkedId != -1 && wasCheckedDay != checkedId) {
@@ -90,6 +95,29 @@ class FacilityInfoPage : BaseActivity() {
             selectedDay = day
             fetchHistoricalJSON(day, facilityClass!!.id)
         }
+    }
+
+    private fun setDayMenu(checkedId: Int) {
+        var selectedDay = FluxUtil.dayString
+        when (checkedId) {
+            R.id.sun -> selectedDay = getString(R.string.SUN)
+            R.id.mon -> selectedDay = getString(R.string.MON)
+            R.id.tue -> selectedDay = getString(R.string.TUE)
+            R.id.wed -> selectedDay = getString(R.string.WED)
+            R.id.thu -> selectedDay = getString(R.string.THU)
+            R.id.fri -> selectedDay = getString(R.string.FRI)
+            R.id.sat -> selectedDay = getString(R.string.SAT)
+            -1 -> FluxUtil.dayString
+        }
+        val daysDifference = FluxUtil.getDayDifference(FluxUtil.dayString, selectedDay)
+        fetchMenuJSON(day = getDateDaysAfter(daysDifference), facilityId = facilityClass!!.id)
+    }
+
+    fun getDateDaysAfter(daysAfter: Int): String {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_YEAR, daysAfter)
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        return format.format(calendar.time)
     }
 
     private fun setupBarChart() {
@@ -222,13 +250,13 @@ class FacilityInfoPage : BaseActivity() {
     private fun setToday(dayString: String) {
         selectedDay = dayString
         when (dayString) {
-            "SUN" -> sun.isChecked = true
-            "MON" -> mon.isChecked = true
-            "TUE" -> tue.isChecked = true
-            "WED" -> wed.isChecked = true
-            "THU" -> thu.isChecked = true
-            "FRI" -> fri.isChecked = true
-            "SAT" -> sat.isChecked = true
+            getString(R.string.SUN) -> sun.isChecked = true
+            getString(R.string.MON) -> mon.isChecked = true
+            getString(R.string.TUE) -> tue.isChecked = true
+            getString(R.string.WED) -> wed.isChecked = true
+            getString(R.string.THU) -> thu.isChecked = true
+            getString(R.string.FRI) -> fri.isChecked = true
+            getString(R.string.SAT) -> sat.isChecked = true
         }
         wasCheckedDay = dayChips.checkedChipId
     }
@@ -270,24 +298,40 @@ class FacilityInfoPage : BaseActivity() {
                 day = day,
                 facilityId = facilityId,
                 fetchMenuJSONOnResponse = { menu ->
-                    if (menu?.breakfastItems?.size == 0) {
-                        breakfast.isVisible = false
-                    }
-                    if (menu?.brunchItems?.size == 0) {
-                        brunch.isVisible = false
-                    }
-                    if (menu?.lunchItems?.size == 0) {
-                        lunch.isVisible = false
-                    }
-                    if (menu?.liteLunchItems?.size == 0) {
-                        lite_lunch.isVisible = false
-                    }
-                    if (menu?.dinnerItems?.size == 0) {
-                        dinner.isVisible = false
-                    }
-                    wasCheckedMenu = firstVisibleChipId(menu)
-                    showMenu(menu, wasCheckedMenu)
-                    menuChips.setOnCheckedChangeListener { _, checkedId -> showMenu(menu, checkedId) }
+                        if(menu?.breakfastItems?.size == 0 && menu?.brunchItems?.size == 0
+                                && menu?.lunchItems?.size == 0 && menu?.liteLunchItems?.size == 0 && menu?.dinnerItems?.size == 0) {
+                            menuCard.isVisible = false
+                        }
+                        else {
+                            menuCard.isVisible = true
+                            when {
+                                (menu?.breakfastItems?.size == 0) -> breakfast.isVisible = false
+                                else -> breakfast.isVisible = true
+                            }
+
+                            when {
+                                (menu?.brunchItems?.size == 0) -> brunch.isVisible = false
+                                else -> brunch.isVisible = true
+                            }
+
+                            when {
+                                (menu?.lunchItems?.size == 0) -> lunch.isVisible = false
+                                else -> lunch.isVisible = true
+                            }
+
+                            when {
+                                (menu?.liteLunchItems?.size == 0) -> lite_lunch.isVisible = false
+                                else -> lite_lunch.isVisible = true
+                            }
+
+                            when {
+                                (menu?.dinnerItems?.size == 0) -> dinner.isVisible = false
+                                else -> dinner.isVisible = true
+                            }
+                            wasCheckedMenu = firstVisibleChipId(menu)
+                            showMenu(menu, wasCheckedMenu)
+                            menuChips.setOnCheckedChangeListener { _, checkedId -> showMenu(menu, checkedId) }
+                        }
                 }
         )
     }
