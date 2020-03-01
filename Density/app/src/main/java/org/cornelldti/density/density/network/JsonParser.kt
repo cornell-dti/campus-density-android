@@ -10,53 +10,61 @@ import java.util.*
 
 object JsonParser {
     fun parseFacilities(jsonArray: JSONArray): MutableList<FacilityClass>? =
-        try {
-            val facilities = arrayListOf<FacilityClass>()
-            for (i in 0 until jsonArray.length()) {
-                val facilityJson = jsonArray.getJSONObject(i)
-                val facility = FacilityClass(
-                    name = facilityJson.getString("displayName"),
-                    id = facilityJson.getString("id")
-                )
-                facilities.add(facility)
+            try {
+                val facilities = arrayListOf<FacilityClass>()
+                for (i in 0 until jsonArray.length()) {
+                    val facilityJson = jsonArray.getJSONObject(i)
+                    val facility = FacilityClass(
+                            name = facilityJson.getString("displayName"),
+                            id = facilityJson.getString("id")
+                    )
+                    facilities.add(facility)
+                }
+                facilities
+            } catch (e: JSONException) {
+                e.printStackTrace()
+                null
             }
-            facilities
-        } catch (e: JSONException) {
-            e.printStackTrace()
-            null
-        }
 
     fun parseMenu(jsonArray: JSONArray, day: String): MenuClass? {
         try {
             val dayMenus = getDayMenu(jsonArray, day)
-            val menu = MenuClass()
+            val breakfast = arrayListOf<MenuItem>()
+            val brunch = arrayListOf<MenuItem>()
+            val lunch = arrayListOf<MenuItem>()
+            val liteLunch = arrayListOf<MenuItem>()
+            val dinner = arrayListOf<MenuItem>()
             if (dayMenus != null) {
                 for (i in 0 until dayMenus.length()) {
                     val categoryItemsJSONArray = dayMenus.getJSONObject(i).getJSONArray("menu")
                     val menuItems = arrayListOf<MenuItem>()
                     for (j in 0 until categoryItemsJSONArray.length()) {
                         val category = categoryItemsJSONArray.getJSONObject(j).getString("category")
-                        val categoryItem = CategoryItem()
-                        categoryItem.category = category
+                        val categoryItem = CategoryItem(category)
                         menuItems.add(categoryItem)
                         val foodItemJSONArray = categoryItemsJSONArray.getJSONObject(j).getJSONArray("items")
                         for (k in 0 until foodItemJSONArray.length()) {
                             val food = foodItemJSONArray.getString(k)
-                            val foodItem = FoodItem()
-                            foodItem.food = food
+                            val foodItem = FoodItem(food)
                             menuItems.add(foodItem)
                         }
                     }
-                    when(dayMenus.getJSONObject(i).getString("description")) {
-                        "Breakfast" -> menu.breakfastItems = menuItems
-                        "Brunch" -> menu.brunchItems = menuItems
-                        "Lunch" -> menu.lunchItems = menuItems
-                        "Lite Lunch" -> menu.liteLunchItems = menuItems
-                        "Dinner" -> menu.dinnerItems = menuItems
+                    when (dayMenus.getJSONObject(i).getString("description")) {
+                        "Breakfast" -> breakfast.addAll(menuItems)
+                        "Brunch" -> brunch.addAll(menuItems)
+                        "Lunch" -> lunch.addAll(menuItems)
+                        "Lite Lunch" -> liteLunch.addAll(menuItems)
+                        "Dinner" -> dinner.addAll(menuItems)
                     }
                 }
             }
-            return menu
+            return MenuClass(
+                    breakfastItems = breakfast,
+                    brunchItems = brunch,
+                    lunchItems = lunch,
+                    liteLunchItems = liteLunch,
+                    dinnerItems = dinner
+            )
         } catch (e: JSONException) {
             e.printStackTrace()
             return null
