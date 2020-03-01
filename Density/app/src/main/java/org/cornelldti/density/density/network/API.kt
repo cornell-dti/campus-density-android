@@ -164,10 +164,7 @@ class API(context: Context) {
         val menuRequest = getRequest(
                 url = "$MENU_DATA_ENDPOINT?facility=$facilityId&date=$day",
                 onResponse = {response ->
-                    fetchMenuJSONOnResponse(JsonParser.parseMenu(response, facilityId, day))
-                    Log.d("RESPON", response.toString())
-                    // TODO: update to this after merging, won't build if we change before merge
-                    // fetchMenuJSONOnResponse(JsonParser.parseMenu(response, day))
+                     fetchMenuJSONOnResponse(JsonParser.parseMenu(response, day))
                 },
                 onError = {
                     error -> Log.d("Error Fetching Menu", error.networkResponse.toString())
