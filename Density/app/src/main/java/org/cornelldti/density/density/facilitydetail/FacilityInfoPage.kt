@@ -333,31 +333,30 @@ class FacilityInfoPage : BaseActivity() {
      * Helper function that selects first visible chip and returns its ID
      */
     private fun firstVisibleChipId(menu: MenuClass?): Int {
-        if (menu?.breakfastItems?.size == 0) {
-            if (menu?.brunchItems?.size == 0) {
-                if (menu?.lunchItems?.size == 0) {
-                    if (menu?.liteLunchItems?.size == 0) {
-                        if (menu?.dinnerItems?.size == 0) {
-                            return -1
-                        } else {
-                            dinner.isChecked = true
-                            return R.id.dinner
-                        }
-                    } else {
-                        lite_lunch.isChecked = true
-                        return R.id.lite_lunch
-                    }
-                } else {
-                    lunch.isChecked = true
-                    return R.id.lunch
-                }
-            } else {
+        when {
+            menu?.breakfastItems?.size!! > 0 -> {
+                breakfast.isChecked = true
+                return R.id.breakfast
+            }
+            menu.brunchItems.size > 0 -> {
                 brunch.isChecked = true
                 return R.id.brunch
             }
-        } else {
-            breakfast.isChecked = true
-            return R.id.breakfast
+            menu.lunchItems.size > 0 -> {
+                lunch.isChecked = true
+                return R.id.lunch
+            }
+            menu.liteLunchItems.size > 0 -> {
+                lite_lunch.isChecked = true
+                return R.id.lite_lunch
+            }
+            menu.dinnerItems.size > 0 -> {
+                dinner.isChecked = true
+                return R.id.dinner
+            }
+            else -> {
+                return -1
+            }
         }
     }
 
