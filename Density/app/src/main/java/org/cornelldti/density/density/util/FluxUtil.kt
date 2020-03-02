@@ -57,6 +57,13 @@ object FluxUtil {
         return count
     }
 
+    fun getDateDaysAfter(daysAfter: Int): String {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_YEAR, daysAfter)
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        return format.format(calendar.time)
+    }
+
     /**
      * getCurrentDate() provides the current date for the menu endpoint request.
      */

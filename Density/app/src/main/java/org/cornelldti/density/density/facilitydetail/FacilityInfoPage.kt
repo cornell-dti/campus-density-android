@@ -110,14 +110,7 @@ class FacilityInfoPage : BaseActivity() {
             -1 -> FluxUtil.dayString
         }
         val daysDifference = FluxUtil.getDayDifference(FluxUtil.dayString, selectedDay)
-        fetchMenuJSON(day = getDateDaysAfter(daysDifference), facilityId = facilityClass!!.id)
-    }
-
-    fun getDateDaysAfter(daysAfter: Int): String {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_YEAR, daysAfter)
-        val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-        return format.format(calendar.time)
+        fetchMenuJSON(day = FluxUtil.getDateDaysAfter(daysDifference), facilityId = facilityClass!!.id)
     }
 
     private fun setupBarChart() {
