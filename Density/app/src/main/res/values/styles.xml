@@ -20,6 +20,19 @@
         <item name="cardCornerRadius">8dp</item>
     </style>
 
+    <style name="BaseChipStyle" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/chip_text_size</item>
+        <item name="chipBackgroundColor">@drawable/chip_color_toggle</item>
+        <item name="chipStrokeWidth">0dp</item>
+    </style>
+
+    <style name="OutlineChipStyle" parent="BaseChipStyle">
+        <item name="chipStrokeWidth">2dp</item>
+        <item name="chipStrokeColor">@color/chip_background</item>
+    </style>
+
     <style name="DTI.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="android:textSize">16sp</item>
     </style>

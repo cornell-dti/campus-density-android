@@ -12,4 +12,6 @@
     <color name="filler_boxes">#EDEDED</color>
 
     <color name="border">#dad7d7</color>
+
+    <color name="chip_background">#EFEFEF</color>
 </resources>
