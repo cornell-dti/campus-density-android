@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,9 +27,6 @@ import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.data.MenuClass
 import org.cornelldti.density.density.util.FluxUtil
 import org.cornelldti.density.density.util.ValueFormatter
-import java.text.SimpleDateFormat
-import java.util.*
-
 
 class FacilityInfoPage : BaseActivity() {
 
@@ -289,74 +287,60 @@ class FacilityInfoPage : BaseActivity() {
     private fun fetchMenuJSON(day: String, facilityId: String) {
         api.fetchMenuJSON(
                 day = day,
-                facilityId = facilityId,
-                fetchMenuJSONOnResponse = { menu ->
-                        if(menu?.breakfastItems?.size == 0 && menu?.brunchItems?.size == 0
-                                && menu?.lunchItems?.size == 0 && menu?.liteLunchItems?.size == 0 && menu?.dinnerItems?.size == 0) {
-                            menuCard.isVisible = false
-                        }
-                        else {
-                            menuCard.isVisible = true
-                            when {
-                                (menu?.breakfastItems?.size == 0) -> breakfast.isVisible = false
-                                else -> breakfast.isVisible = true
-                            }
-
-                            when {
-                                (menu?.brunchItems?.size == 0) -> brunch.isVisible = false
-                                else -> brunch.isVisible = true
-                            }
-
-                            when {
-                                (menu?.lunchItems?.size == 0) -> lunch.isVisible = false
-                                else -> lunch.isVisible = true
-                            }
-
-                            when {
-                                (menu?.liteLunchItems?.size == 0) -> lite_lunch.isVisible = false
-                                else -> lite_lunch.isVisible = true
-                            }
-
-                            when {
-                                (menu?.dinnerItems?.size == 0) -> dinner.isVisible = false
-                                else -> dinner.isVisible = true
-                            }
-                            wasCheckedMenu = firstVisibleChipId(menu)
-                            showMenu(menu, wasCheckedMenu)
-                            menuChips.setOnCheckedChangeListener { _, checkedId -> showMenu(menu, checkedId) }
-                        }
-                }
-        )
+                facilityId = facilityId
+        ) { menu ->
+            if (menu?.breakfastItems?.size == 0
+                    && menu.brunchItems.isEmpty()
+                    && menu.lunchItems.isEmpty()
+                    && menu.liteLunchItems.isEmpty()
+                    && menu.dinnerItems.isEmpty()) {
+                menuCard.isGone = true
+            } else {
+                menuCard.isVisible = true
+                breakfast.isVisible = menu?.breakfastItems?.isNotEmpty() ?: false
+                brunch.isVisible = menu?.brunchItems?.isNotEmpty() ?: false
+                lunch.isVisible = menu?.lunchItems?.isNotEmpty() ?: false
+                lite_lunch.isVisible = menu?.liteLunchItems?.isNotEmpty() ?: false
+                dinner.isVisible = menu?.dinnerItems?.isNotEmpty() ?: false
+                wasCheckedMenu = firstVisibleChipId(menu)
+                showMenu(menu, wasCheckedMenu)
+                menuChips.setOnCheckedChangeListener { _, checkedId -> showMenu(menu, checkedId) }
+            }
+        }
     }
 
     /**
      * Helper function that selects first visible chip and returns its ID
      */
     private fun firstVisibleChipId(menu: MenuClass?): Int {
-        when {
-            menu?.breakfastItems?.size!! > 0 -> {
-                breakfast.isChecked = true
-                return R.id.breakfast
+        if (menu != null) {
+            when {
+                menu.breakfastItems.isNotEmpty() -> {
+                    breakfast.isChecked = true
+                    return R.id.breakfast
+                }
+                menu.brunchItems.isNotEmpty() -> {
+                    brunch.isChecked = true
+                    return R.id.brunch
+                }
+                menu.lunchItems.isNotEmpty() -> {
+                    lunch.isChecked = true
+                    return R.id.lunch
+                }
+                menu.liteLunchItems.isNotEmpty() -> {
+                    lite_lunch.isChecked = true
+                    return R.id.lite_lunch
+                }
+                menu.dinnerItems.isNotEmpty() -> {
+                    dinner.isChecked = true
+                    return R.id.dinner
+                }
+                else -> {
+                    return -1
+                }
             }
-            menu.brunchItems.size > 0 -> {
-                brunch.isChecked = true
-                return R.id.brunch
-            }
-            menu.lunchItems.size > 0 -> {
-                lunch.isChecked = true
-                return R.id.lunch
-            }
-            menu.liteLunchItems.size > 0 -> {
-                lite_lunch.isChecked = true
-                return R.id.lite_lunch
-            }
-            menu.dinnerItems.size > 0 -> {
-                dinner.isChecked = true
-                return R.id.dinner
-            }
-            else -> {
-                return -1
-            }
+        } else {
+            return -1
         }
     }
 
