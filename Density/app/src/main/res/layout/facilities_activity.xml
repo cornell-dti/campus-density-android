@@ -41,48 +41,32 @@
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/all"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    style="@style/BaseChipStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:checked="true"
-                    android:text="@string/all"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/chip_text_size"
-                    app:chipBackgroundColor="@drawable/chip_color_toggle" />
+                    android:text="@string/all" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/north"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    style="@style/BaseChipStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="@string/north"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/chip_text_size"
-                    app:chipBackgroundColor="@drawable/chip_color_toggle" />
+                    android:text="@string/north" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/west"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    style="@style/BaseChipStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="@string/west"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/chip_text_size"
-                    app:chipBackgroundColor="@drawable/chip_color_toggle" />
+                    android:text="@string/west" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/central"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    style="@style/BaseChipStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="@string/central"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/chip_text_size"
-                    app:chipBackgroundColor="@drawable/chip_color_toggle" />
+                    android:text="@string/central" />
 
             </com.google.android.material.chip.ChipGroup>
 

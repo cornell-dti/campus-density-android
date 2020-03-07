@@ -5,6 +5,8 @@ import java.util.*
 
 object FluxUtil {
 
+    val daysList = listOf("SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT")
+
     val dayString: String
         get() = when (Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
             Calendar.SUNDAY -> "SUN"
@@ -43,6 +45,23 @@ object FluxUtil {
         }
 
         return format.format(current.time)
+    }
+
+    fun getDayDifference(currentDay: String, tappedDay: String): Int {
+        var x: Int = daysList.indexOf(currentDay)
+        var count = 0
+        while (daysList[x % 7] != tappedDay) {
+            count += 1
+            x += 1
+        }
+        return count
+    }
+
+    fun getDateDaysAfter(daysAfter: Int): String {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_YEAR, daysAfter)
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        return format.format(calendar.time)
     }
 
     /**

@@ -9,7 +9,6 @@
         android:layout_height="wrap_content"
         android:text="Food Name"
         android:textSize="12sp"
-        android:layout_marginLeft="5dp"
-        android:padding="5dp"/>
+        android:padding="8dp"/>
 
 </LinearLayout>
