@@ -354,13 +354,6 @@
                             android:text="@string/lunch" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/lite_lunch"
-                            style="@style/BaseChipStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/lite_lunch" />
-
-                        <com.google.android.material.chip.Chip
                             android:id="@+id/dinner"
                             style="@style/BaseChipStyle"
                             android:layout_width="wrap_content"

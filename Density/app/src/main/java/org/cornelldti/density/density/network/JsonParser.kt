@@ -62,7 +62,6 @@ object JsonParser {
                     breakfastItems = breakfast,
                     brunchItems = brunch,
                     lunchItems = lunch,
-                    liteLunchItems = liteLunch,
                     dinnerItems = dinner
             )
         } catch (e: JSONException) {

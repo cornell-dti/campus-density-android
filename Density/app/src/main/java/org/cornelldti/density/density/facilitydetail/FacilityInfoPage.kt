@@ -307,7 +307,6 @@ class FacilityInfoPage : BaseActivity() {
             if (menu?.breakfastItems?.size == 0
                     && menu.brunchItems.isEmpty()
                     && menu.lunchItems.isEmpty()
-                    && menu.liteLunchItems.isEmpty()
                     && menu.dinnerItems.isEmpty()) {
                 menuCard.isGone = true
             } else {
@@ -315,7 +314,6 @@ class FacilityInfoPage : BaseActivity() {
                 breakfast.isGone = !(menu?.breakfastItems?.isNotEmpty() ?: false)
                 brunch.isGone = !(menu?.brunchItems?.isNotEmpty() ?: false)
                 lunch.isGone = !(menu?.lunchItems?.isNotEmpty() ?: false)
-                lite_lunch.isGone = !(menu?.liteLunchItems?.isNotEmpty() ?: false)
                 dinner.isGone = !(menu?.dinnerItems?.isNotEmpty() ?: false)
                 wasCheckedMenu = firstVisibleChipId(menu)
                 showMenu(menu, wasCheckedMenu)
@@ -342,10 +340,6 @@ class FacilityInfoPage : BaseActivity() {
                     lunch.isChecked = true
                     return R.id.lunch
                 }
-                menu.liteLunchItems.isNotEmpty() -> {
-                    lite_lunch.isChecked = true
-                    return R.id.lite_lunch
-                }
                 menu.dinnerItems.isNotEmpty() -> {
                     dinner.isChecked = true
                     return R.id.dinner
@@ -367,7 +361,6 @@ class FacilityInfoPage : BaseActivity() {
                 R.id.breakfast -> menuItemListViewAdapter = MenuListAdapter(menu.breakfastItems, this)
                 R.id.brunch -> menuItemListViewAdapter = MenuListAdapter(menu.brunchItems, this)
                 R.id.lunch -> menuItemListViewAdapter = MenuListAdapter(menu.lunchItems, this)
-                R.id.lite_lunch -> menuItemListViewAdapter = MenuListAdapter(menu.liteLunchItems, this)
                 R.id.dinner -> menuItemListViewAdapter = MenuListAdapter(menu.dinnerItems, this)
                 -1 -> if (wasCheckedMenu != -1) menuChips.check(wasCheckedMenu)
                 else menuItemListViewAdapter = MenuListAdapter(ArrayList(), this)
