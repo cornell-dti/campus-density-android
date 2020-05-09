@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -108,7 +109,7 @@ class FacilityInfoPage : BaseActivity() {
             -1 -> FluxUtil.dayString
         }
         val daysDifference = FluxUtil.getDayDifference(FluxUtil.dayString, selectedDay)
-        fetchMenuJSON(day = FluxUtil.getDateDaysAfter(daysDifference), facilityId = facilityClass!!.id)
+        fetchMenuJSON(day = FluxUtil.getDateStringDaysAfter(daysDifference), facilityId = facilityClass!!.id)
     }
 
     private fun setupBarChart() {
@@ -206,8 +207,22 @@ class FacilityInfoPage : BaseActivity() {
         topBar.setNavigationOnClickListener { onBackPressed() }
 
         setToday(FluxUtil.dayString)
+        setDayChipsDate()
         setDayChipOnClickListener()
         setPills()
+    }
+
+    private fun setDayChipsDate() {
+        val chipsList = listOf(sun, mon, tue, wed, thu, fri, sat)
+        val dayStrings = listOf(getString(R.string.SUN), getString(R.string.MON), getString(R.string.TUE), getString(R.string.WED),
+                getString(R.string.THU), getString(R.string.FRI), getString(R.string.SAT))
+        for (i in 0..6) {
+            val daysDifference = FluxUtil.getDayDifference(FluxUtil.dayString, dayStrings.get(i))
+            val date = FluxUtil.getDateDaysAfter(daysDifference)
+            val chip = chipsList.get(i)
+            chip.text = HtmlCompat.fromHtml(chip.text.toString() + "<br>" + "<br>" +
+                    "<b>" + date.date + "</b>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        }
     }
 
     private fun setPills() {
@@ -249,7 +264,7 @@ class FacilityInfoPage : BaseActivity() {
             getString(R.string.FRI) -> fri.isChecked = true
             getString(R.string.SAT) -> sat.isChecked = true
         }
-        wasCheckedDay = dayChips.checkedChipId
+        wasCheckedDay = dayChips.checkedRadioButtonId
     }
 
     private fun setOperatingHours(day: String) {
@@ -297,11 +312,11 @@ class FacilityInfoPage : BaseActivity() {
                 menuCard.isGone = true
             } else {
                 menuCard.isVisible = true
-                breakfast.isVisible = menu?.breakfastItems?.isNotEmpty() ?: false
-                brunch.isVisible = menu?.brunchItems?.isNotEmpty() ?: false
-                lunch.isVisible = menu?.lunchItems?.isNotEmpty() ?: false
-                lite_lunch.isVisible = menu?.liteLunchItems?.isNotEmpty() ?: false
-                dinner.isVisible = menu?.dinnerItems?.isNotEmpty() ?: false
+                breakfast.isGone = !(menu?.breakfastItems?.isNotEmpty() ?: false)
+                brunch.isGone = !(menu?.brunchItems?.isNotEmpty() ?: false)
+                lunch.isGone = !(menu?.lunchItems?.isNotEmpty() ?: false)
+                lite_lunch.isGone = !(menu?.liteLunchItems?.isNotEmpty() ?: false)
+                dinner.isGone = !(menu?.dinnerItems?.isNotEmpty() ?: false)
                 wasCheckedMenu = firstVisibleChipId(menu)
                 showMenu(menu, wasCheckedMenu)
                 menuChips.setOnCheckedChangeListener { _, checkedId -> showMenu(menu, checkedId) }

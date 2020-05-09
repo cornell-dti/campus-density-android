@@ -29,7 +29,7 @@
     </style>
 
     <style name="OutlineChipStyle" parent="BaseChipStyle">
-        <item name="chipStrokeWidth">2dp</item>
+        <item name="chipStrokeWidth">1dp</item>
         <item name="chipStrokeColor">@color/chip_background</item>
     </style>
 

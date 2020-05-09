@@ -57,11 +57,17 @@ object FluxUtil {
         return count
     }
 
-    fun getDateDaysAfter(daysAfter: Int): String {
+    fun getDateStringDaysAfter(daysAfter: Int): String {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_YEAR, daysAfter)
         val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         return format.format(calendar.time)
+    }
+
+    fun getDateDaysAfter(daysAfter: Int): Date {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_YEAR, daysAfter)
+        return calendar.time
     }
 
     /**
