@@ -110,7 +110,7 @@ class FacilityInfoPage : BaseActivity() {
             -1 -> FluxUtil.dayString
         }
         val daysDifference = FluxUtil.getDayDifference(FluxUtil.dayString, selectedDay)
-        fetchMenuJSON(day = FluxUtil.getDateStringDaysAfter(daysDifference), facilityId = facilityClass!!.id)
+        fetchMenuJSON(day = FluxUtil.getDateStringDaysAfter(daysDifference, true), facilityId = facilityClass!!.id)
     }
 
     private fun setupBarChart() {
@@ -201,7 +201,8 @@ class FacilityInfoPage : BaseActivity() {
     }
 
     private fun checkFacilityIsOpen() {
-        api.facilityHours(facilityId = facilityClass!!.id, currentDate = FluxUtil.getCurrentDate(false),
+        api.facilityHours(facilityId = facilityClass!!.id, startDate = FluxUtil.getCurrentDate(false),
+                endDate = FluxUtil.getDateStringDaysAfter(1, false),
                 facilityHoursOnResponse = {
             facilityHoursList ->
                     var isOpen: Boolean = false

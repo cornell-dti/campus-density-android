@@ -173,9 +173,9 @@ class API(context: Context) {
         queue.add(menuRequest)
     }
 
-    fun facilityHours(facilityId: String, currentDate: String, facilityHoursOnResponse: (List<Pair<Long, Long>>) -> Unit) {
+    fun facilityHours(facilityId: String, startDate: String, endDate: String, facilityHoursOnResponse: (List<Pair<Long, Long>>) -> Unit) {
         val facilityHoursRequest = getRequest(
-                url = "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=$currentDate&endDate=$currentDate",
+                url = "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=$startDate&endDate=$endDate",
                 onResponse = { response ->
                     facilityHoursOnResponse(JsonParser.parseOperatingHoursToTimestampList(response))
                 },

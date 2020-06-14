@@ -59,10 +59,21 @@ object FluxUtil {
         return count
     }
 
-    fun getDateStringDaysAfter(daysAfter: Int): String {
+    /**
+     * @param daysAfter days after today to fetch date string for
+     * @param yearBeginning is whether year should be in beginning of date string format
+     * @return Date String for the date that is [daysAfter] days after the current date
+     */
+    fun getDateStringDaysAfter(daysAfter: Int, yearBeginning: Boolean): String {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_YEAR, daysAfter)
-        val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        var format: SimpleDateFormat
+        if(yearBeginning) {
+            format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        }
+        else {
+            format = SimpleDateFormat("MM-dd-yyyy", Locale.US)
+        }
         return format.format(calendar.time)
     }
 
@@ -78,7 +89,7 @@ object FluxUtil {
      */
     fun getCurrentDate(yearBeginning: Boolean): String {
         val current = Calendar.getInstance()
-        val format: SimpleDateFormat
+        var format: SimpleDateFormat
         if (yearBeginning) {
             format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         }
