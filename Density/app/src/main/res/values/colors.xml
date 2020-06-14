@@ -14,4 +14,7 @@
     <color name="border">#dad7d7</color>
 
     <color name="chip_background">#EFEFEF</color>
+
+    <color name="open_facility">#5AD993</color>
+    <color name="closed_facility">#FA4735</color>
 </resources>

@@ -102,6 +102,28 @@ object JsonParser {
         return operatingHours
     }
 
+    fun parseOperatingHoursToTimestampList(jsonArray: JSONArray): List<Pair<Long, Long>> {
+        val operatingHours = arrayListOf<Pair<Long, Long>>()
+        try {
+            val hours = jsonArray.getJSONObject(0).getJSONArray("hours")
+            for (i in 0 until hours.length()) {
+                val segment = hours.getJSONObject(i).getJSONObject("dailyHours")
+                val start = segment.getLong("startTimestamp")
+                val end = segment.getLong("endTimestamp")
+                operatingHours.add(Pair(start, end))
+            }
+            val nextDayHours = jsonArray.getJSONObject(1).getJSONArray("hours")
+            val nextDaySegment = nextDayHours.getJSONObject(0).getJSONObject("dailyHours")
+            val nextDaySlotStart = nextDaySegment.getLong("startTimestamp")
+            val nextDaySlotEnd = nextDaySegment.getLong("endTimestamp")
+            operatingHours.add(Pair(nextDaySlotStart, nextDaySlotEnd))
+
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        return operatingHours
+    }
+
     fun parseHistorical(jsonArray: JSONArray, day: String): List<Double> {
         val densities = arrayListOf<Double>()
         try {
@@ -116,7 +138,7 @@ object JsonParser {
         return densities
     }
 
-    private fun parseTime(timestamp: Long): String {
+    fun parseTime(timestamp: Long): String {
         val timeZone = Calendar.getInstance().timeZone
         var format = SimpleDateFormat("h:mma", Locale.US)
         if (DateFormat.is24HourFormat(DensityApplication.getAppContext())) {

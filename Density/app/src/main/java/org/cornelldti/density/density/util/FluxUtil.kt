@@ -72,10 +72,17 @@ object FluxUtil {
 
     /**
      * getCurrentDate() provides the current date for the menu endpoint request.
+     * @param yearBeginning true if the format has year at beginning, false otherwise
      */
-    fun getCurrentDate(): String {
+    fun getCurrentDate(yearBeginning: Boolean): String {
         val current = Calendar.getInstance()
-        val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        val format: SimpleDateFormat
+        if (yearBeginning) {
+            format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        }
+        else {
+            format = SimpleDateFormat("MM-dd-yyyy", Locale.US)
+        }
         return format.format(current.time)
     }
 }

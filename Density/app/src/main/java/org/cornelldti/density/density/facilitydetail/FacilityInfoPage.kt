@@ -26,6 +26,7 @@ import org.cornelldti.density.density.colorbarutil.ColorBarDataSet
 import org.cornelldti.density.density.colorbarutil.ColorBarMarkerView
 import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.data.MenuClass
+import org.cornelldti.density.density.network.JsonParser
 import org.cornelldti.density.density.util.FluxUtil
 import org.cornelldti.density.density.util.ValueFormatter
 
@@ -199,6 +200,52 @@ class FacilityInfoPage : BaseActivity() {
 
     }
 
+    private fun checkFacilityIsOpen() {
+        api.facilityHours(facilityId = facilityClass!!.id, currentDate = FluxUtil.getCurrentDate(false),
+                facilityHoursOnResponse = {
+            facilityHoursList ->
+                    var isOpen: Boolean = false
+                    var openUntil: Long = -1
+                    var opensNext: Long = -1
+
+                    val currentTime = System.currentTimeMillis() / 1000L
+                    for(i in 0 until facilityHoursList.size - 1) {
+                        // Current Time falls into one of the open time slots
+                        if (currentTime >= facilityHoursList[i].first && currentTime < facilityHoursList[i].second) {
+                            isOpen = true
+                            openUntil = facilityHoursList[i].second
+                        }
+                        // Current Time before first time slot of day
+                        else if (i == 0 && currentTime < facilityHoursList[i].first) {
+                            opensNext = facilityHoursList[i].first
+                        }
+                        // Current Time is after the last time slot of day
+                        else if(i == facilityHoursList.size - 2 && currentTime >= facilityHoursList[i].second) {
+                            opensNext = facilityHoursList[facilityHoursList.size - 1].first
+                        }
+                        // Current Time is between two time slots in day
+                        else if(i > 0 && currentTime >= facilityHoursList[i-1].second && currentTime < facilityHoursList[i].first) {
+                            opensNext = facilityHoursList[i].first
+                        }
+                    }
+                    if(opensNext == -1L && openUntil == -1L) {
+                        topBar.setSubtitleTextColor(getResources().getColor(R.color.closed_facility))
+                        topBar.subtitle = "Closed"
+                    }
+                    else {
+                        if(isOpen) {
+                            topBar.setSubtitleTextColor(getResources().getColor(R.color.open_facility))
+                            topBar.subtitle = "Open" + " until " + JsonParser.parseTime(openUntil)
+
+                        }
+                        else {
+                            topBar.setSubtitleTextColor(getResources().getColor(R.color.closed_facility))
+                            topBar.subtitle = "Closed" + "   opens at " + JsonParser.parseTime(opensNext)
+                        }
+                    }
+                })
+    }
+
     private fun initializeView() {
         topBar.title = facilityClass!!.name
         currentOccupancy.text = getString(facilityClass!!.densityResId)
@@ -245,7 +292,6 @@ class FacilityInfoPage : BaseActivity() {
         for (i in 0..facilityClass!!.occupancyRating) {
             bars[i]?.setColorFilter(ContextCompat.getColor(applicationContext, color))
         }
-
     }
 
     /**
@@ -281,7 +327,8 @@ class FacilityInfoPage : BaseActivity() {
     override fun updateUI() {
         Log.d("updatedFPUI", "updating")
         fetchHistoricalJSON(day = selectedDay!!, facilityId = facilityClass!!.id)
-        fetchMenuJSON(day = FluxUtil.getCurrentDate(), facilityId = facilityClass!!.id)
+        fetchMenuJSON(day = FluxUtil.getCurrentDate(yearBeginning = true), facilityId = facilityClass!!.id)
+        checkFacilityIsOpen()
     }
 
     private fun fetchHistoricalJSON(day: String, facilityId: String) {

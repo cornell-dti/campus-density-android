@@ -173,6 +173,19 @@ class API(context: Context) {
         queue.add(menuRequest)
     }
 
+    fun facilityHours(facilityId: String, currentDate: String, facilityHoursOnResponse: (List<Pair<Long, Long>>) -> Unit) {
+        val facilityHoursRequest = getRequest(
+                url = "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=$currentDate&endDate=$currentDate",
+                onResponse = { response ->
+                    facilityHoursOnResponse(JsonParser.parseOperatingHoursToTimestampList(response))
+                },
+                onError = {
+                    error -> Log.d("Error fetching hours", error.networkResponse.toString());
+                }
+        )
+        queue.add(facilityHoursRequest)
+    }
+
     private fun getRequest(
             url: String,
             onResponse: (jsonArray: JSONArray) -> Unit,

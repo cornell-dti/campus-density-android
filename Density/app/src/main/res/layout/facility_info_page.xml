@@ -20,7 +20,9 @@
             app:layout_scrollFlags="scroll|enterAlways|snap"
             app:navigationContentDescription="@string/back_button_desc"
             app:navigationIcon="@drawable/ic_arrow_back"
-            app:title="facilityName" />
+            app:title="facilityName"
+            app:subtitle="" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
