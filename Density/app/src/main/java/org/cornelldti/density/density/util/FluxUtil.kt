@@ -1,5 +1,7 @@
 package org.cornelldti.density.density.util
 
+import android.text.format.DateFormat
+import org.cornelldti.density.density.DensityApplication
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -84,5 +86,16 @@ object FluxUtil {
             format = SimpleDateFormat("MM-dd-yyyy", Locale.US)
         }
         return format.format(current.time)
+    }
+
+    fun parseTime(timestamp: Long): String {
+        val timeZone = Calendar.getInstance().timeZone
+        var format = SimpleDateFormat("h:mma", Locale.US)
+        if (DateFormat.is24HourFormat(DensityApplication.getAppContext())) {
+            format = SimpleDateFormat("HH:mm", Locale.US)
+        }
+        format.timeZone = timeZone
+
+        return format.format(Date(timestamp * 1000)).toLowerCase(Locale.US)
     }
 }

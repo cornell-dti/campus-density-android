@@ -235,12 +235,12 @@ class FacilityInfoPage : BaseActivity() {
                     else {
                         if(isOpen) {
                             topBar.setSubtitleTextColor(getResources().getColor(R.color.open_facility))
-                            topBar.subtitle = "Open" + " until " + JsonParser.parseTime(openUntil)
+                            topBar.subtitle = "Open" + " until " + FluxUtil.parseTime(openUntil)
 
                         }
                         else {
                             topBar.setSubtitleTextColor(getResources().getColor(R.color.closed_facility))
-                            topBar.subtitle = "Closed" + "   opens at " + JsonParser.parseTime(opensNext)
+                            topBar.subtitle = "Closed" + "   opens at " + FluxUtil.parseTime(opensNext)
                         }
                     }
                 })
