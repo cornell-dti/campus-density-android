@@ -118,16 +118,8 @@ class API(context: Context) {
     fun fetchHistoricalJSON(
             day: String,
             facilityId: String,
-            fetchOperatingHoursOnResponse: (operatingHours: List<String>) -> Unit,
             fetchHistoricalJSONOnResponse: (densities: List<Double>) -> Unit
     ) {
-        val operatingHoursRequest = getRequest(
-                url = "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=${FluxUtil.getDate(day)}&endDate=${FluxUtil.getDate(day)}",
-                onResponse = { response ->
-                    fetchOperatingHoursOnResponse(JsonParser.parseOperatingHours(response))
-                },
-                onError = { error -> Log.d("ERROR MESSAGE", error.toString()) }
-        )
         val historicalDataRequest = getRequest(
                 url = "$HISTORICAL_DATA_ENDPOINT?id=$facilityId",
                 onResponse = { response ->
@@ -135,7 +127,6 @@ class API(context: Context) {
                 },
                 onError = { error -> Log.d("ERROR MESSAGE", error.toString()) }
         )
-        queue.add(operatingHoursRequest)
         queue.add(historicalDataRequest)
     }
 
@@ -173,11 +164,13 @@ class API(context: Context) {
         queue.add(menuRequest)
     }
 
-    fun facilityHours(facilityId: String, startDate: String, endDate: String, facilityHoursOnResponse: (List<Pair<Long, Long>>) -> Unit) {
+    fun facilityHours(facilityId: String, startDate: String, endDate: String, facilityHoursTimeStampsOnResponse: (List<Pair<Long, Long>>) -> Unit,
+    facilityHoursStringsOnResponse: (List<String>) -> Unit) {
         val facilityHoursRequest = getRequest(
                 url = "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=$startDate&endDate=$endDate",
                 onResponse = { response ->
-                    facilityHoursOnResponse(JsonParser.parseOperatingHoursToTimestampList(response))
+                    facilityHoursTimeStampsOnResponse(JsonParser.parseOperatingHoursToTimestampList(response))
+                    facilityHoursStringsOnResponse(JsonParser.parseOperatingHours(response))
                 },
                 onError = {
                     error -> Log.d("Error fetching hours", error.networkResponse.toString());

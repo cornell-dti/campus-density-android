@@ -3,6 +3,7 @@ package org.cornelldti.density.density.facilitydetail
 import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.text.format.DateUtils
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.widget.ImageView
@@ -29,6 +30,8 @@ import org.cornelldti.density.density.data.MenuClass
 import org.cornelldti.density.density.network.JsonParser
 import org.cornelldti.density.density.util.FluxUtil
 import org.cornelldti.density.density.util.ValueFormatter
+import java.util.*
+import kotlin.collections.ArrayList
 
 class FacilityInfoPage : BaseActivity() {
 
@@ -45,7 +48,8 @@ class FacilityInfoPage : BaseActivity() {
     private var wasCheckedDay: Int = -1
     private var wasCheckedMenu: Int = -1
 
-    private var opHours: List<String> = ArrayList() // KEEPS TRACK OF OPERATING HOURS FOR FACILITY
+    private var opHoursStrings: List<String> = ArrayList() // KEEPS TRACK OF OPERATING HOURS STRINGS FOR FACILITY
+    private var opHoursTimestamps: List<Pair<Long, Long>> = ArrayList() // KEEPS TRACK OF OPERATING HOURS TIME STAMPS FOR FACILITY
     private var densities: List<Double> = ArrayList() // KEEPS TRACK OF HISTORICAL DENSITIES
 
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,6 +98,9 @@ class FacilityInfoPage : BaseActivity() {
             wasCheckedDay = checkedId
             selectedDay = day
             fetchHistoricalJSON(day, facilityClass!!.id)
+            val daysDifference = FluxUtil.getDayDifference(FluxUtil.dayString, selectedDay!!)
+            updateOperatingHoursOfSelectedDay(FluxUtil.getDateStringDaysAfter(daysDifference, false))
+            setOperatingHours(selectedDay!!)
         }
     }
 
@@ -200,51 +207,80 @@ class FacilityInfoPage : BaseActivity() {
 
     }
 
-    private fun checkFacilityIsOpen() {
-        api.facilityHours(facilityId = facilityClass!!.id, startDate = FluxUtil.getCurrentDate(false),
-                endDate = FluxUtil.getDateStringDaysAfter(1, false),
-                facilityHoursOnResponse = {
-            facilityHoursList ->
-                    var isOpen: Boolean = false
-                    var openUntil: Long = -1
-                    var opensNext: Long = -1
+    private fun fetchOperatingHours(date: Date) {
+        val c = Calendar.getInstance()
+        c.time = date
+        c.add(Calendar.DATE, 1)
+        val nextDay: Date = c.time
+        api.facilityHours(facilityId=facilityClass!!.id, startDate = FluxUtil.convertDateObjectToString(date),
+                endDate = FluxUtil.convertDateObjectToString(nextDay),
+        facilityHoursTimeStampsOnResponse = {
+            hoursTimeStampsList ->
+            opHoursTimestamps = hoursTimeStampsList
+        },
+        facilityHoursStringsOnResponse = {
+            hoursStringsList ->
+            opHoursStrings = hoursStringsList
+        })
+    }
 
-                    val currentTime = System.currentTimeMillis() / 1000L
-                    for(i in 0 until facilityHoursList.size - 1) {
-                        // Current Time falls into one of the open time slots
-                        if (currentTime >= facilityHoursList[i].first && currentTime < facilityHoursList[i].second) {
-                            isOpen = true
-                            openUntil = facilityHoursList[i].second
-                        }
-                        // Current Time before first time slot of day
-                        else if (i == 0 && currentTime < facilityHoursList[i].first) {
-                            opensNext = facilityHoursList[i].first
-                        }
-                        // Current Time is after the last time slot of day
-                        else if(i == facilityHoursList.size - 2 && currentTime >= facilityHoursList[i].second) {
-                            opensNext = facilityHoursList[facilityHoursList.size - 1].first
-                        }
-                        // Current Time is between two time slots in day
-                        else if(i > 0 && currentTime >= facilityHoursList[i-1].second && currentTime < facilityHoursList[i].first) {
-                            opensNext = facilityHoursList[i].first
-                        }
-                    }
-                    if(opensNext == -1L && openUntil == -1L) {
-                        topBar.setSubtitleTextColor(getResources().getColor(R.color.closed_facility))
-                        topBar.subtitle = "Closed"
-                    }
-                    else {
-                        if(isOpen) {
-                            topBar.setSubtitleTextColor(getResources().getColor(R.color.open_facility))
-                            topBar.subtitle = "Open" + " until " + FluxUtil.parseTime(openUntil)
-
-                        }
-                        else {
-                            topBar.setSubtitleTextColor(getResources().getColor(R.color.closed_facility))
-                            topBar.subtitle = "Closed" + "   opens at " + FluxUtil.parseTime(opensNext)
-                        }
-                    }
+    /**
+     * updateOperatingHoursOfSelectedDay() is meant to only update the facility hours under the historical data chart
+     * for the selected day, and does not affect the facility hours used to check if the place is open. Thus, here
+     * facilityHoursTimeStampsOnResponse is not defined.
+     */
+    private fun updateOperatingHoursOfSelectedDay(date: String) {
+        api.facilityHours(facilityId=facilityClass!!.id, startDate = date,
+                endDate = date,
+                facilityHoursTimeStampsOnResponse = {
+                    // Isn't Defined!
+                },
+                facilityHoursStringsOnResponse = {
+                    hoursStringsList ->
+                    opHoursStrings = hoursStringsList
                 })
+    }
+
+    private fun checkFacilityIsOpen() {
+        var isOpen: Boolean = false
+        var openUntil: Long = -1
+        var opensNext: Long = -1
+
+        val currentTime = System.currentTimeMillis() / 1000L
+        for(i in 0 until opHoursTimestamps.size - 1) {
+            // Current Time falls into one of the open time slots
+            if (currentTime >= opHoursTimestamps[i].first && currentTime < opHoursTimestamps[i].second) {
+                isOpen = true
+                openUntil = opHoursTimestamps[i].second
+            }
+            // Current Time before first time slot of day
+            else if (i == 0 && currentTime < opHoursTimestamps[i].first) {
+                opensNext = opHoursTimestamps[i].first
+            }
+            // Current Time is after the last time slot of day
+            else if(i == opHoursTimestamps.size - 2 && currentTime >= opHoursTimestamps[i].second) {
+                opensNext = opHoursTimestamps[opHoursTimestamps.size - 1].first
+            }
+            // Current Time is between two time slots in day
+            else if(i > 0 && currentTime >= opHoursTimestamps[i-1].second && currentTime < opHoursTimestamps[i].first) {
+                opensNext = opHoursTimestamps[i].first
+            }
+        }
+        if(opensNext == -1L && openUntil == -1L) {
+            topBar.setSubtitleTextColor(getResources().getColor(R.color.closed_facility))
+            topBar.subtitle = "Closed"
+        }
+        else {
+            if(isOpen) {
+                topBar.setSubtitleTextColor(getResources().getColor(R.color.open_facility))
+                topBar.subtitle = "Open" + " until " + FluxUtil.parseTime(openUntil)
+
+            }
+            else {
+                topBar.setSubtitleTextColor(getResources().getColor(R.color.closed_facility))
+                topBar.subtitle = "Closed" + "   opens at " + FluxUtil.parseTime(opensNext)
+            }
+        }
     }
 
     private fun initializeView() {
@@ -319,17 +355,19 @@ class FacilityInfoPage : BaseActivity() {
         val hourTitle = FluxUtil.dayFullString(day)
         todayHours.text = hourTitle
         facilityHours.text = ""
-        for (operatingSegment in opHours) {
-            val allHours = facilityHours.text.toString() + operatingSegment + if (opHours.indexOf(operatingSegment) == opHours.size - 1) "" else "\n"
+        for (operatingSegment in opHoursStrings) {
+            val allHours = facilityHours.text.toString() + operatingSegment + if (opHoursStrings.indexOf(operatingSegment) == opHoursStrings.size - 1) "" else "\n"
             facilityHours.text = allHours
         }
     }
 
     override fun updateUI() {
         Log.d("updatedFPUI", "updating")
+        fetchOperatingHours(date=FluxUtil.getDateObject(selectedDay!!))
+        checkFacilityIsOpen()
+        setOperatingHours(day=selectedDay!!)
         fetchHistoricalJSON(day = selectedDay!!, facilityId = facilityClass!!.id)
         fetchMenuJSON(day = FluxUtil.getCurrentDate(yearBeginning = true), facilityId = facilityClass!!.id)
-        checkFacilityIsOpen()
     }
 
     private fun fetchHistoricalJSON(day: String, facilityId: String) {
@@ -339,10 +377,6 @@ class FacilityInfoPage : BaseActivity() {
                 fetchHistoricalJSONOnResponse = { historicalDensities ->
                     densities = historicalDensities
                     setupBarChart()
-                },
-                fetchOperatingHoursOnResponse = { operatingHours ->
-                    opHours = operatingHours
-                    setOperatingHours(day)
                 }
         )
     }

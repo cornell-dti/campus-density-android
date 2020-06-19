@@ -33,11 +33,10 @@ object FluxUtil {
     }
 
     /**
-     * getDate(day) provides the date for historical endpoint request.
+     * getDateString(day) provides the date in string format for historical endpoint request.
      */
-    fun getDate(day: String): String {
+    fun getDateObject(day: String): Date {
         val current = Calendar.getInstance()
-        val format = SimpleDateFormat("MM-dd-yy", Locale.US)
         val checkFormat = SimpleDateFormat("E", Locale.US)
 
         var dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
@@ -45,9 +44,21 @@ object FluxUtil {
             current.add(Calendar.DAY_OF_MONTH, 1)
             dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
         }
-
-        return format.format(current.time)
+        return current.time
     }
+
+    /**
+     * convertDateObjectToString(day) provides the date in string format for historical and operating hours endpoint request.
+     */
+    fun convertDateObjectToString(date: Date): String {
+        val format = SimpleDateFormat("MM-dd-yy", Locale.US)
+        return format.format(date)
+    }
+
+    /**
+     * getDateObject(day) provides date object for operating hours endpoint request
+     */
+
 
     fun getDayDifference(currentDay: String, tappedDay: String): Int {
         var x: Int = daysList.indexOf(currentDay)
