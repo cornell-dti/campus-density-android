@@ -2,9 +2,12 @@ package org.cornelldti.density.density.facilitydetail
 
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
 import android.text.format.DateFormat
 import android.text.format.DateUtils
 import android.text.method.LinkMovementMethod
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
@@ -299,13 +302,15 @@ class FacilityInfoPage : BaseActivity() {
         }
         else {
             if(isOpen) {
-                topBar.setSubtitleTextColor(getResources().getColor(R.color.open_facility))
-                topBar.subtitle = "Open" + " until " + FluxUtil.parseTime(openUntil)
+                var text = SpannableStringBuilder("Open" + " until " + FluxUtil.parseTime(openUntil))
+                text.setSpan(ForegroundColorSpan(resources.getColor(R.color.open_facility)), 0, 4, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+                topBar.subtitle = text
 
             }
             else {
-                topBar.setSubtitleTextColor(getResources().getColor(R.color.closed_facility))
-                topBar.subtitle = "Closed" + "   opens at " + FluxUtil.parseTime(opensNext)
+                var text = SpannableStringBuilder("Closed" + " \u2022 opens at " + FluxUtil.parseTime(opensNext))
+                text.setSpan(ForegroundColorSpan(resources.getColor(R.color.closed_facility)), 0, 6, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+                topBar.subtitle = text
             }
         }
     }
