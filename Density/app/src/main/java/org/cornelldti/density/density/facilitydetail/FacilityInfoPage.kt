@@ -305,7 +305,6 @@ class FacilityInfoPage : BaseActivity() {
                 var text = SpannableStringBuilder("Open" + " until " + FluxUtil.parseTime(openUntil))
                 text.setSpan(ForegroundColorSpan(resources.getColor(R.color.open_facility)), 0, 4, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
                 topBar.subtitle = text
-
             }
             else {
                 var text = SpannableStringBuilder("Closed" + " \u2022 opens at " + FluxUtil.parseTime(opensNext))
