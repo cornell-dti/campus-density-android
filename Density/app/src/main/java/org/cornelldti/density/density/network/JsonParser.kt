@@ -92,13 +92,12 @@ object JsonParser {
      * This function returns a list of the operating hours for a facility on one day, where each time slot is denoted as a string.
      * An example response would be ["8:00am-2:00pm", "6:00pm-9:00pm"].
      */
-    fun parseOperatingHoursToStringList(jsonArray: JSONArray): List<String> {
+    fun parseOperatingHoursToStringList(jsonArray: JSONArray, date: String): List<String> {
         val operatingHours = arrayListOf<String>()
         try {
             val hours = jsonArray.getJSONObject(0).getJSONArray("hours")
-            val currDate = FluxUtil.getCurrentDate(true)
             for (i in 0 until hours.length()) {
-                if(hours.getJSONObject(i).getString("date") == currDate) {
+                if(hours.getJSONObject(i).getString("date") == FluxUtil.reverseDateString(date)) {
                     val segment = hours.getJSONObject(i).getJSONObject("dailyHours")
                     val start = segment.getLong("startTimestamp")
                     val end = segment.getLong("endTimestamp")

@@ -173,7 +173,7 @@ class API(context: Context) {
                 url = "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=$startDate&endDate=$endDate",
                 onResponse = { response ->
                     facilityHoursTimeStampsOnResponse(JsonParser.parseOperatingHoursToTimestampList(response))
-                    facilityHoursStringsOnResponse(JsonParser.parseOperatingHoursToStringList(response))
+                    facilityHoursStringsOnResponse(JsonParser.parseOperatingHoursToStringList(response, startDate))
                 },
                 onError = {
                     error -> Log.d("Error fetching hours", error.networkResponse.toString());

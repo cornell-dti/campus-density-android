@@ -37,6 +37,9 @@ class FacilityInfoPage : BaseActivity() {
 
     private var selectedDay: String? = null
 
+    private val months = listOf("January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December")
+
     private lateinit var feedback: TextView
 
     private lateinit var menuItemList: RecyclerView
@@ -103,7 +106,7 @@ class FacilityInfoPage : BaseActivity() {
             selectedDay = day
             fetchHistoricalJSON(day, facilityClass!!.id)
             val daysDifference = FluxUtil.getDayDifference(FluxUtil.dayString, selectedDay!!)
-            updateOperatingHoursOfSelectedDay(FluxUtil.getDateStringDaysAfter(daysDifference, false))
+            updateOperatingHoursOfSelectedDay(FluxUtil.getDateDaysAfter(daysDifference))
         }
     }
 
@@ -225,7 +228,7 @@ class FacilityInfoPage : BaseActivity() {
         facilityHoursStringsOnResponse = {
             hoursStringsList ->
             opHoursStrings = hoursStringsList
-            setOperatingHoursText(day=selectedDay!!)
+            setOperatingHoursText(day=selectedDay!!, date=date)
             fetchHistoricalJSON(day = selectedDay!!, facilityId = facilityClass!!.id)
             fetchMenuJSON(day = FluxUtil.getCurrentDate(yearBeginning = true), facilityId = facilityClass!!.id)
         })
@@ -236,16 +239,17 @@ class FacilityInfoPage : BaseActivity() {
      * for the selected day, and does not affect the facility hours used to check if the place is open. Thus, here
      * facilityHoursTimeStampsOnResponse is not defined.
      */
-    private fun updateOperatingHoursOfSelectedDay(date: String) {
-        api.facilityHours(facilityId=facilityClass!!.id, startDate = date,
-                endDate = date,
+    private fun updateOperatingHoursOfSelectedDay(date: Date) {
+        val dateString = FluxUtil.convertDateObjectToString(date)
+        api.facilityHours(facilityId=facilityClass!!.id, startDate = dateString,
+                endDate = dateString,
                 facilityHoursTimeStampsOnResponse = {
                     // Isn't Defined!
                 },
                 facilityHoursStringsOnResponse = {
                     hoursStringsList ->
                     opHoursStrings = hoursStringsList
-                    setOperatingHoursText(day=selectedDay!!)
+                    setOperatingHoursText(day=selectedDay!!, date=date)
                     fetchHistoricalJSON(day = selectedDay!!, facilityId = facilityClass!!.id)
                 })
     }
@@ -377,10 +381,11 @@ class FacilityInfoPage : BaseActivity() {
      * This function sets the operating hours text under the historical data chart
      * @param day The day for which the operating hours is set
      */
-    private fun setOperatingHoursText(day: String) {
+    private fun setOperatingHoursText(day: String, date: Date) {
         Log.d("SET", "OPERATING")
         val hourTitle = FluxUtil.dayFullString(day)
         todayHours.text = hourTitle
+        todayDate.text = months[date.month] + " " + date.date
         facilityHours.text = ""
         for (operatingSegment in opHoursStrings) {
             val allHours = facilityHours.text.toString() + operatingSegment + if (opHoursStrings.indexOf(operatingSegment) == opHoursStrings.size - 1) "" else "\n"
@@ -390,7 +395,7 @@ class FacilityInfoPage : BaseActivity() {
 
     override fun updateUI() {
         Log.d("updatedFPUI", "updating")
-        fetchOperatingHours(date=FluxUtil.getDateObject(selectedDay!!))
+        fetchOperatingHours(date=FluxUtil.getDateObject(selectedDay!!)) // TODO FIX!! ON REFRESH!!
     }
 
     private fun fetchHistoricalJSON(day: String, facilityId: String) {

@@ -51,8 +51,17 @@ object FluxUtil {
      * This function provides the date in string format for historical and operating hours endpoint request.
      */
     fun convertDateObjectToString(date: Date): String {
-        val format = SimpleDateFormat("MM-dd-yy", Locale.US)
+        val format = SimpleDateFormat("MM-dd-yyyy", Locale.US)
         return format.format(date)
+    }
+
+    /**
+     * Temporary function to convert from MM-DD-YYYY to YYYY-MM-DD
+     * Can remove this once we universally go by YYYY-MM-DD format for dates in backend TODO
+     */
+    fun reverseDateString(date: String): String {
+        val components = date.split("-")
+        return components[2] + "-" + components[0] + "-" + components[1]
     }
 
     fun getDayDifference(currentDay: String, tappedDay: String): Int {
@@ -103,6 +112,11 @@ object FluxUtil {
             format = SimpleDateFormat("MM-dd-yyyy", Locale.US)
         }
         return format.format(current.time)
+    }
+
+    fun getCurrentDateObject(): Date {
+        val current = Calendar.getInstance()
+        return current.time
     }
 
     fun parseTime(timestamp: Long): String {

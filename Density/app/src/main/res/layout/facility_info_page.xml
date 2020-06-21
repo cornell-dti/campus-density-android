@@ -268,26 +268,42 @@
                     <TextView
                         android:id="@+id/todayHours"
                         style="@style/DTI.Subtitle2"
+                        android:textSize="15sp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:gravity="center"
                         android:text=""
-                        app:layout_constraintBottom_toTopOf="@id/facilityHours"
+                        app:layout_constraintBottom_toTopOf="@id/todayDate"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/densityChart" />
+
+                    <TextView
+                        android:id="@+id/todayDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:gravity="center"
+                        android:textColor="#C0C0C0"
+                        android:textSize="12sp"
+                        android:text=""
+                        app:layout_constraintBottom_toTopOf="@id/facilityHours"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/todayHours" />
 
                     <TextView
                         android:id="@+id/facilityHours"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="1dp"
+                        android:textSize="14sp"
                         android:gravity="center"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/todayHours" />
+                        app:layout_constraintTop_toBottomOf="@id/todayDate" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
