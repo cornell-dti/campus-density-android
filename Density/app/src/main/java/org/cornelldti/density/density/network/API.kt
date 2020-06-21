@@ -164,13 +164,16 @@ class API(context: Context) {
         queue.add(menuRequest)
     }
 
+    /**
+     * This function applies the onResponse functions passed in as params on the response of the api request.
+     */
     fun facilityHours(facilityId: String, startDate: String, endDate: String, facilityHoursTimeStampsOnResponse: (List<Pair<Long, Long>>) -> Unit,
     facilityHoursStringsOnResponse: (List<String>) -> Unit) {
         val facilityHoursRequest = getRequest(
                 url = "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=$startDate&endDate=$endDate",
                 onResponse = { response ->
                     facilityHoursTimeStampsOnResponse(JsonParser.parseOperatingHoursToTimestampList(response))
-                    facilityHoursStringsOnResponse(JsonParser.parseOperatingHours(response))
+                    facilityHoursStringsOnResponse(JsonParser.parseOperatingHoursToStringList(response))
                 },
                 onError = {
                     error -> Log.d("Error fetching hours", error.networkResponse.toString());

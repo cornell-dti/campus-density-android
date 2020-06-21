@@ -33,7 +33,7 @@ object FluxUtil {
     }
 
     /**
-     * getDateString(day) provides the date in string format for historical endpoint request.
+     * This function provides the date in string format for historical endpoint request.
      */
     fun getDateObject(day: String): Date {
         val current = Calendar.getInstance()
@@ -48,17 +48,12 @@ object FluxUtil {
     }
 
     /**
-     * convertDateObjectToString(day) provides the date in string format for historical and operating hours endpoint request.
+     * This function provides the date in string format for historical and operating hours endpoint request.
      */
     fun convertDateObjectToString(date: Date): String {
         val format = SimpleDateFormat("MM-dd-yy", Locale.US)
         return format.format(date)
     }
-
-    /**
-     * getDateObject(day) provides date object for operating hours endpoint request
-     */
-
 
     fun getDayDifference(currentDay: String, tappedDay: String): Int {
         var x: Int = daysList.indexOf(currentDay)
@@ -95,7 +90,7 @@ object FluxUtil {
     }
 
     /**
-     * getCurrentDate() provides the current date for the menu endpoint request.
+     * This function provides the current date for the menu endpoint request.
      * @param yearBeginning true if the format has year at beginning, false otherwise
      */
     fun getCurrentDate(yearBeginning: Boolean): String {

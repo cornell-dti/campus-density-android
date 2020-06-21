@@ -1,6 +1,7 @@
 package org.cornelldti.density.density.network
 
 import android.text.format.DateFormat
+import android.util.Log
 import org.cornelldti.density.density.DensityApplication
 import org.cornelldti.density.density.data.*
 import org.cornelldti.density.density.util.FluxUtil
@@ -87,15 +88,22 @@ object JsonParser {
         }
     }
 
-    fun parseOperatingHours(jsonArray: JSONArray): List<String> {
+    /**
+     * This function returns a list of the operating hours for a facility on one day, where each time slot is denoted as a string.
+     * An example response would be ["8:00am-2:00pm", "6:00pm-9:00pm"].
+     */
+    fun parseOperatingHoursToStringList(jsonArray: JSONArray): List<String> {
         val operatingHours = arrayListOf<String>()
         try {
             val hours = jsonArray.getJSONObject(0).getJSONArray("hours")
+            val currDate = FluxUtil.getCurrentDate(true)
             for (i in 0 until hours.length()) {
-                val segment = hours.getJSONObject(i).getJSONObject("dailyHours")
-                val start = segment.getLong("startTimestamp")
-                val end = segment.getLong("endTimestamp")
-                operatingHours.add(FluxUtil.parseTime(start) + " – " + FluxUtil.parseTime(end))
+                if(hours.getJSONObject(i).getString("date") == currDate) {
+                    val segment = hours.getJSONObject(i).getJSONObject("dailyHours")
+                    val start = segment.getLong("startTimestamp")
+                    val end = segment.getLong("endTimestamp")
+                    operatingHours.add(FluxUtil.parseTime(start) + " – " + FluxUtil.parseTime(end))
+                }
             }
         } catch (e: JSONException) {
             e.printStackTrace()
@@ -103,22 +111,32 @@ object JsonParser {
         return operatingHours
     }
 
+    /**
+     * This function returns a list of the operating hour time slots of a specified day and the first slot of the next day.
+     * This is returned in format of a list of pairs of start and end timestamps.
+     * Sample Response: [(1000000, 1200000), (1300000, 1500000), (1600000, 1800000)]
+     */
     fun parseOperatingHoursToTimestampList(jsonArray: JSONArray): List<Pair<Long, Long>> {
         val operatingHours = arrayListOf<Pair<Long, Long>>()
         try {
             val hours = jsonArray.getJSONObject(0).getJSONArray("hours")
+            val currDate = FluxUtil.getCurrentDate(true)
+            var firstSlotNextDayAdded = false
             for (i in 0 until hours.length()) {
-                val segment = hours.getJSONObject(i).getJSONObject("dailyHours")
-                val start = segment.getLong("startTimestamp")
-                val end = segment.getLong("endTimestamp")
-                operatingHours.add(Pair(start, end))
+                if(hours.getJSONObject(i).getString("date") == currDate) {
+                    val segment = hours.getJSONObject(i).getJSONObject("dailyHours")
+                    val start = segment.getLong("startTimestamp")
+                    val end = segment.getLong("endTimestamp")
+                    operatingHours.add(Pair(start, end))
+                }
+                else if(!firstSlotNextDayAdded) {
+                    val segment = hours.getJSONObject(i).getJSONObject("dailyHours")
+                    val start = segment.getLong("startTimestamp")
+                    val end = segment.getLong("endTimestamp")
+                    operatingHours.add(Pair(start, end))
+                    break
+                }
             }
-            val nextDayHours = jsonArray.getJSONObject(1).getJSONArray("hours")
-            val nextDaySegment = nextDayHours.getJSONObject(0).getJSONObject("dailyHours")
-            val nextDaySlotStart = nextDaySegment.getLong("startTimestamp")
-            val nextDaySlotEnd = nextDaySegment.getLong("endTimestamp")
-            operatingHours.add(Pair(nextDaySlotStart, nextDaySlotEnd))
-
         } catch (e: JSONException) {
             e.printStackTrace()
         }

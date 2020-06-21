@@ -49,7 +49,11 @@ class FacilityInfoPage : BaseActivity() {
     private var wasCheckedMenu: Int = -1
 
     private var opHoursStrings: List<String> = ArrayList() // KEEPS TRACK OF OPERATING HOURS STRINGS FOR FACILITY
-    private var opHoursTimestamps: List<Pair<Long, Long>> = ArrayList() // KEEPS TRACK OF OPERATING HOURS TIME STAMPS FOR FACILITY
+                                                           // USED FOR DISPLAYING OPERATING HOURS OF FACILITY AT SELECTED DAY
+
+    private var opHoursTimestamps: List<Pair<Long, Long>> = ArrayList() // KEEPS TRACK OF OPERATING HOURS TIMESTAMPS FOR FACILITY,
+                                                                        // USED FOR CHECKING WHETHER OPEN/WHEN IT WILL OPEN
+
     private var densities: List<Double> = ArrayList() // KEEPS TRACK OF HISTORICAL DENSITIES
 
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,7 +104,6 @@ class FacilityInfoPage : BaseActivity() {
             fetchHistoricalJSON(day, facilityClass!!.id)
             val daysDifference = FluxUtil.getDayDifference(FluxUtil.dayString, selectedDay!!)
             updateOperatingHoursOfSelectedDay(FluxUtil.getDateStringDaysAfter(daysDifference, false))
-            setOperatingHours(selectedDay!!)
         }
     }
 
@@ -217,15 +220,19 @@ class FacilityInfoPage : BaseActivity() {
         facilityHoursTimeStampsOnResponse = {
             hoursTimeStampsList ->
             opHoursTimestamps = hoursTimeStampsList
+            setOpenOrClosedOnToolbar()
         },
         facilityHoursStringsOnResponse = {
             hoursStringsList ->
             opHoursStrings = hoursStringsList
+            setOperatingHoursText(day=selectedDay!!)
+            fetchHistoricalJSON(day = selectedDay!!, facilityId = facilityClass!!.id)
+            fetchMenuJSON(day = FluxUtil.getCurrentDate(yearBeginning = true), facilityId = facilityClass!!.id)
         })
     }
 
     /**
-     * updateOperatingHoursOfSelectedDay() is meant to only update the facility hours under the historical data chart
+     * This function is meant to only update the facility hours under the historical data chart
      * for the selected day, and does not affect the facility hours used to check if the place is open. Thus, here
      * facilityHoursTimeStampsOnResponse is not defined.
      */
@@ -238,34 +245,50 @@ class FacilityInfoPage : BaseActivity() {
                 facilityHoursStringsOnResponse = {
                     hoursStringsList ->
                     opHoursStrings = hoursStringsList
+                    setOperatingHoursText(day=selectedDay!!)
+                    fetchHistoricalJSON(day = selectedDay!!, facilityId = facilityClass!!.id)
                 })
     }
 
-    private fun checkFacilityIsOpen() {
-        var isOpen: Boolean = false
-        var openUntil: Long = -1
-        var opensNext: Long = -1
+    /**
+     * This function uses the opHoursTimestamps class variable in order to determine if the facility is open or closed
+     * given the current time. It also keeps track of when it is open until, if open and when it opens next, if closed.
+     */
+    private fun setOpenOrClosedOnToolbar() {
+        var isOpen = false
+        var openUntil: Long = -1L
+        var opensNext: Long = -1L
 
         val currentTime = System.currentTimeMillis() / 1000L
-        for(i in 0 until opHoursTimestamps.size - 1) {
-            // Current Time falls into one of the open time slots
-            if (currentTime >= opHoursTimestamps[i].first && currentTime < opHoursTimestamps[i].second) {
-                isOpen = true
-                openUntil = opHoursTimestamps[i].second
-            }
+
+        Log.d("timestamps", opHoursTimestamps.toString())
+        if(opHoursTimestamps.size >= 2) {
             // Current Time before first time slot of day
-            else if (i == 0 && currentTime < opHoursTimestamps[i].first) {
-                opensNext = opHoursTimestamps[i].first
+            if (currentTime < opHoursTimestamps[0].first) {
+                opensNext = opHoursTimestamps[0].first
+                openUntil = -1L
             }
             // Current Time is after the last time slot of day
-            else if(i == opHoursTimestamps.size - 2 && currentTime >= opHoursTimestamps[i].second) {
+            else if (currentTime >= opHoursTimestamps[opHoursTimestamps.size - 2].second) {
                 opensNext = opHoursTimestamps[opHoursTimestamps.size - 1].first
-            }
-            // Current Time is between two time slots in day
-            else if(i > 0 && currentTime >= opHoursTimestamps[i-1].second && currentTime < opHoursTimestamps[i].first) {
-                opensNext = opHoursTimestamps[i].first
+                openUntil = -1L
+            } else {
+                for (i in 0 until opHoursTimestamps.size - 1) {
+                    // Current Time falls into one of the open time slots
+                    if (currentTime >= opHoursTimestamps[i].first && currentTime < opHoursTimestamps[i].second) {
+                        isOpen = true
+                        openUntil = opHoursTimestamps[i].second
+                        opensNext = -1L
+                    }
+                    // Current Time is between two time slots in day
+                    else if (i > 0 && currentTime >= opHoursTimestamps[i - 1].second && currentTime < opHoursTimestamps[i].first) {
+                        opensNext = opHoursTimestamps[i].first
+                        openUntil = -1L
+                    }
+                }
             }
         }
+        // SET TOOLBAR TEXT ACCORDINGLY
         if(opensNext == -1L && openUntil == -1L) {
             topBar.setSubtitleTextColor(getResources().getColor(R.color.closed_facility))
             topBar.subtitle = "Closed"
@@ -350,7 +373,11 @@ class FacilityInfoPage : BaseActivity() {
         wasCheckedDay = dayChips.checkedRadioButtonId
     }
 
-    private fun setOperatingHours(day: String) {
+    /**
+     * This function sets the operating hours text under the historical data chart
+     * @param day The day for which the operating hours is set
+     */
+    private fun setOperatingHoursText(day: String) {
         Log.d("SET", "OPERATING")
         val hourTitle = FluxUtil.dayFullString(day)
         todayHours.text = hourTitle
@@ -364,10 +391,6 @@ class FacilityInfoPage : BaseActivity() {
     override fun updateUI() {
         Log.d("updatedFPUI", "updating")
         fetchOperatingHours(date=FluxUtil.getDateObject(selectedDay!!))
-        checkFacilityIsOpen()
-        setOperatingHours(day=selectedDay!!)
-        fetchHistoricalJSON(day = selectedDay!!, facilityId = facilityClass!!.id)
-        fetchMenuJSON(day = FluxUtil.getCurrentDate(yearBeginning = true), facilityId = facilityClass!!.id)
     }
 
     private fun fetchHistoricalJSON(day: String, facilityId: String) {
