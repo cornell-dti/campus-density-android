@@ -21,6 +21,18 @@ object FluxUtil {
             else -> ""
         }
 
+    val dayInt: Int
+        get() = when (dayString) {
+            "SUN" -> 0
+            "MON" -> 1
+            "TUE" -> 2
+            "WED" -> 3
+            "THU" -> 4
+            "FRI" -> 5
+            "SAT" -> 6
+            else -> -1
+        }
+
     fun dayFullString(day: String): String = when (day) {
         "MON" -> "Monday"
         "TUE" -> "Tuesday"

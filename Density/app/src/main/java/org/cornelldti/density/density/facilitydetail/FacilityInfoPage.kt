@@ -5,11 +5,11 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.format.DateFormat
-import android.text.format.DateUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.widget.ImageView
+import android.widget.RadioButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
@@ -73,13 +73,24 @@ class FacilityInfoPage : BaseActivity() {
         // TODO Uncomment this
         //     facilityClass = refreshFacilityOccupancy(facilityClass);
 
-        feedback = findViewById(R.id.accuracy)
-
+        // initialize view
         densityChart.setNoDataText("")
 
-        initializeView()
+        topBar.title = facilityClass!!.name
+        topBar.setNavigationOnClickListener { onBackPressed() }
+
+        currentOccupancy.text = getString(facilityClass!!.densityResId)
+
+        feedback = findViewById(R.id.accuracy)
+        feedback.movementMethod = LinkMovementMethod.getInstance()
+
+        setToday(FluxUtil.dayString)
+        setDayChipsDate()
+        setDayChipOnClickListener()
+        setPills()
     }
 
+    // TODO: complete or remove
     private fun refreshFacilityOccupancy(fac: FacilityClass): FacilityClass {
         api.singleFacilityOccupancy(fac.id)
         return fac.setOccupancyRating(super.facilityOccupancyRating)
@@ -314,19 +325,6 @@ class FacilityInfoPage : BaseActivity() {
         }
     }
 
-    private fun initializeView() {
-        topBar.title = facilityClass!!.name
-        currentOccupancy.text = getString(facilityClass!!.densityResId)
-        feedback.movementMethod = LinkMovementMethod.getInstance()
-
-        topBar.setNavigationOnClickListener { onBackPressed() }
-
-        setToday(FluxUtil.dayString)
-        setDayChipsDate()
-        setDayChipOnClickListener()
-        setPills()
-    }
-
     private fun setDayChipsDate() {
         val chipsList = listOf(sun, mon, tue, wed, thu, fri, sat)
         val dayStrings = listOf(getString(R.string.SUN), getString(R.string.MON), getString(R.string.TUE), getString(R.string.WED),
@@ -369,15 +367,15 @@ class FacilityInfoPage : BaseActivity() {
      */
     private fun setToday(dayString: String) {
         selectedDay = dayString
-        when (dayString) {
-            getString(R.string.SUN) -> sun.isChecked = true
-            getString(R.string.MON) -> mon.isChecked = true
-            getString(R.string.TUE) -> tue.isChecked = true
-            getString(R.string.WED) -> wed.isChecked = true
-            getString(R.string.THU) -> thu.isChecked = true
-            getString(R.string.FRI) -> fri.isChecked = true
-            getString(R.string.SAT) -> sat.isChecked = true
+
+        val dayChipList = arrayListOf<RadioButton>(sun, mon, tue, wed, thu, fri, sat);
+        dayChips.removeAllViews()
+
+        val todayInt = FluxUtil.dayInt
+        for (i in todayInt..(todayInt + 6)) {
+            dayChips.addView(dayChipList[i % 7])
         }
+        dayChipList[todayInt].isChecked = true
         wasCheckedDay = dayChips.checkedRadioButtonId
     }
 
