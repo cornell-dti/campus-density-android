@@ -34,37 +34,37 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/now_header"
+                style="@style/DTI.CardHeader"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/now"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/current_view"
                 style="@style/MyCardView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="8dp"
                 android:clickable="false"
                 android:focusable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/now_header">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="16dp">
-
-                    <TextView
-                        android:id="@+id/now_header"
-                        style="@style/DTI.CardHeader"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/now"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/availability_num"
@@ -75,7 +75,7 @@
                         app:layout_constraintEnd_toStartOf="@id/accessibility_icon"
                         app:layout_constraintHorizontal_chainStyle="packed"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/now_header" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
                         android:id="@+id/accessibility_icon"
@@ -107,7 +107,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
                 android:gravity="end"
                 android:text="@string/accuracy"
                 android:textSize="12sp"
@@ -193,16 +192,27 @@
                     android:textAlignment="center" />
             </RadioGroup>
 
+
+            <TextView
+                android:id="@+id/popular_times"
+                style="@style/DTI.CardHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/popular"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dayChips" />
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/historicalDataCard"
                 style="@style/MyCardView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                app:layout_constraintBottom_toTopOf="@id/menuCard"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dayChips"
+                app:layout_constraintTop_toBottomOf="@id/popular_times"
                 app:layout_constraintVertical_bias="0.0">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -214,16 +224,6 @@
                     android:padding="8dp"
                     android:paddingBottom="16dp">
 
-                    <TextView
-                        android:id="@+id/popular_times"
-                        style="@style/DTI.CardHeader"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:text="@string/popular"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
                     <com.github.mikephil.charting.charts.BarChart
                         android:id="@+id/densityChart"
                         android:layout_width="match_parent"
@@ -233,7 +233,7 @@
                         app:layout_constraintBottom_toTopOf="@+id/todayHours"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/popular_times" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/todayHours"
@@ -279,35 +279,34 @@
 
             </androidx.cardview.widget.CardView>
 
+            <TextView
+                android:id="@+id/menu_header"
+                style="@style/DTI.CardHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/menu"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/historicalDataCard" />
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/menuCard"
                 style="@style/MyCardView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="8dp"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/menu_header">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:padding="8dp">
-
-                    <TextView
-                        android:id="@+id/menu"
-                        style="@style/DTI.CardHeader"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:text="@string/menu"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
 
                     <com.google.android.material.chip.ChipGroup
                         android:id="@+id/menuChips"
@@ -316,7 +315,7 @@
                         app:chipSpacingHorizontal="0dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/menu"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:singleLine="true"
                         app:singleSelection="true">
 

@@ -403,8 +403,10 @@ class FacilityInfoPage : BaseActivity() {
                     && menu.brunchItems.isEmpty()
                     && menu.lunchItems.isEmpty()
                     && menu.dinnerItems.isEmpty()) {
+                menu_header.isGone = true
                 menuCard.isGone = true
             } else {
+                menu_header.isVisible = true
                 menuCard.isVisible = true
                 breakfast.isGone = !(menu?.breakfastItems?.isNotEmpty() ?: false)
                 brunch.isGone = !(menu?.brunchItems?.isNotEmpty() ?: false)
