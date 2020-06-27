@@ -95,10 +95,9 @@ object FluxUtil {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_YEAR, daysAfter)
         var format: SimpleDateFormat
-        if(yearBeginning) {
+        if (yearBeginning) {
             format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-        }
-        else {
+        } else {
             format = SimpleDateFormat("MM-dd-yyyy", Locale.US)
         }
         return format.format(calendar.time)
@@ -119,8 +118,7 @@ object FluxUtil {
         var format: SimpleDateFormat
         if (yearBeginning) {
             format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-        }
-        else {
+        } else {
             format = SimpleDateFormat("MM-dd-yyyy", Locale.US)
         }
         return format.format(current.time)
