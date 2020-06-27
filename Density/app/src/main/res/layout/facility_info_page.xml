@@ -91,9 +91,9 @@
                         app:layout_constraintTop_toTopOf="@+id/availability_num" />
 
                     <TextView
+                        android:id="@+id/max_capacity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Max Capacity: 80"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/availability_num" />

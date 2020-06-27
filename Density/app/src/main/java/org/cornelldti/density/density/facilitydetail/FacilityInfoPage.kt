@@ -8,7 +8,6 @@ import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
 import android.util.Log
-import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -30,7 +29,6 @@ import org.cornelldti.density.density.colorbarutil.ColorBarDataSet
 import org.cornelldti.density.density.colorbarutil.ColorBarMarkerView
 import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.data.MenuClass
-import org.cornelldti.density.density.network.JsonParser
 import org.cornelldti.density.density.util.FluxUtil
 import org.cornelldti.density.density.util.ValueFormatter
 import java.util.*
@@ -43,7 +41,7 @@ class FacilityInfoPage : BaseActivity() {
     private val months = listOf("January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December")
 
-    private val maxLimit: Int = 100
+    private val maxCapacity: Int = 100
 
     private lateinit var feedback: TextView
 
@@ -97,13 +95,14 @@ class FacilityInfoPage : BaseActivity() {
     }
 
     private fun setAvailability() {
+        max_capacity.text = getString(R.string.max_capacity, maxCapacity)
         when (facilityClass!!.densityResId) {
             R.string.closed -> availability_num.text = getString(R.string.closed)
-            R.string.very_empty -> availability_num.text = getString(R.string.availability_lt, (0.26 * this.maxLimit).toInt())
-            R.string.pretty_empty -> availability_num.text = getString(R.string.availability_range, (0.26 * this.maxLimit).toInt(), (0.5 * this.maxLimit).toInt())
-            R.string.pretty_crowded -> availability_num.text = getString(R.string.availability_range, (0.5 * this.maxLimit).toInt(), (0.85 * this.maxLimit).toInt())
+            R.string.very_empty -> availability_num.text = getString(R.string.availability_lt, (0.26 * this.maxCapacity).toInt())
+            R.string.pretty_empty -> availability_num.text = getString(R.string.availability_range, (0.26 * this.maxCapacity).toInt(), (0.5 * this.maxCapacity).toInt())
+            R.string.pretty_crowded -> availability_num.text = getString(R.string.availability_range, (0.5 * this.maxCapacity).toInt(), (0.85 * this.maxCapacity).toInt())
             R.string.very_crowded ->
-                availability_num.text = getString(R.string.availability_gt, (0.85 * this.maxLimit).toInt())
+                availability_num.text = getString(R.string.availability_gt, (0.85 * this.maxCapacity).toInt())
         }
     }
 
