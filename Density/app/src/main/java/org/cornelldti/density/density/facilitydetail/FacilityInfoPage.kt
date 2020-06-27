@@ -128,7 +128,6 @@ class FacilityInfoPage : BaseActivity() {
         if (checkedId != -1 && wasCheckedDay != checkedId) {
             wasCheckedDay = checkedId
             selectedDay = day
-            fetchHistoricalJSON(day, facilityClass!!.id)
             val daysDifference = FluxUtil.getDayDifference(FluxUtil.dayString, selectedDay!!)
             updateOperatingHoursOfSelectedDay(FluxUtil.getDateDaysAfter(daysDifference))
         }
@@ -147,7 +146,7 @@ class FacilityInfoPage : BaseActivity() {
             -1 -> FluxUtil.dayString
         }
         val daysDifference = FluxUtil.getDayDifference(FluxUtil.dayString, selectedDay)
-        fetchMenuJSON(day = FluxUtil.getDateStringDaysAfter(daysDifference, true), facilityId = facilityClass!!.id)
+        fetchMenuJSON(day = FluxUtil.getDateStringDaysAfter(daysDifference), facilityId = facilityClass!!.id)
     }
 
     private fun setupBarChart() {
@@ -252,7 +251,7 @@ class FacilityInfoPage : BaseActivity() {
                     opHoursStrings = hoursStringsList
                     setOperatingHoursText(day = selectedDay!!, date = date)
                     fetchHistoricalJSON(day = selectedDay!!, facilityId = facilityClass!!.id)
-                    fetchMenuJSON(day = FluxUtil.getCurrentDate(yearBeginning = true), facilityId = facilityClass!!.id)
+                    fetchMenuJSON(day = FluxUtil.getCurrentDate(), facilityId = facilityClass!!.id)
                 })
     }
 

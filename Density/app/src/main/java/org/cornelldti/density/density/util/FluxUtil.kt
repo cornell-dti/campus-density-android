@@ -67,15 +67,6 @@ object FluxUtil {
         return format.format(date)
     }
 
-    /**
-     * Temporary function to convert from MM-DD-YYYY to YYYY-MM-DD
-     * Can remove this once we universally go by YYYY-MM-DD format for dates in backend TODO
-     */
-    fun reverseDateString(date: String): String {
-        val components = date.split("-")
-        return components[2] + "-" + components[0] + "-" + components[1]
-    }
-
     fun getDayDifference(currentDay: String, tappedDay: String): Int {
         var x: Int = daysList.indexOf(currentDay)
         var count = 0
@@ -88,18 +79,12 @@ object FluxUtil {
 
     /**
      * @param daysAfter days after today to fetch date string for
-     * @param yearBeginning is whether year should be in beginning of date string format
      * @return Date String for the date that is [daysAfter] days after the current date
      */
-    fun getDateStringDaysAfter(daysAfter: Int, yearBeginning: Boolean): String {
+    fun getDateStringDaysAfter(daysAfter: Int): String {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_YEAR, daysAfter)
-        var format: SimpleDateFormat
-        if (yearBeginning) {
-            format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-        } else {
-            format = SimpleDateFormat("MM-dd-yyyy", Locale.US)
-        }
+        var format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         return format.format(calendar.time)
     }
 
@@ -111,22 +96,11 @@ object FluxUtil {
 
     /**
      * This function provides the current date for the menu endpoint request.
-     * @param yearBeginning true if the format has year at beginning, false otherwise
      */
-    fun getCurrentDate(yearBeginning: Boolean): String {
+    fun getCurrentDate(): String {
         val current = Calendar.getInstance()
-        var format: SimpleDateFormat
-        if (yearBeginning) {
-            format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-        } else {
-            format = SimpleDateFormat("MM-dd-yyyy", Locale.US)
-        }
+        var format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         return format.format(current.time)
-    }
-
-    fun getCurrentDateObject(): Date {
-        val current = Calendar.getInstance()
-        return current.time
     }
 
     fun parseTime(timestamp: Long): String {

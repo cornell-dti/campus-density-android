@@ -9,7 +9,6 @@ import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.data.MenuClass
-import org.cornelldti.density.density.util.FluxUtil
 import org.json.JSONArray
 import org.json.JSONException
 

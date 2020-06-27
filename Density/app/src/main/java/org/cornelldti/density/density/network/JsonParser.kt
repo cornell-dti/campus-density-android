@@ -97,7 +97,7 @@ object JsonParser {
         try {
             val hours = jsonArray.getJSONObject(0).getJSONArray("hours")
             for (i in 0 until hours.length()) {
-                if(hours.getJSONObject(i).getString("date") == FluxUtil.reverseDateString(date)) {
+                if(hours.getJSONObject(i).getString("date") == date) {
                     val segment = hours.getJSONObject(i).getJSONObject("dailyHours")
                     val start = segment.getLong("startTimestamp")
                     val end = segment.getLong("endTimestamp")
@@ -119,7 +119,7 @@ object JsonParser {
         val operatingHours = arrayListOf<Pair<Long, Long>>()
         try {
             val hours = jsonArray.getJSONObject(0).getJSONArray("hours")
-            val currDate = FluxUtil.getCurrentDate(true)
+            val currDate = FluxUtil.getCurrentDate()
             var firstSlotNextDayAdded = false
             for (i in 0 until hours.length()) {
                 if(hours.getJSONObject(i).getString("date") == currDate) {
