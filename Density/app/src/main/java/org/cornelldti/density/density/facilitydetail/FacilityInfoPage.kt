@@ -128,7 +128,6 @@ class FacilityInfoPage : BaseActivity() {
         if (checkedId != -1 && wasCheckedDay != checkedId) {
             wasCheckedDay = checkedId
             selectedDay = day
-            fetchHistoricalJSON(day, facilityClass!!.id)
             val daysDifference = FluxUtil.getDayDifference(FluxUtil.dayString, selectedDay!!)
             updateOperatingHoursOfSelectedDay(FluxUtil.getDateDaysAfter(daysDifference))
         }
