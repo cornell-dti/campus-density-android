@@ -55,10 +55,10 @@ class FacilityInfoPage : BaseActivity() {
     private var wasCheckedMenu: Int = -1
 
     private var opHoursStrings: List<String> = ArrayList() // KEEPS TRACK OF OPERATING HOURS STRINGS FOR FACILITY
-                                                           // USED FOR DISPLAYING OPERATING HOURS OF FACILITY AT SELECTED DAY
+    // USED FOR DISPLAYING OPERATING HOURS OF FACILITY AT SELECTED DAY
 
     private var opHoursTimestamps: List<Pair<Long, Long>> = ArrayList() // KEEPS TRACK OF OPERATING HOURS TIMESTAMPS FOR FACILITY,
-                                                                        // USED FOR CHECKING WHETHER OPEN/WHEN IT WILL OPEN
+    // USED FOR CHECKING WHETHER OPEN/WHEN IT WILL OPEN
 
     private var densities: List<Double> = ArrayList() // KEEPS TRACK OF HISTORICAL DENSITIES
 
@@ -79,15 +79,12 @@ class FacilityInfoPage : BaseActivity() {
         topBar.title = facilityClass!!.name
         topBar.setNavigationOnClickListener { onBackPressed() }
 
-        currentOccupancy.text = getString(facilityClass!!.densityResId)
-
         feedback = findViewById(R.id.accuracy)
         feedback.movementMethod = LinkMovementMethod.getInstance()
 
         setToday(FluxUtil.dayString)
         setDayChipsDate()
         setDayChipOnClickListener()
-        setPills()
     }
 
     // TODO: complete or remove
@@ -232,20 +229,18 @@ class FacilityInfoPage : BaseActivity() {
         c.time = date
         c.add(Calendar.DATE, 1)
         val nextDay: Date = c.time
-        api.facilityHours(facilityId=facilityClass!!.id, startDate = FluxUtil.convertDateObjectToString(date),
+        api.facilityHours(facilityId = facilityClass!!.id, startDate = FluxUtil.convertDateObjectToString(date),
                 endDate = FluxUtil.convertDateObjectToString(nextDay),
-        facilityHoursTimeStampsOnResponse = {
-            hoursTimeStampsList ->
-            opHoursTimestamps = hoursTimeStampsList
-            setOpenOrClosedOnToolbar()
-        },
-        facilityHoursStringsOnResponse = {
-            hoursStringsList ->
-            opHoursStrings = hoursStringsList
-            setOperatingHoursText(day=selectedDay!!, date=date)
-            fetchHistoricalJSON(day = selectedDay!!, facilityId = facilityClass!!.id)
-            fetchMenuJSON(day = FluxUtil.getCurrentDate(yearBeginning = true), facilityId = facilityClass!!.id)
-        })
+                facilityHoursTimeStampsOnResponse = { hoursTimeStampsList ->
+                    opHoursTimestamps = hoursTimeStampsList
+                    setOpenOrClosedOnToolbar()
+                },
+                facilityHoursStringsOnResponse = { hoursStringsList ->
+                    opHoursStrings = hoursStringsList
+                    setOperatingHoursText(day = selectedDay!!, date = date)
+                    fetchHistoricalJSON(day = selectedDay!!, facilityId = facilityClass!!.id)
+                    fetchMenuJSON(day = FluxUtil.getCurrentDate(yearBeginning = true), facilityId = facilityClass!!.id)
+                })
     }
 
     /**
@@ -255,15 +250,14 @@ class FacilityInfoPage : BaseActivity() {
      */
     private fun updateOperatingHoursOfSelectedDay(date: Date) {
         val dateString = FluxUtil.convertDateObjectToString(date)
-        api.facilityHours(facilityId=facilityClass!!.id, startDate = dateString,
+        api.facilityHours(facilityId = facilityClass!!.id, startDate = dateString,
                 endDate = dateString,
                 facilityHoursTimeStampsOnResponse = {
                     // Isn't Defined!
                 },
-                facilityHoursStringsOnResponse = {
-                    hoursStringsList ->
+                facilityHoursStringsOnResponse = { hoursStringsList ->
                     opHoursStrings = hoursStringsList
-                    setOperatingHoursText(day=selectedDay!!, date=date)
+                    setOperatingHoursText(day = selectedDay!!, date = date)
                     fetchHistoricalJSON(day = selectedDay!!, facilityId = facilityClass!!.id)
                 })
     }
@@ -280,7 +274,7 @@ class FacilityInfoPage : BaseActivity() {
         val currentTime = System.currentTimeMillis() / 1000L
 
         Log.d("timestamps", opHoursTimestamps.toString())
-        if(opHoursTimestamps.size >= 2) {
+        if (opHoursTimestamps.size >= 2) {
             // Current Time before first time slot of day
             if (currentTime < opHoursTimestamps[0].first) {
                 opensNext = opHoursTimestamps[0].first
@@ -307,17 +301,15 @@ class FacilityInfoPage : BaseActivity() {
             }
         }
         // SET TOOLBAR TEXT ACCORDINGLY
-        if(opensNext == -1L && openUntil == -1L) {
+        if (opensNext == -1L && openUntil == -1L) {
             topBar.setSubtitleTextColor(getResources().getColor(R.color.closed_facility))
             topBar.subtitle = "Closed"
-        }
-        else {
-            if(isOpen) {
+        } else {
+            if (isOpen) {
                 var text = SpannableStringBuilder("Open" + " until " + FluxUtil.parseTime(openUntil))
                 text.setSpan(ForegroundColorSpan(resources.getColor(R.color.open_facility)), 0, 4, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
                 topBar.subtitle = text
-            }
-            else {
+            } else {
                 var text = SpannableStringBuilder("Closed" + " \u2022 opens at " + FluxUtil.parseTime(opensNext))
                 text.setSpan(ForegroundColorSpan(resources.getColor(R.color.closed_facility)), 0, 6, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
                 topBar.subtitle = text
@@ -335,28 +327,6 @@ class FacilityInfoPage : BaseActivity() {
             val chip = chipsList.get(i)
             chip.text = HtmlCompat.fromHtml(chip.text.toString() + "<br>" + "<br>" +
                     "<b>" + date.date + "</b>", HtmlCompat.FROM_HTML_MODE_LEGACY)
-        }
-    }
-
-    private fun setPills() {
-        val bars = ArrayList<ImageView?>()
-        bars.add(firstPill)
-        bars.add(secondPill)
-        bars.add(thirdPill)
-        bars.add(fourthPill)
-
-        var color = R.color.filler_boxes
-        if (facilityClass!!.isOpen) {
-            when (facilityClass!!.occupancyRating) {
-                0 -> color = R.color.very_empty
-                1 -> color = R.color.pretty_empty
-                2 -> color = R.color.pretty_crowded
-                3 -> color = R.color.very_crowded
-            }
-        }
-
-        for (i in 0..facilityClass!!.occupancyRating) {
-            bars[i]?.setColorFilter(ContextCompat.getColor(applicationContext, color))
         }
     }
 
@@ -397,7 +367,7 @@ class FacilityInfoPage : BaseActivity() {
 
     override fun updateUI() {
         Log.d("updatedFPUI", "updating")
-        fetchOperatingHours(date=FluxUtil.getDateObject(selectedDay!!)) // TODO FIX!! ON REFRESH!!
+        fetchOperatingHours(date = FluxUtil.getDateObject(selectedDay!!)) // TODO FIX!! ON REFRESH!!
     }
 
     private fun fetchHistoricalJSON(day: String, facilityId: String) {

@@ -20,8 +20,8 @@
             app:layout_scrollFlags="scroll|enterAlways|snap"
             app:navigationContentDescription="@string/back_button_desc"
             app:navigationIcon="@drawable/ic_arrow_back"
-            app:title="facilityName"
-            app:subtitle="" />
+            app:subtitle=""
+            app:title="facilityName" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -63,70 +63,40 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/now"
-                        app:layout_constraintEnd_toStartOf="@id/currentOccupancy"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/currentOccupancy"
-                        style="@style/DTI.Subtitle2"
+                        android:id="@+id/availability_num"
                         android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:gravity="end"
-                        android:textSize="14sp"
-                        app:layout_constraintBottom_toBottomOf="@id/now_header"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/now_header" />
-
-                    <ImageView
-                        android:id="@+id/firstPill"
-                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginBottom="4dp"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@string/first_pill_content"
-                        android:src="@drawable/rounded_box"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/secondPill"
+                        android:text="30-40"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toStartOf="@id/accessibility_icon"
+                        app:layout_constraintHorizontal_chainStyle="packed"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/now_header" />
 
                     <ImageView
-                        android:id="@+id/secondPill"
+                        android:id="@+id/accessibility_icon"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@string/second_pill_content"
-                        android:src="@drawable/rounded_box"
-                        app:layout_constraintEnd_toStartOf="@id/thirdPill"
-                        app:layout_constraintStart_toEndOf="@id/firstPill"
-                        app:layout_constraintTop_toTopOf="@id/firstPill" />
-
-                    <ImageView
-                        android:id="@+id/thirdPill"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@string/third_pill_content"
-                        android:src="@drawable/rounded_box"
-                        app:layout_constraintEnd_toStartOf="@id/fourthPill"
-                        app:layout_constraintStart_toEndOf="@id/secondPill"
-                        app:layout_constraintTop_toTopOf="@id/secondPill" />
-
-                    <ImageView
-                        android:id="@+id/fourthPill"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@string/fourth_pill_content"
-                        android:src="@drawable/rounded_box"
+                        android:layout_height="0dp"
+                        android:contentDescription="availability icon"
+                        android:paddingVertical="3dp"
+                        android:src="@drawable/ic_baseline_accessibility_new_24"
+                        app:layout_constraintBottom_toBottomOf="@+id/availability_num"
+                        app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/thirdPill"
-                        app:layout_constraintTop_toTopOf="@id/thirdPill" />
+                        app:layout_constraintStart_toEndOf="@id/availability_num"
+                        app:layout_constraintTop_toTopOf="@+id/availability_num" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Max Capacity: 80"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/availability_num" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -147,11 +117,11 @@
 
             <RadioGroup
                 android:id="@+id/dayChips"
-                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="100dp"
+                android:layout_height="75dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="16dp"
+                android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/accuracy"
@@ -215,12 +185,12 @@
 
                 <RadioButton
                     android:id="@+id/sat"
-                    android:background="@drawable/day_chip_background"
-                    android:button="@null"
                     android:layout_width="55dp"
                     android:layout_height="match_parent"
+                    android:background="@drawable/day_chip_background"
+                    android:button="@null"
                     android:text="@string/S"
-                    android:textAlignment="center"/>
+                    android:textAlignment="center" />
             </RadioGroup>
 
             <androidx.cardview.widget.CardView
@@ -268,12 +238,12 @@
                     <TextView
                         android:id="@+id/todayHours"
                         style="@style/DTI.Subtitle2"
-                        android:textSize="15sp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:gravity="center"
                         android:text=""
+                        android:textSize="15sp"
                         app:layout_constraintBottom_toTopOf="@id/todayDate"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -285,9 +255,9 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:gravity="center"
+                        android:text=""
                         android:textColor="#C0C0C0"
                         android:textSize="12sp"
-                        android:text=""
                         app:layout_constraintBottom_toTopOf="@id/facilityHours"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -298,8 +268,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="1dp"
-                        android:textSize="14sp"
                         android:gravity="center"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
