@@ -43,6 +43,8 @@ class FacilityInfoPage : BaseActivity() {
     private val months = listOf("January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December")
 
+    private val maxLimit: Int = 100
+
     private lateinit var feedback: TextView
 
     private lateinit var menuItemList: RecyclerView
@@ -82,6 +84,7 @@ class FacilityInfoPage : BaseActivity() {
         feedback = findViewById(R.id.accuracy)
         feedback.movementMethod = LinkMovementMethod.getInstance()
 
+        setAvailability()
         setToday(FluxUtil.dayString)
         setDayChipsDate()
         setDayChipOnClickListener()
@@ -91,6 +94,17 @@ class FacilityInfoPage : BaseActivity() {
     private fun refreshFacilityOccupancy(fac: FacilityClass): FacilityClass {
         api.singleFacilityOccupancy(fac.id)
         return fac.setOccupancyRating(super.facilityOccupancyRating)
+    }
+
+    private fun setAvailability() {
+        when (facilityClass!!.densityResId) {
+            R.string.closed -> availability_num.text = getString(R.string.closed)
+            R.string.very_empty -> availability_num.text = getString(R.string.availability_lt, (0.26 * this.maxLimit).toInt())
+            R.string.pretty_empty -> availability_num.text = getString(R.string.availability_range, (0.26 * this.maxLimit).toInt(), (0.5 * this.maxLimit).toInt())
+            R.string.pretty_crowded -> availability_num.text = getString(R.string.availability_range, (0.5 * this.maxLimit).toInt(), (0.85 * this.maxLimit).toInt())
+            R.string.very_crowded ->
+                availability_num.text = getString(R.string.availability_gt, (0.85 * this.maxLimit).toInt())
+        }
     }
 
     private fun setDayChipOnClickListener() {
