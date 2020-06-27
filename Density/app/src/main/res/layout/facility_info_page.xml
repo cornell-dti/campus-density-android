@@ -61,8 +61,10 @@
                 app:layout_constraintTop_toBottomOf="@id/now_header">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/availability_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/mid_grey"
                     android:orientation="horizontal"
                     android:padding="16dp">
 
@@ -70,7 +72,7 @@
                         android:id="@+id/availability_num"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="30-40"
+                        android:textColor="@android:color/white"
                         android:textSize="24sp"
                         app:layout_constraintEnd_toStartOf="@id/accessibility_icon"
                         app:layout_constraintHorizontal_chainStyle="packed"
@@ -81,9 +83,10 @@
                         android:id="@+id/accessibility_icon"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:contentDescription="availability icon"
+                        android:contentDescription="@string/availability_icon"
                         android:paddingVertical="3dp"
                         android:src="@drawable/ic_baseline_accessibility_new_24"
+                        android:tint="@android:color/white"
                         app:layout_constraintBottom_toBottomOf="@+id/availability_num"
                         app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -94,6 +97,7 @@
                         android:id="@+id/max_capacity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/availability_num" />
@@ -210,6 +214,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:clickable="false"
+                android:focusable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/popular_times"
@@ -297,6 +303,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:clickable="false"
+                android:focusable="false"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

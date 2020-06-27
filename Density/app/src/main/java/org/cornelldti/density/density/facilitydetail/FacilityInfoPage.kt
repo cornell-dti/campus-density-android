@@ -98,11 +98,22 @@ class FacilityInfoPage : BaseActivity() {
         max_capacity.text = getString(R.string.max_capacity, maxCapacity)
         when (facilityClass!!.densityResId) {
             R.string.closed -> availability_num.text = getString(R.string.closed)
-            R.string.very_empty -> availability_num.text = getString(R.string.availability_lt, (0.26 * this.maxCapacity).toInt())
-            R.string.pretty_empty -> availability_num.text = getString(R.string.availability_range, (0.26 * this.maxCapacity).toInt(), (0.5 * this.maxCapacity).toInt())
-            R.string.pretty_crowded -> availability_num.text = getString(R.string.availability_range, (0.5 * this.maxCapacity).toInt(), (0.85 * this.maxCapacity).toInt())
-            R.string.very_crowded ->
+            R.string.very_empty -> {
+                availability_num.text = getString(R.string.availability_lt, (0.26 * this.maxCapacity).toInt())
+                availability_card.setBackgroundColor(ContextCompat.getColor(this, R.color.very_empty))
+            }
+            R.string.pretty_empty -> {
+                availability_num.text = getString(R.string.availability_range, (0.26 * this.maxCapacity).toInt(), (0.5 * this.maxCapacity).toInt())
+                availability_card.setBackgroundColor(ContextCompat.getColor(this, R.color.pretty_empty))
+            }
+            R.string.pretty_crowded -> {
+                availability_num.text = getString(R.string.availability_range, (0.5 * this.maxCapacity).toInt(), (0.85 * this.maxCapacity).toInt())
+                availability_card.setBackgroundColor(ContextCompat.getColor(this, R.color.pretty_crowded))
+            }
+            R.string.very_crowded -> {
                 availability_num.text = getString(R.string.availability_gt, (0.85 * this.maxCapacity).toInt())
+                availability_card.setBackgroundColor(ContextCompat.getColor(this, R.color.very_crowded))
+            }
         }
     }
 

@@ -84,6 +84,7 @@
     <string name="accuracy"><a href="https://docs.google.com/forms/d/e/1FAIpQLSeJZ7AyVRZ8tfw-XiJqREmKn9y0wPCyreEkkysJn0QHCLDmaA/viewform">Is this accurate?</a></string>
     <string name="now">Availability</string>
     <string name="popular">Popular Times</string>
+    <string name="availability_icon">Accessibility icon representing amount of people.</string>
     <string name="availability_gt">&gt; %d</string>
     <string name="availability_lt">&lt; %d</string>
     <string name="availability_range">%d - %d</string>

@@ -17,4 +17,7 @@
 
     <color name="open_facility">#5AD993</color>
     <color name="closed_facility">#FA4735</color>
+
+    <color name="mid_grey">#CDCDCD</color>
+    <color name="light_grey">#EFEFEF</color>
 </resources>
