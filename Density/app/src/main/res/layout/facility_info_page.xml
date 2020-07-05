@@ -138,7 +138,7 @@
                 android:id="@+id/dayChips"
                 android:layout_width="wrap_content"
                 android:layout_height="75dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="16dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -149,7 +149,7 @@
 
                 <RadioButton
                     android:id="@+id/sun"
-                    android:layout_width="55dp"
+                    android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/day_chip_background"
                     android:button="@null"
@@ -159,7 +159,7 @@
 
                 <RadioButton
                     android:id="@+id/mon"
-                    android:layout_width="55dp"
+                    android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/day_chip_background"
                     android:button="@null"
@@ -168,7 +168,7 @@
 
                 <RadioButton
                     android:id="@+id/tue"
-                    android:layout_width="55dp"
+                    android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/day_chip_background"
                     android:button="@null"
@@ -177,7 +177,7 @@
 
                 <RadioButton
                     android:id="@+id/wed"
-                    android:layout_width="55dp"
+                    android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/day_chip_background"
                     android:button="@null"
@@ -186,7 +186,7 @@
 
                 <RadioButton
                     android:id="@+id/thu"
-                    android:layout_width="55dp"
+                    android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/day_chip_background"
                     android:button="@null"
@@ -195,7 +195,7 @@
 
                 <RadioButton
                     android:id="@+id/fri"
-                    android:layout_width="55dp"
+                    android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/day_chip_background"
                     android:button="@null"
@@ -204,7 +204,7 @@
 
                 <RadioButton
                     android:id="@+id/sat"
-                    android:layout_width="55dp"
+                    android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/day_chip_background"
                     android:button="@null"
