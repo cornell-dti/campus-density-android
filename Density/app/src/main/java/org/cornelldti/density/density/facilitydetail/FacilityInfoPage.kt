@@ -111,7 +111,10 @@ class FacilityInfoPage : BaseActivity() {
     private fun setAvailability() {
         max_capacity.text = getString(R.string.max_capacity, maxCapacity)
         when (facilityClass!!.densityResId) {
-            R.string.closed -> availability_num.text = getString(R.string.closed)
+            R.string.closed -> {
+                availability_num.text = getString(R.string.closed)
+                accessibility_icon.isGone = true
+            }
             R.string.very_empty -> {
                 availability_num.text = getString(R.string.availability_lt, (0.26 * this.maxCapacity).toInt())
                 availability_card.setBackgroundColor(ContextCompat.getColor(this, R.color.very_empty))
@@ -428,9 +431,11 @@ class FacilityInfoPage : BaseActivity() {
                     && menu.lunchItems.isEmpty()
                     && menu.dinnerItems.isEmpty()) {
                 menu_header.isGone = true
+                menuChips.isGone = true
                 menuCard.isGone = true
             } else {
                 menu_header.isVisible = true
+                menuChips.isVisible = true
                 menuCard.isVisible = true
                 breakfast.isGone = !(menu?.breakfastItems?.isNotEmpty() ?: false)
                 brunch.isGone = !(menu?.brunchItems?.isNotEmpty() ?: false)

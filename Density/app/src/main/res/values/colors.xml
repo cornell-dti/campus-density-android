@@ -5,19 +5,21 @@
     <color name="colorPrimaryDark">#cccccc</color>
     <color name="colorAccent">#000</color>
 
-    <color name="very_empty">#87E9BA</color>
+    <color name="very_empty">#87d9ac</color>
     <color name="pretty_empty">#FFE082</color>
     <color name="pretty_crowded">#FFC780</color>
     <color name="very_crowded">#FA4735</color>
     <color name="filler_boxes">#EDEDED</color>
+    <color name="very_empty_old">#87E9BA</color>
 
     <color name="border">#dad7d7</color>
 
     <color name="chip_background">#EFEFEF</color>
 
-    <color name="open_facility">#5AD993</color>
+    <color name="open_facility">#87d9ac</color>
     <color name="closed_facility">#FA4735</color>
 
+    <color name="dark_grey">#979797</color>
     <color name="mid_grey">#CDCDCD</color>
     <color name="light_grey">#EFEFEF</color>
 </resources>
