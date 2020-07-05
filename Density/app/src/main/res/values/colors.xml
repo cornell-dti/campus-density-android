@@ -19,6 +19,7 @@
     <color name="open_facility">#87d9ac</color>
     <color name="closed_facility">#FA4735</color>
 
+    <color name="dark_grey">#979797</color>
     <color name="mid_grey">#CDCDCD</color>
     <color name="light_grey">#EFEFEF</color>
 </resources>
