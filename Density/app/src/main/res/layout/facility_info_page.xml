@@ -119,7 +119,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_alignParentRight="true"
                     android:text="@string/accuracy"
-                    android:textColor="#4A90E2"
+                    android:textColorLink="#4A90E2"
                     android:textSize="12sp" />
 
                 <TextView
