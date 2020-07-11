@@ -45,7 +45,7 @@ object FluxUtil {
     }
 
     /**
-     * This function provides the date in string format for historical endpoint request.
+     * This function provides the date in object format for historical endpoint request.
      */
     fun getDateObject(day: String): Date {
         val current = Calendar.getInstance()
@@ -58,6 +58,12 @@ object FluxUtil {
         }
         return current.time
     }
+
+    fun getCurrentDateObject(): Date {
+        val current = Calendar.getInstance()
+        return current.time
+    }
+
 
     /**
      * This function provides the date in string format for historical and operating hours

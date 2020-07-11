@@ -23,6 +23,7 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import kotlinx.android.synthetic.main.facility_info_page.*
 import org.cornelldti.density.density.BaseActivity
+import org.cornelldti.density.density.DensityApplication
 import org.cornelldti.density.density.R
 import org.cornelldti.density.density.colorbarutil.ColorBarChartRenderer
 import org.cornelldti.density.density.colorbarutil.ColorBarDataSet
@@ -31,6 +32,7 @@ import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.data.MenuClass
 import org.cornelldti.density.density.util.FluxUtil
 import org.cornelldti.density.density.util.ValueFormatter
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -86,6 +88,18 @@ class FacilityInfoPage : BaseActivity() {
         setToday(FluxUtil.dayString)
         setDayChipsDate()
         setDayChipOnClickListener()
+        setDataLastUpdated()
+    }
+
+    private fun setDataLastUpdated() {
+        val currDate = FluxUtil.getCurrentDateObject()
+        val timeZone = Calendar.getInstance().timeZone
+        var format = SimpleDateFormat("h:mma", Locale.US)
+        if (DateFormat.is24HourFormat(DensityApplication.getAppContext())) {
+            format = SimpleDateFormat("HH:mm", Locale.US)
+        }
+        format.timeZone = timeZone
+        lastUpdated.setText("Last updated " + months[currDate.month] + " " + currDate.date + ", " + format.format(currDate).toLowerCase(Locale.US))
     }
 
     // TODO: complete or remove
