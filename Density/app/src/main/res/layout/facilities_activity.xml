@@ -57,16 +57,6 @@
 
             </com.google.android.material.chip.ChipGroup>
 
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorPrimary"
-                app:layout_collapseMode="pin">
-
-            </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

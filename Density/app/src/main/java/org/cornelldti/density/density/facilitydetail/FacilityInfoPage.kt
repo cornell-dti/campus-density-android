@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -32,8 +35,6 @@ class FacilityInfoPage : BaseFragment() {
 
     private var selectedDay: String? = null
 
-    private lateinit var feedback: TextView
-
     private lateinit var menuItemList: RecyclerView
     private lateinit var menuItemListViewAdapter: RecyclerView.Adapter<*>
     private lateinit var menuItemListViewManager: RecyclerView.LayoutManager
@@ -46,10 +47,9 @@ class FacilityInfoPage : BaseFragment() {
     private var opHours: List<String> = ArrayList() // KEEPS TRACK OF OPERATING HOURS FOR FACILITY
     private var densities: List<Double> = ArrayList() // KEEPS TRACK OF HISTORICAL DENSITIES
 
-    public override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.facility_info_page)
-
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         val b = intent.extras
         if (b != null) {
             facilityClass = b.getSerializable(ARG_PARAM) as FacilityClass
@@ -57,11 +57,10 @@ class FacilityInfoPage : BaseFragment() {
         // TODO Uncomment this
         //     facilityClass = refreshFacilityOccupancy(facilityClass);
 
-        feedback = findViewById(R.id.accuracy)
-
         densityChart.setNoDataText("")
 
         initializeView()
+        return inflater.inflate(R.layout.facility_info_page, container, false)
     }
 
     private fun refreshFacilityOccupancy(fac: FacilityClass): FacilityClass {
@@ -128,10 +127,10 @@ class FacilityInfoPage : BaseFragment() {
         dataSet.setDrawValues(false)
 
         val colors = ArrayList<Int>()
-        colors.add(ContextCompat.getColor(applicationContext, R.color.very_empty))
-        colors.add(ContextCompat.getColor(applicationContext, R.color.pretty_empty))
-        colors.add(ContextCompat.getColor(applicationContext, R.color.pretty_crowded))
-        colors.add(ContextCompat.getColor(applicationContext, R.color.very_crowded))
+        colors.add(ContextCompat.getColor(activity!!.applicationContext, R.color.very_empty))
+        colors.add(ContextCompat.getColor(activity!!.applicationContext, R.color.pretty_empty))
+        colors.add(ContextCompat.getColor(activity!!.applicationContext, R.color.pretty_crowded))
+        colors.add(ContextCompat.getColor(activity!!.applicationContext, R.color.very_crowded))
 
         dataSet.colors = colors
         dataSet.valueTextColor = Color.DKGRAY
@@ -142,7 +141,7 @@ class FacilityInfoPage : BaseFragment() {
         // adjusts the width of the data bars
         data.barWidth = 0.9f
 
-        val is24 = DateFormat.is24HourFormat(applicationContext)
+        val is24 = DateFormat.is24HourFormat(activity!!.applicationContext)
         val xAxis = ArrayList<String>()
         xAxis.add("")
         xAxis.add("")
@@ -173,7 +172,7 @@ class FacilityInfoPage : BaseFragment() {
             densityChart.renderer = ColorBarChartRenderer(densityChart, densityChart.animator, densityChart.viewPortHandler)
             // removes gap between graph and the x-axis
             densityChart.axisLeft.axisMinimum = 0f
-            val marker = ColorBarMarkerView(applicationContext, R.layout.marker_layout)
+            val marker = ColorBarMarkerView(activity!!.applicationContext, R.layout.marker_layout)
             densityChart.marker = marker
         }
 
@@ -201,7 +200,7 @@ class FacilityInfoPage : BaseFragment() {
     private fun initializeView() {
         topBar.title = facilityClass!!.name
         currentOccupancy.text = getString(facilityClass!!.densityResId)
-        feedback.movementMethod = LinkMovementMethod.getInstance()
+        accuracy.movementMethod = LinkMovementMethod.getInstance()
 
         topBar.setNavigationOnClickListener { onBackPressed() }
 
@@ -228,7 +227,7 @@ class FacilityInfoPage : BaseFragment() {
         }
 
         for (i in 0..facilityClass!!.occupancyRating) {
-            bars[i]?.setColorFilter(ContextCompat.getColor(applicationContext, color))
+            bars[i]?.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, color))
         }
 
     }
@@ -361,7 +360,7 @@ class FacilityInfoPage : BaseFragment() {
                 wasCheckedMenu = mealOfDay
             }
 
-            menuItemList = findViewById<RecyclerView>(R.id.menuItemsList).apply {
+            menuItemList = activity!!.findViewById<RecyclerView>(R.id.menuItemsList).apply {
                 // use this setting to improve performance if you know that changes
                 // in content do not change the layout size of the RecyclerView
                 setHasFixedSize(true)

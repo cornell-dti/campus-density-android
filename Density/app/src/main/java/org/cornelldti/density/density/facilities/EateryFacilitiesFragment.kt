@@ -7,14 +7,12 @@ import android.os.Handler
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
-import android.widget.ProgressBar
 import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.VolleyError
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.facilities_activity.*
@@ -82,7 +80,6 @@ class EateryFacilitiesFragment: BaseFragment() {
 
         swipeRefresh.isNestedScrollingEnabled = true
 
-        activity!!.setActionBar(toolbar)
         activity!!.actionBar!!.setDisplayShowTitleEnabled(false)
         appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appbar, verticalOffset ->
             val vertOffset = verticalOffset.absoluteValue
