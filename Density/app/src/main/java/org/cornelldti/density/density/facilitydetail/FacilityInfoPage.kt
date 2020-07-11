@@ -346,15 +346,15 @@ class FacilityInfoPage : BaseFragment() {
 
     private fun showMenu(menu: MenuClass?, mealOfDay: Int) {
         if (menu != null) {
-            menuItemListViewManager = LinearLayoutManager(this)
+            menuItemListViewManager = LinearLayoutManager(activity)
             when (mealOfDay) {
-                R.id.breakfast -> menuItemListViewAdapter = MenuListAdapter(menu.breakfastItems, this)
-                R.id.brunch -> menuItemListViewAdapter = MenuListAdapter(menu.brunchItems, this)
-                R.id.lunch -> menuItemListViewAdapter = MenuListAdapter(menu.lunchItems, this)
-                R.id.lite_lunch -> menuItemListViewAdapter = MenuListAdapter(menu.liteLunchItems, this)
-                R.id.dinner -> menuItemListViewAdapter = MenuListAdapter(menu.dinnerItems, this)
+                R.id.breakfast -> menuItemListViewAdapter = MenuListAdapter(menu.breakfastItems, activity!!.applicationContext)
+                R.id.brunch -> menuItemListViewAdapter = MenuListAdapter(menu.brunchItems, activity!!.applicationContext)
+                R.id.lunch -> menuItemListViewAdapter = MenuListAdapter(menu.lunchItems, activity!!.applicationContext)
+                R.id.lite_lunch -> menuItemListViewAdapter = MenuListAdapter(menu.liteLunchItems, activity!!.applicationContext)
+                R.id.dinner -> menuItemListViewAdapter = MenuListAdapter(menu.dinnerItems, activity!!.applicationContext)
                 -1 -> if (wasCheckedMenu != -1) menuChips.check(wasCheckedMenu)
-                else menuItemListViewAdapter = MenuListAdapter(ArrayList(), this)
+                else menuItemListViewAdapter = MenuListAdapter(ArrayList(), activity!!.applicationContext)
             }
             if (mealOfDay != -1 && wasCheckedMenu != mealOfDay) {
                 wasCheckedMenu = mealOfDay
@@ -376,7 +376,7 @@ class FacilityInfoPage : BaseFragment() {
         }
     }
 
-    override fun onBackPressed(): Unit = finish()
+    override fun onBackPressed(): Unit = activity!!.finish()
 
     companion object {
         const val ARG_PARAM = "Facility_Object"
