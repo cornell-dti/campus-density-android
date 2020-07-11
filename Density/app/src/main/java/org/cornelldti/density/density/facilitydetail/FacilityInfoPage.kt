@@ -198,6 +198,7 @@ class FacilityInfoPage : BaseActivity() {
         colors.add(ContextCompat.getColor(applicationContext, R.color.pretty_empty))
         colors.add(ContextCompat.getColor(applicationContext, R.color.pretty_crowded))
         colors.add(ContextCompat.getColor(applicationContext, R.color.very_crowded))
+        colors.add(ContextCompat.getColor(applicationContext, R.color.light_grey))
 
         dataSet.colors = colors
         dataSet.valueTextColor = Color.DKGRAY
@@ -206,52 +207,58 @@ class FacilityInfoPage : BaseActivity() {
         val data = BarData(dataSet)
         data.setValueTextSize(13f)
         // adjusts the width of the data bars
-        data.barWidth = 0.9f
+        data.barWidth = 1f
 
         val is24 = DateFormat.is24HourFormat(applicationContext)
         val xAxis = ArrayList<String>()
-        xAxis.add("")
-        xAxis.add("")
-        xAxis.add(if (is24) "09:00" else "9am")
-        xAxis.add("")
-        xAxis.add("")
-        xAxis.add(if (is24) "12:00" else "12pm")
-        xAxis.add("")
-        xAxis.add("")
-        xAxis.add(if (is24) "15:00" else "3pm")
-        xAxis.add("")
-        xAxis.add("")
-        xAxis.add(if (is24) "18:00" else "6pm")
-        xAxis.add("")
-        xAxis.add("")
-        xAxis.add(if (is24) "21:00" else "9pm")
-        xAxis.add("")
-        xAxis.add("")
+
+        val timeFormat24 = SimpleDateFormat("HH:mm", Locale.US)
+        val timeFormat = SimpleDateFormat("ha", Locale.US)
+
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR, 9)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.AM_PM, Calendar.AM)
+
+        for (i in 1..17) {
+            if (i % 3 == 0) {
+                xAxis.add(
+                        if (is24) timeFormat24.format(calendar.time)
+                        else timeFormat.format(calendar.time)
+                )
+                calendar.add(Calendar.HOUR, 3)
+            } else {
+                xAxis.add("")
+            }
+        }
 
         densityChart.description.isEnabled = false
         densityChart.legend.isEnabled = false
         densityChart.setScaleEnabled(false)
         densityChart.setTouchEnabled(true)
 
-        // sets the marker for the graph
-        if (!isClosed) {
-            // allows rounded bars on graph
-            densityChart.renderer = ColorBarChartRenderer(densityChart, densityChart.animator, densityChart.viewPortHandler)
-            // removes gap between graph and the x-axis
-            densityChart.axisLeft.axisMinimum = 0f
-            val marker = ColorBarMarkerView(applicationContext, R.layout.marker_layout)
-            densityChart.marker = marker
-        }
-
+        // sets gap between graph and the x-axis
+        densityChart.axisLeft.spaceBottom = 0.5f
         densityChart.axisLeft.isEnabled = false
         densityChart.axisRight.isEnabled = false
+
         densityChart.xAxis.setDrawGridLines(false)
         densityChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
         densityChart.xAxis.valueFormatter = IndexAxisValueFormatter(xAxis)
         densityChart.xAxis.labelCount = xAxis.size
-        if (!isClosed)
+        densityChart.xAxis.textColor = ContextCompat.getColor(this, R.color.dark_grey)
+        densityChart.xAxis.textSize = 10f
+        densityChart.xAxis.yOffset = 10f
+        densityChart.xAxis.axisLineWidth = 1.5f
+        densityChart.xAxis.axisLineColor = ContextCompat.getColor(this, R.color.mid_grey)
+
+        if (!isClosed) {
+            // allows rounded bars on graph
+            densityChart.renderer = ColorBarChartRenderer(densityChart, densityChart.animator, densityChart.viewPortHandler)
+            val marker = ColorBarMarkerView(applicationContext, R.layout.marker_layout)
+            densityChart.marker = marker
             densityChart.data = data
-        else {
+        } else {
             densityChart.data = null
             val p = densityChart.getPaint(Chart.PAINT_INFO)
             p.textSize = 36f
@@ -260,7 +267,7 @@ class FacilityInfoPage : BaseActivity() {
             densityChart.setNoDataText("Closed")
         }
         densityChart.invalidate()
-        densityChart.animateY(500)
+        densityChart.animateY(400)
 
     }
 

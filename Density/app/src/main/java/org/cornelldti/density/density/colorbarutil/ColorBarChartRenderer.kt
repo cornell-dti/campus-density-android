@@ -1,24 +1,29 @@
 package org.cornelldti.density.density.colorbarutil
 
 import android.graphics.Canvas
+import android.graphics.Path
 import android.graphics.RectF
 
 import com.github.mikephil.charting.animation.ChartAnimator
-import com.github.mikephil.charting.buffer.BarBuffer
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.renderer.BarChartRenderer
-import com.github.mikephil.charting.utils.Transformer
 import com.github.mikephil.charting.utils.Utils
 import com.github.mikephil.charting.utils.ViewPortHandler
+import kotlin.math.ceil
 
 class ColorBarChartRenderer(chart: BarDataProvider, animator: ChartAnimator,
                             viewPortHandler: ViewPortHandler) : BarChartRenderer(chart, animator, viewPortHandler) {
 
-
+    private val path = Path()
     private val mBarShadowRectBuffer = RectF()
+    private val radii = floatArrayOf(
+            7f, 7f, // top left
+            7f, 7f, // top right
+            0f, 0f, // bottom right
+            0f, 0f // bottom left
+    )
+
 
     override fun drawDataSet(c: Canvas, dataSet: IBarDataSet, index: Int) {
 
@@ -42,10 +47,8 @@ class ColorBarChartRenderer(chart: BarDataProvider, animator: ChartAnimator,
             val barWidthHalf = barWidth / 2.0f
             var x: Float
 
-            var i = 0
-            val count = Math.min(Math.ceil((dataSet.entryCount.toFloat() * phaseX).toDouble()).toInt(), dataSet.entryCount)
-            while (i < count) {
-
+            val count = Math.min(ceil((dataSet.entryCount.toFloat() * phaseX).toDouble()).toInt(), dataSet.entryCount)
+            for (i in 0 until count) {
                 val e = dataSet.getEntryForIndex(i)
 
                 x = e.x
@@ -56,7 +59,6 @@ class ColorBarChartRenderer(chart: BarDataProvider, animator: ChartAnimator,
                 trans.rectValueToPixel(mBarShadowRectBuffer)
 
                 if (!mViewPortHandler.isInBoundsLeft(mBarShadowRectBuffer.right)) {
-                    i++
                     continue
                 }
 
@@ -67,7 +69,6 @@ class ColorBarChartRenderer(chart: BarDataProvider, animator: ChartAnimator,
                 mBarShadowRectBuffer.bottom = mViewPortHandler.contentBottom()
 
                 c.drawRoundRect(mBarShadowRectBuffer, 7f, 7f, mShadowPaint)
-                i++
             }
         }
 
@@ -88,11 +89,9 @@ class ColorBarChartRenderer(chart: BarDataProvider, animator: ChartAnimator,
             mRenderPaint.color = dataSet.color
         }
 
-        var j = 0
-        while (j < buffer.size()) {
+        for (j in 0 until buffer.size() step 4) {
 
             if (!mViewPortHandler.isInBoundsLeft(buffer.buffer[j + 2])) {
-                j += 4
                 continue
             }
 
@@ -105,18 +104,27 @@ class ColorBarChartRenderer(chart: BarDataProvider, animator: ChartAnimator,
                 mRenderPaint.color = dataSet.getColor(j / 4)
             }
 
-            c.drawRoundRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-                    buffer.buffer[j + 3], 7f, 7f, mRenderPaint)
-            //c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-            //       buffer.buffer[j + 3], mRenderPaint);
+            if (mRenderPaint.color == dataSet.colors[4]) {
+                c.drawRect(buffer.buffer[j],
+                        50f,
+                        buffer.buffer[j + 2],
+                        buffer.buffer[j + 3], mRenderPaint)
+            } else {
+                path.reset()
+                path.addRoundRect(
+                        buffer.buffer[j] + 2,
+                        buffer.buffer[j + 1],
+                        buffer.buffer[j + 2] - 2,
+                        buffer.buffer[j + 3],
+                        radii,
+                        Path.Direction.CW)
+                c.drawPath(path, mRenderPaint)
+            }
 
             if (drawBorder) {
-                //c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-                //       buffer.buffer[j + 3], mBarBorderPaint);
                 c.drawRoundRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
                         buffer.buffer[j + 3], 7f, 7f, mBarBorderPaint)
             }
-            j += 4
         }
     }
 }

@@ -17,8 +17,10 @@ class ColorBarDataSet(y_vals: List<BarEntry>, label: String) : BarDataSet(y_vals
             colors[2]
         } else if (getEntryForIndex(index).y >= 0.25) {
             colors[1]
-        } else {
+        } else if (getEntryForIndex(index).y > 0) {
             colors[0]
+        } else {
+            colors[4]
         }
     }
 
