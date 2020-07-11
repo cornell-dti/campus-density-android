@@ -88,5 +88,8 @@
     <!-- failure page strings -->
     <string name="sorry_failure">Sorry, there\'s an error loading the data.</string>
     <string name="check_internet">Please check your internet connection.</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="tab_text_1">Eateries</string>
+    <string name="tab_text_2">Gyms</string>
 
 </resources>

@@ -5,13 +5,14 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import org.cornelldti.density.density.network.API
 
 
-open class BaseActivity :
-        AppCompatActivity(), FirebaseAuth.IdTokenListener, FirebaseAuth.AuthStateListener {
+open class BaseFragment :
+        Fragment(), FirebaseAuth.IdTokenListener, FirebaseAuth.AuthStateListener {
 
     protected lateinit var api: API
 
@@ -21,14 +22,14 @@ open class BaseActivity :
     val facilityOccupancyRating: Int = 0 // KEEPS TRACK OF SELECTED FACILITY'S OCCUPANCY
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+//        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         super.onCreate(savedInstanceState)
-        api = API(context = this)
+        api = API(context = this.context!!)
         checkUserSignedIn()
     }
 
-    override fun onRestart() {
-        super.onRestart()
+    override fun onResume() {
+        super.onResume()
         checkUserSignedIn()
     }
 
@@ -96,7 +97,7 @@ open class BaseActivity :
                         // If sign in fails, display a message to the user.
                         Log.d("checkpoint", "signIn = failure")
                         Log.w("Firebase", "signInAnonymously:failure", task.exception)
-                        Toast.makeText(this@BaseActivity, "Authentication failed.",
+                        Toast.makeText(this.context, "Authentication failed.",
                                 Toast.LENGTH_SHORT).show()
                     }
                 }

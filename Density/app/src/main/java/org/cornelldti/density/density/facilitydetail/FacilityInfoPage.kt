@@ -18,7 +18,7 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import kotlinx.android.synthetic.main.facility_info_page.*
-import org.cornelldti.density.density.BaseActivity
+import org.cornelldti.density.density.BaseFragment
 import org.cornelldti.density.density.R
 import org.cornelldti.density.density.colorbarutil.ColorBarChartRenderer
 import org.cornelldti.density.density.colorbarutil.ColorBarDataSet
@@ -28,7 +28,7 @@ import org.cornelldti.density.density.data.MenuClass
 import org.cornelldti.density.density.util.FluxUtil
 import org.cornelldti.density.density.util.ValueFormatter
 
-class FacilityInfoPage : BaseActivity() {
+class FacilityInfoPage : BaseFragment() {
 
     private var selectedDay: String? = null
 

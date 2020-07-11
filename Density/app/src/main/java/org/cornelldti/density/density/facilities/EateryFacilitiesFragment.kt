@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.util.TypedValue
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.ProgressBar
 import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -20,21 +18,19 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.facilities_activity.*
-import org.cornelldti.density.density.BaseActivity
+import org.cornelldti.density.density.BaseFragment
 import org.cornelldti.density.density.LockableAppBarLayoutBehavior
 import org.cornelldti.density.density.R
 import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.facilitydetail.FacilityInfoPage
 import kotlin.math.absoluteValue
 
-class FacilitiesActivity : BaseActivity() {
-
-    private lateinit var spinner: ProgressBar
+class EateryFacilitiesFragment: BaseFragment() {
 
     private var adapter: FacilitiesListAdapter? = null
 
-    private var collapsingToolbarLayout: CollapsingToolbarLayout? = null
-    private var appBarLayout: AppBarLayout? = null
+//    private var collapsingToolbarLayout: CollapsingToolbarLayout? = null
+//    private var appBarLayout: AppBarLayout? = null
 
     private var layoutManager: RecyclerView.LayoutManager? = null
 
@@ -49,16 +45,14 @@ class FacilitiesActivity : BaseActivity() {
 
     private var loaded: Boolean = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         loaded = false
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.facilities_activity)
 
-        spinner = findViewById(R.id.progressBar)
+        setHasOptionsMenu(true);
 
         setOnRefreshListener()
-
-        appBarLayout = findViewById(R.id.appbar)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             nestedScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
@@ -79,19 +73,18 @@ class FacilitiesActivity : BaseActivity() {
                             dip,
                             r.displayMetrics
                     )
-                    appBarLayout!!.elevation = elevation
+                    appbar.elevation = elevation
                 } else {
-                    appBarLayout!!.elevation = 0f
+                    appbar.elevation = 0f
                 }
             }
         }
 
-        collapsingToolbarLayout = findViewById(R.id.collapsingToolbar)
         swipeRefresh.isNestedScrollingEnabled = true
 
-        setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
-        appBarLayout!!.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+        activity!!.setActionBar(toolbar)
+        activity!!.actionBar!!.setDisplayShowTitleEnabled(false)
+        appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appbar, verticalOffset ->
             val vertOffset = verticalOffset.absoluteValue
 
             val r = resources
@@ -111,16 +104,17 @@ class FacilitiesActivity : BaseActivity() {
                         dip,
                         r.displayMetrics
                 )
-                appBarLayout.elevation = elevation
+                appbar.elevation = elevation
             } else {
-                appBarLayout.elevation = 0f
+                appbar.elevation = 0f
             }
         })
 
         facilities.setHasFixedSize(true)
 
-        layoutManager = LinearLayoutManager(this)
+        layoutManager = LinearLayoutManager(this.context)
         facilities.layoutManager = layoutManager
+        return inflater.inflate(R.layout.facilities_activity, container, false)
     }
 
     private fun fetchFacilities(refresh: Boolean, success: () -> Unit) {
@@ -151,10 +145,6 @@ class FacilitiesActivity : BaseActivity() {
     }
 
     private fun setChipOnClickListener() {
-        all = findViewById(R.id.all)
-
-        filterChips = findViewById(R.id.filterChips)
-
         filterChips!!.setOnCheckedChangeListener { _, checkedId -> handleCheckChange(checkedId) }
     }
 
@@ -196,7 +186,7 @@ class FacilitiesActivity : BaseActivity() {
             fetchFacilities(true) { }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu, menuInflater: MenuInflater): Unit {
         val menuInflater = menuInflater
         menuInflater.inflate(R.menu.toolbar_search, menu)
 
@@ -218,10 +208,10 @@ class FacilitiesActivity : BaseActivity() {
 
         searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                if (appBarLayout != null) {
+                if (appbar != null) {
                     swipeRefresh.isEnabled = false
-                    appBarLayout!!.setExpanded(false)
-                    val layoutParams = appBarLayout!!.layoutParams as CoordinatorLayout.LayoutParams
+                    appbar.setExpanded(false)
+                    val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
                     (layoutParams.behavior as LockableAppBarLayoutBehavior).lockScroll()
                 }
 
@@ -229,10 +219,10 @@ class FacilitiesActivity : BaseActivity() {
             }
 
             override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                if (appBarLayout != null) {
+                if (appbar != null) {
                     swipeRefresh.isEnabled = true
-                    appBarLayout!!.setExpanded(false)
-                    val layoutParams = appBarLayout!!.layoutParams as CoordinatorLayout.LayoutParams
+                    appbar.setExpanded(false)
+                    val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
                     (layoutParams.behavior as LockableAppBarLayoutBehavior).unlockScroll()
                 }
 
@@ -240,7 +230,7 @@ class FacilitiesActivity : BaseActivity() {
             }
         })
 
-        return super.onCreateOptionsMenu(menu)
+        super.onCreateOptionsMenu(menu, menuInflater)
     }
 
     // FETCH FUNCTIONS OVERRIDES
@@ -266,7 +256,7 @@ class FacilitiesActivity : BaseActivity() {
             val adapter = FacilitiesListAdapter(list)
             adapter.setOnItemClickListener(object : FacilitiesListAdapter.ClickListener {
                 override fun onItemClick(position: Int, v: View) {
-                    val intent = Intent(this@FacilitiesActivity, FacilityInfoPage::class.java)
+                    val intent = Intent(this@EateryFacilitiesFragment.context, FacilityInfoPage::class.java)
                     val b = Bundle()
                     b.putSerializable(FacilityInfoPage.ARG_PARAM, adapter.dataSet!![position])
                     intent.putExtras(b)
@@ -275,7 +265,7 @@ class FacilitiesActivity : BaseActivity() {
             })
             this.adapter = adapter
             this.facilities.adapter = adapter
-            this.spinner.visibility = View.GONE
+            progressBar.visibility = View.GONE
             this.facilities.visibility = View.VISIBLE
             success()
             setChipOnClickListener()
