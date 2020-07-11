@@ -105,52 +105,46 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
-            <RelativeLayout
-                android:id="@+id/accuracyAndUpdatedTextLayout"
-                android:layout_width="match_parent"
+
+            <TextView
+                android:id="@+id/lastUpdated"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/last_updated"
+                android:textColor="#CDCDCD"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/current_view" />
+
+            <TextView
+                android:id="@+id/accuracy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/accuracy"
+                android:textColorLink="#4A90E2"
+                android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/current_view">
-
-                <TextView
-                    android:id="@+id/accuracy"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_alignParentRight="true"
-                    android:text="@string/accuracy"
-                    android:textColorLink="#4A90E2"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/lastUpdated"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_alignParentLeft="true"
-                    android:textColor="#CDCDCD"
-                    android:text="Last Updated"
-                    android:textSize="12sp" />
-
-            </RelativeLayout>
+                app:layout_constraintTop_toTopOf="@id/lastUpdated" />
 
             <RadioGroup
                 android:id="@+id/dayChips"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="75dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="16dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/accuracyAndUpdatedTextLayout"
+                app:layout_constraintTop_toBottomOf="@+id/accuracy"
                 app:singleLine="true"
                 app:singleSelection="true">
 
                 <RadioButton
                     android:id="@+id/sun"
-                    android:layout_width="50dp"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:background="@drawable/day_chip_background"
                     android:button="@null"
                     android:checked="true"
@@ -159,8 +153,9 @@
 
                 <RadioButton
                     android:id="@+id/mon"
-                    android:layout_width="50dp"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:background="@drawable/day_chip_background"
                     android:button="@null"
                     android:text="@string/M"
@@ -168,8 +163,9 @@
 
                 <RadioButton
                     android:id="@+id/tue"
-                    android:layout_width="50dp"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:background="@drawable/day_chip_background"
                     android:button="@null"
                     android:text="@string/T"
@@ -177,8 +173,9 @@
 
                 <RadioButton
                     android:id="@+id/wed"
-                    android:layout_width="50dp"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:background="@drawable/day_chip_background"
                     android:button="@null"
                     android:text="@string/W"
@@ -186,8 +183,9 @@
 
                 <RadioButton
                     android:id="@+id/thu"
-                    android:layout_width="50dp"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:background="@drawable/day_chip_background"
                     android:button="@null"
                     android:text="@string/Th"
@@ -195,8 +193,9 @@
 
                 <RadioButton
                     android:id="@+id/fri"
-                    android:layout_width="50dp"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:background="@drawable/day_chip_background"
                     android:button="@null"
                     android:text="@string/F"
@@ -204,8 +203,9 @@
 
                 <RadioButton
                     android:id="@+id/sat"
-                    android:layout_width="50dp"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:background="@drawable/day_chip_background"
                     android:button="@null"
                     android:text="@string/S"
