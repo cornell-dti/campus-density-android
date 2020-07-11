@@ -60,10 +60,11 @@ object FluxUtil {
     }
 
     /**
-     * This function provides the date in string format for historical and operating hours endpoint request.
+     * This function provides the date in string format for historical and operating hours
+     * endpoint request.
      */
     fun convertDateObjectToString(date: Date): String {
-        val format = SimpleDateFormat("MM-dd-yyyy", Locale.US)
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         return format.format(date)
     }
 
