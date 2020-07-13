@@ -24,8 +24,8 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager)
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
         when(position) {
-            R.string.tab_text_1 -> return EateryFacilitiesFragment()
-            R.string.tab_text_2 -> return GymFacilitiesFragment()
+            0 -> return EateryFacilitiesFragment()
+            1 -> return GymFacilitiesFragment()
             else -> return EateryFacilitiesFragment()
         }
     }

@@ -10,16 +10,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.facility_info_page.*
 import org.cornelldti.density.density.BaseFragment
 import org.cornelldti.density.density.R
@@ -38,6 +42,18 @@ class FacilityInfoPage : BaseFragment() {
     private lateinit var menuItemList: RecyclerView
     private lateinit var menuItemListViewAdapter: RecyclerView.Adapter<*>
     private lateinit var menuItemListViewManager: RecyclerView.LayoutManager
+    private lateinit var densityChart: BarChart
+    private lateinit var topBar: Toolbar
+    private lateinit var currentOccupancy: TextView
+    private lateinit var accuracy: TextView
+    private lateinit var sun: Chip
+    private lateinit var mon: Chip
+    private lateinit var tue: Chip
+    private lateinit var wed: Chip
+    private lateinit var thu: Chip
+    private lateinit var fri: Chip
+    private lateinit var sat: Chip
+    private lateinit var dayChips: ChipGroup
 
     private var facilityClass: FacilityClass? = null
 
@@ -50,7 +66,22 @@ class FacilityInfoPage : BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val b = intent.extras
+        val v: View = inflater.inflate(R.layout.facility_info_page, container, false)
+
+        densityChart = v.findViewById(R.id.densityChart)
+        topBar = v.findViewById(R.id.topBar)
+        currentOccupancy = v.findViewById(R.id.currentOccupancy)
+        accuracy = v.findViewById(R.id.accuracy)
+        sun = v.findViewById(R.id.sun)
+        mon = v.findViewById(R.id.mon)
+        tue = v.findViewById(R.id.tue)
+        wed = v.findViewById(R.id.wed)
+        thu = v.findViewById(R.id.thu)
+        fri = v.findViewById(R.id.fri)
+        sat = v.findViewById(R.id.sat)
+        dayChips = v.findViewById(R.id.dayChips)
+
+        val b = arguments
         if (b != null) {
             facilityClass = b.getSerializable(ARG_PARAM) as FacilityClass
         }
@@ -60,7 +91,7 @@ class FacilityInfoPage : BaseFragment() {
         densityChart.setNoDataText("")
 
         initializeView()
-        return inflater.inflate(R.layout.facility_info_page, container, false)
+        return v
     }
 
     private fun refreshFacilityOccupancy(fac: FacilityClass): FacilityClass {
@@ -202,7 +233,7 @@ class FacilityInfoPage : BaseFragment() {
         currentOccupancy.text = getString(facilityClass!!.densityResId)
         accuracy.movementMethod = LinkMovementMethod.getInstance()
 
-        topBar.setNavigationOnClickListener { onBackPressed() }
+//        topBar.setNavigationOnClickListener { onBackPressed() }
 
         setToday(FluxUtil.dayString)
         setDayChipOnClickListener()
@@ -376,7 +407,7 @@ class FacilityInfoPage : BaseFragment() {
         }
     }
 
-    override fun onBackPressed(): Unit = activity!!.finish()
+//    override fun onBackPressed(): Unit = activity!!.finish()
 
     companion object {
         const val ARG_PARAM = "Facility_Object"

@@ -4,6 +4,8 @@
     <!--<color name="colorPrimaryDark">#4A4849</color>-->
     <color name="colorPrimaryDark">#cccccc</color>
     <color name="colorAccent">#000</color>
+    <color name="tabSelectedColorText">#4A4A4A</color>
+    <color name="tabNotSelectedColorText">#989A9D</color>
 
     <color name="very_empty">#87E9BA</color>
     <color name="pretty_empty">#FFE082</color>

@@ -1,6 +1,5 @@
 package org.cornelldti.density.density.facilities
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -9,13 +8,16 @@ import android.util.TypedValue
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.volley.VolleyError
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import kotlinx.android.synthetic.main.facilities_activity.*
+import kotlinx.android.synthetic.main.eatery_facilities_fragment.*
 import org.cornelldti.density.density.BaseFragment
 import org.cornelldti.density.density.LockableAppBarLayoutBehavior
 import org.cornelldti.density.density.R
@@ -23,16 +25,19 @@ import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.facilitydetail.FacilityInfoPage
 import kotlin.math.absoluteValue
 
+
 class EateryFacilitiesFragment: BaseFragment() {
 
     private var adapter: FacilitiesListAdapter? = null
 
-//    private var collapsingToolbarLayout: CollapsingToolbarLayout? = null
-//    private var appBarLayout: AppBarLayout? = null
+    private lateinit var swipeRefresh: SwipeRefreshLayout
+    private lateinit var nestedScrollView: NestedScrollView
+    private lateinit var appbar: AppBarLayout
+    private lateinit var facilities: RecyclerView
 
     private var layoutManager: RecyclerView.LayoutManager? = null
 
-    private var filterChips: ChipGroup? = null
+    private lateinit var filterChips: ChipGroup
 
     private var all: Chip? = null
     private var wasChecked: Int = 0
@@ -46,9 +51,16 @@ class EateryFacilitiesFragment: BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        val v: View = inflater.inflate(R.layout.eatery_facilities_fragment, container, false)
         loaded = false
 
         setHasOptionsMenu(true);
+
+        swipeRefresh = v.findViewById(R.id.swipeRefresh)
+        nestedScrollView = v.findViewById(R.id.nestedScrollView)
+        appbar = v.findViewById(R.id.appbar)
+        facilities = v.findViewById(R.id.facilities)
+        filterChips = v.findViewById(R.id.filterChips)
 
         setOnRefreshListener()
 
@@ -80,7 +92,7 @@ class EateryFacilitiesFragment: BaseFragment() {
 
         swipeRefresh.isNestedScrollingEnabled = true
 
-        activity!!.actionBar!!.setDisplayShowTitleEnabled(false)
+//        activity!!.actionBar!!.setDisplayShowTitleEnabled(false)
         appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appbar, verticalOffset ->
             val vertOffset = verticalOffset.absoluteValue
 
@@ -111,7 +123,7 @@ class EateryFacilitiesFragment: BaseFragment() {
 
         layoutManager = LinearLayoutManager(this.context)
         facilities.layoutManager = layoutManager
-        return inflater.inflate(R.layout.facilities_activity, container, false)
+        return v
     }
 
     private fun fetchFacilities(refresh: Boolean, success: () -> Unit) {
@@ -253,11 +265,14 @@ class EateryFacilitiesFragment: BaseFragment() {
             val adapter = FacilitiesListAdapter(list)
             adapter.setOnItemClickListener(object : FacilitiesListAdapter.ClickListener {
                 override fun onItemClick(position: Int, v: View) {
-                    val intent = Intent(this@EateryFacilitiesFragment.context, FacilityInfoPage::class.java)
+                    val facilityInfoPage = FacilityInfoPage()
                     val b = Bundle()
                     b.putSerializable(FacilityInfoPage.ARG_PARAM, adapter.dataSet!![position])
-                    intent.putExtras(b)
-                    startActivity(intent)
+                    facilityInfoPage.arguments = b
+                    fragmentManager!!.beginTransaction()
+                            .replace(R.id.full_layout, facilityInfoPage, facilityInfoPage.tag)
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .commit();
                 }
             })
             this.adapter = adapter
