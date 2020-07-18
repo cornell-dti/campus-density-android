@@ -272,6 +272,7 @@ class EateryFacilitiesFragment: BaseFragment() {
                     fragmentManager!!.beginTransaction()
                             .replace(R.id.full_layout, facilityInfoPage, facilityInfoPage.tag)
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .addToBackStack(null)
                             .commit();
                 }
             })

@@ -10,10 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.BarChart
@@ -22,8 +24,10 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.facility_info_page.*
 import org.cornelldti.density.density.BaseFragment
 import org.cornelldti.density.density.R
@@ -39,6 +43,7 @@ class FacilityInfoPage : BaseFragment() {
 
     private var selectedDay: String? = null
 
+    private lateinit var tabs: TabLayout
     private lateinit var menuItemList: RecyclerView
     private lateinit var menuItemListViewAdapter: RecyclerView.Adapter<*>
     private lateinit var menuItemListViewManager: RecyclerView.LayoutManager
@@ -68,6 +73,7 @@ class FacilityInfoPage : BaseFragment() {
                               savedInstanceState: Bundle?): View? {
         val v: View = inflater.inflate(R.layout.facility_info_page, container, false)
 
+        tabs = activity!!.findViewById(R.id.tabs)
         densityChart = v.findViewById(R.id.densityChart)
         topBar = v.findViewById(R.id.topBar)
         currentOccupancy = v.findViewById(R.id.currentOccupancy)
@@ -81,6 +87,8 @@ class FacilityInfoPage : BaseFragment() {
         sat = v.findViewById(R.id.sat)
         dayChips = v.findViewById(R.id.dayChips)
 
+        tabs.visibility = View.GONE
+
         val b = arguments
         if (b != null) {
             facilityClass = b.getSerializable(ARG_PARAM) as FacilityClass
@@ -92,6 +100,11 @@ class FacilityInfoPage : BaseFragment() {
 
         initializeView()
         return v
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        tabs.visibility = View.VISIBLE
     }
 
     private fun refreshFacilityOccupancy(fac: FacilityClass): FacilityClass {
@@ -228,12 +241,16 @@ class FacilityInfoPage : BaseFragment() {
 
     }
 
+    private fun onBackPressed() {
+        activity!!.supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
     private fun initializeView() {
         topBar.title = facilityClass!!.name
         currentOccupancy.text = getString(facilityClass!!.densityResId)
         accuracy.movementMethod = LinkMovementMethod.getInstance()
 
-//        topBar.setNavigationOnClickListener { onBackPressed() }
+        topBar.setNavigationOnClickListener { onBackPressed() }
 
         setToday(FluxUtil.dayString)
         setDayChipOnClickListener()

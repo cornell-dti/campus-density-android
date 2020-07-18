@@ -23,31 +23,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BaseFragment" />
-        <activity
-            android:name=".facilities.EateryFacilitiesActivity"
-            android:parentActivityName=".BaseFragment">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
-        </activity>
-        <activity android:name=".facilitydetail.FacilityInfoPage">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="www.cornelldti.org"
-                    android:pathPrefix="/facilityClass"
-                    android:scheme="https" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>
