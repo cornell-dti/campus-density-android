@@ -1,8 +1,10 @@
 package org.cornelldti.density.density.network
 
 import android.text.format.DateFormat
+import android.util.Log
 import org.cornelldti.density.density.DensityApplication
 import org.cornelldti.density.density.data.*
+import org.cornelldti.density.density.util.FluxUtil
 import org.json.JSONArray
 import org.json.JSONException
 import java.text.SimpleDateFormat
@@ -62,7 +64,6 @@ object JsonParser {
                     breakfastItems = breakfast,
                     brunchItems = brunch,
                     lunchItems = lunch,
-                    liteLunchItems = liteLunch,
                     dinnerItems = dinner
             )
         } catch (e: JSONException) {
@@ -87,15 +88,52 @@ object JsonParser {
         }
     }
 
-    fun parseOperatingHours(jsonArray: JSONArray): List<String> {
+    /**
+     * This function returns a list of the operating hours for a facility on one day, where each time slot is denoted as a string.
+     * An example response would be ["8:00am-2:00pm", "6:00pm-9:00pm"].
+     */
+    fun parseOperatingHoursToStringList(jsonArray: JSONArray, date: String): List<String> {
         val operatingHours = arrayListOf<String>()
         try {
             val hours = jsonArray.getJSONObject(0).getJSONArray("hours")
             for (i in 0 until hours.length()) {
-                val segment = hours.getJSONObject(i).getJSONObject("dailyHours")
-                val start = segment.getLong("startTimestamp")
-                val end = segment.getLong("endTimestamp")
-                operatingHours.add(parseTime(start) + " – " + parseTime(end))
+                if (hours.getJSONObject(i).getString("date") == date) {
+                    val segment = hours.getJSONObject(i).getJSONObject("dailyHours")
+                    val start = segment.getLong("startTimestamp")
+                    val end = segment.getLong("endTimestamp")
+                    operatingHours.add(FluxUtil.parseTime(start) + " – " + FluxUtil.parseTime(end))
+                }
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        return operatingHours
+    }
+
+    /**
+     * This function returns a list of the operating hour time slots of a specified day and the first slot of the next day.
+     * This is returned in format of a list of pairs of start and end timestamps.
+     * Sample Response: [(1000000, 1200000), (1300000, 1500000), (1600000, 1800000)]
+     */
+    fun parseOperatingHoursToTimestampList(jsonArray: JSONArray): List<Pair<Long, Long>> {
+        val operatingHours = arrayListOf<Pair<Long, Long>>()
+        try {
+            val hours = jsonArray.getJSONObject(0).getJSONArray("hours")
+            val currDate = FluxUtil.getCurrentDate()
+            var firstSlotNextDayAdded = false
+            for (i in 0 until hours.length()) {
+                if (hours.getJSONObject(i).getString("date") == currDate) {
+                    val segment = hours.getJSONObject(i).getJSONObject("dailyHours")
+                    val start = segment.getLong("startTimestamp")
+                    val end = segment.getLong("endTimestamp")
+                    operatingHours.add(Pair(start, end))
+                } else if (!firstSlotNextDayAdded) {
+                    val segment = hours.getJSONObject(i).getJSONObject("dailyHours")
+                    val start = segment.getLong("startTimestamp")
+                    val end = segment.getLong("endTimestamp")
+                    operatingHours.add(Pair(start, end))
+                    break
+                }
             }
         } catch (e: JSONException) {
             e.printStackTrace()
@@ -115,16 +153,5 @@ object JsonParser {
             e.printStackTrace()
         }
         return densities
-    }
-
-    private fun parseTime(timestamp: Long): String {
-        val timeZone = Calendar.getInstance().timeZone
-        var format = SimpleDateFormat("h:mma", Locale.US)
-        if (DateFormat.is24HourFormat(DensityApplication.getAppContext())) {
-            format = SimpleDateFormat("HH:mm", Locale.US)
-        }
-        format.timeZone = timeZone
-
-        return format.format(Date(timestamp * 1000)).toLowerCase(Locale.US)
     }
 }

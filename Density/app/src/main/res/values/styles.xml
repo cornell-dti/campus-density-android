@@ -29,7 +29,7 @@
     </style>
 
     <style name="OutlineChipStyle" parent="BaseChipStyle">
-        <item name="chipStrokeWidth">2dp</item>
+        <item name="chipStrokeWidth">1dp</item>
         <item name="chipStrokeColor">@color/chip_background</item>
     </style>
 
@@ -38,7 +38,7 @@
     </style>
 
     <style name="DTI.CardHeader" parent="TextAppearance.MaterialComponents.Headline6">
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">24sp</item>
     </style>
 
     <style name="DTI.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">

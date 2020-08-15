@@ -80,10 +80,16 @@
     <!-- content descriptions -->
     <string name="back_button_desc">Back button to return list of locations</string>
 
-    <!-- facilityClass page strings -->
+    <!-- facility info page strings -->
     <string name="accuracy"><a href="https://docs.google.com/forms/d/e/1FAIpQLSeJZ7AyVRZ8tfw-XiJqREmKn9y0wPCyreEkkysJn0QHCLDmaA/viewform">Is this accurate?</a></string>
-    <string name="now">Now</string>
+    <string name="last_updated">Last Updated</string>
+    <string name="now">Availability</string>
     <string name="popular">Popular Times</string>
+    <string name="availability_icon">Accessibility icon representing amount of people.</string>
+    <string name="availability_gt">&gt; %d</string>
+    <string name="availability_lt">&lt; %d</string>
+    <string name="availability_range">%d - %d</string>
+    <string name="max_capacity">Max Capacity: %d</string>
 
     <!-- failure page strings -->
     <string name="sorry_failure">Sorry, there\'s an error loading the data.</string>

@@ -51,12 +51,16 @@ class ColorBarMarkerView(context: Context, layoutResource: Int) : MarkerView(con
         if (is24) {
             time = if (eX.toInt() + 7 < 10) "0" + (eX.toInt() + 7) + ":00  " else (eX.toInt() + 7).toString() + ":00 "
         } else {
-            if (eX <= 4) {
-                time = (eX.toInt() + 7).toString() + "am "
-            } else if (eX == 5f) {
-                time = "12pm "
-            } else {
-                time = (eX.toInt() - 5).toString() + "pm "
+            time = when {
+                eX <= 4 -> {
+                    (eX.toInt() + 7).toString() + "am "
+                }
+                eX == 5f -> {
+                    "12pm "
+                }
+                else -> {
+                    (eX.toInt() - 5).toString() + "pm "
+                }
             }
         }
 

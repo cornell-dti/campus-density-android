@@ -1,5 +1,7 @@
 package org.cornelldti.density.density.util
 
+import android.text.format.DateFormat
+import org.cornelldti.density.density.DensityApplication
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -19,6 +21,18 @@ object FluxUtil {
             else -> ""
         }
 
+    val dayInt: Int
+        get() = when (dayString) {
+            "SUN" -> 0
+            "MON" -> 1
+            "TUE" -> 2
+            "WED" -> 3
+            "THU" -> 4
+            "FRI" -> 5
+            "SAT" -> 6
+            else -> -1
+        }
+
     fun dayFullString(day: String): String = when (day) {
         "MON" -> "Monday"
         "TUE" -> "Tuesday"
@@ -31,11 +45,10 @@ object FluxUtil {
     }
 
     /**
-     * getDate(day) provides the date for historical endpoint request.
+     * This function provides the date in object format for historical endpoint request.
      */
-    fun getDate(day: String): String {
+    fun getDateObject(day: String): Date {
         val current = Calendar.getInstance()
-        val format = SimpleDateFormat("MM-dd-yy", Locale.US)
         val checkFormat = SimpleDateFormat("E", Locale.US)
 
         var dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
@@ -43,8 +56,22 @@ object FluxUtil {
             current.add(Calendar.DAY_OF_MONTH, 1)
             dayCheck = checkFormat.format(current.time).toUpperCase(Locale.US)
         }
+        return current.time
+    }
 
-        return format.format(current.time)
+    fun getCurrentDateObject(): Date {
+        val current = Calendar.getInstance()
+        return current.time
+    }
+
+
+    /**
+     * This function provides the date in string format for historical and operating hours
+     * endpoint request.
+     */
+    fun convertDateObjectToString(date: Date): String {
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        return format.format(date)
     }
 
     fun getDayDifference(currentDay: String, tappedDay: String): Int {
@@ -57,19 +84,40 @@ object FluxUtil {
         return count
     }
 
-    fun getDateDaysAfter(daysAfter: Int): String {
+    /**
+     * @param daysAfter days after today to fetch date string for
+     * @return Date String for the date that is [daysAfter] days after the current date
+     */
+    fun getDateStringDaysAfter(daysAfter: Int): String {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_YEAR, daysAfter)
-        val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        var format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         return format.format(calendar.time)
     }
 
+    fun getDateDaysAfter(daysAfter: Int): Date {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_YEAR, daysAfter)
+        return calendar.time
+    }
+
     /**
-     * getCurrentDate() provides the current date for the menu endpoint request.
+     * This function provides the current date for the menu endpoint request.
      */
     fun getCurrentDate(): String {
         val current = Calendar.getInstance()
-        val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        var format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         return format.format(current.time)
+    }
+
+    fun parseTime(timestamp: Long): String {
+        val timeZone = Calendar.getInstance().timeZone
+        var format = SimpleDateFormat("h:mma", Locale.US)
+        if (DateFormat.is24HourFormat(DensityApplication.getAppContext())) {
+            format = SimpleDateFormat("HH:mm", Locale.US)
+        }
+        format.timeZone = timeZone
+
+        return format.format(Date(timestamp * 1000)).toLowerCase(Locale.US)
     }
 }

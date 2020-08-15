@@ -20,7 +20,9 @@
             app:layout_scrollFlags="scroll|enterAlways|snap"
             app:navigationContentDescription="@string/back_button_desc"
             app:navigationIcon="@drawable/ic_arrow_back"
+            app:subtitle=""
             app:title="facilityName" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -32,191 +34,207 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/now_header"
+                style="@style/DTI.CardHeader"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/now"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/current_view"
                 style="@style/MyCardView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="8dp"
                 android:clickable="false"
                 android:focusable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/now_header">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/availability_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/mid_grey"
                     android:orientation="horizontal"
                     android:padding="16dp">
 
                     <TextView
-                        android:id="@+id/now_header"
-                        style="@style/DTI.CardHeader"
-                        android:layout_width="0dp"
+                        android:id="@+id/availability_num"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/now"
-                        app:layout_constraintEnd_toStartOf="@id/currentOccupancy"
+                        android:textColor="@android:color/white"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toStartOf="@id/accessibility_icon"
+                        app:layout_constraintHorizontal_chainStyle="packed"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/currentOccupancy"
-                        style="@style/DTI.Subtitle2"
-                        android:layout_width="wrap_content"
+                    <ImageView
+                        android:id="@+id/accessibility_icon"
+                        android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:gravity="end"
-                        android:textSize="14sp"
-                        app:layout_constraintBottom_toBottomOf="@id/now_header"
+                        android:contentDescription="@string/availability_icon"
+                        android:paddingVertical="3dp"
+                        android:src="@drawable/ic_baseline_accessibility_new_24"
+                        android:tint="@android:color/white"
+                        app:layout_constraintBottom_toBottomOf="@+id/availability_num"
+                        app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/now_header" />
+                        app:layout_constraintStart_toEndOf="@id/availability_num"
+                        app:layout_constraintTop_toTopOf="@+id/availability_num" />
 
-                    <ImageView
-                        android:id="@+id/firstPill"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:id="@+id/max_capacity"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginBottom="4dp"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@string/first_pill_content"
-                        android:src="@drawable/rounded_box"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/secondPill"
+                        android:textColor="@android:color/white"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/now_header" />
-
-                    <ImageView
-                        android:id="@+id/secondPill"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@string/second_pill_content"
-                        android:src="@drawable/rounded_box"
-                        app:layout_constraintEnd_toStartOf="@id/thirdPill"
-                        app:layout_constraintStart_toEndOf="@id/firstPill"
-                        app:layout_constraintTop_toTopOf="@id/firstPill" />
-
-                    <ImageView
-                        android:id="@+id/thirdPill"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@string/third_pill_content"
-                        android:src="@drawable/rounded_box"
-                        app:layout_constraintEnd_toStartOf="@id/fourthPill"
-                        app:layout_constraintStart_toEndOf="@id/secondPill"
-                        app:layout_constraintTop_toTopOf="@id/secondPill" />
-
-                    <ImageView
-                        android:id="@+id/fourthPill"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@string/fourth_pill_content"
-                        android:src="@drawable/rounded_box"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/thirdPill"
-                        app:layout_constraintTop_toTopOf="@id/thirdPill" />
+                        app:layout_constraintTop_toBottomOf="@id/availability_num" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
 
             <TextView
-                android:id="@+id/accuracy"
+                android:id="@+id/lastUpdated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:gravity="end"
-                android:text="@string/accuracy"
+                android:text="@string/last_updated"
+                android:textColor="#CDCDCD"
                 android:textSize="12sp"
-                android:textStyle="italic"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/current_view" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/current_view" />
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/dayChips"
+            <TextView
+                android:id="@+id/accuracy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:text="@string/accuracy"
+                android:textColorLink="#4A90E2"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/lastUpdated" />
+
+            <RadioGroup
+                android:id="@+id/dayChips"
+                android:layout_width="0dp"
+                android:layout_height="75dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="16dp"
-                app:chipSpacingHorizontal="0dp"
+                android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/accuracy"
                 app:singleLine="true"
                 app:singleSelection="true">
 
-                <com.google.android.material.chip.Chip
+                <RadioButton
                     android:id="@+id/sun"
-                    style="@style/OutlineChipStyle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/day_chip_background"
+                    android:button="@null"
                     android:checked="true"
-                    android:text="@string/Su" />
+                    android:text="@string/Su"
+                    android:textAlignment="center" />
 
-                <com.google.android.material.chip.Chip
+                <RadioButton
                     android:id="@+id/mon"
-                    style="@style/OutlineChipStyle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:text="@string/M" />
+                    android:layout_weight="1"
+                    android:background="@drawable/day_chip_background"
+                    android:button="@null"
+                    android:text="@string/M"
+                    android:textAlignment="center" />
 
-                <com.google.android.material.chip.Chip
+                <RadioButton
                     android:id="@+id/tue"
-                    style="@style/OutlineChipStyle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:text="@string/T" />
+                    android:layout_weight="1"
+                    android:background="@drawable/day_chip_background"
+                    android:button="@null"
+                    android:text="@string/T"
+                    android:textAlignment="center" />
 
-                <com.google.android.material.chip.Chip
+                <RadioButton
                     android:id="@+id/wed"
-                    style="@style/OutlineChipStyle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:text="@string/W" />
+                    android:layout_weight="1"
+                    android:background="@drawable/day_chip_background"
+                    android:button="@null"
+                    android:text="@string/W"
+                    android:textAlignment="center" />
 
-                <com.google.android.material.chip.Chip
+                <RadioButton
                     android:id="@+id/thu"
-                    style="@style/OutlineChipStyle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:text="@string/Th" />
+                    android:layout_weight="1"
+                    android:background="@drawable/day_chip_background"
+                    android:button="@null"
+                    android:text="@string/Th"
+                    android:textAlignment="center" />
 
-                <com.google.android.material.chip.Chip
+                <RadioButton
                     android:id="@+id/fri"
-                    style="@style/OutlineChipStyle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:text="@string/F" />
+                    android:layout_weight="1"
+                    android:background="@drawable/day_chip_background"
+                    android:button="@null"
+                    android:text="@string/F"
+                    android:textAlignment="center" />
 
-                <com.google.android.material.chip.Chip
+                <RadioButton
                     android:id="@+id/sat"
-                    style="@style/OutlineChipStyle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:text="@string/S" />
-            </com.google.android.material.chip.ChipGroup>
+                    android:layout_weight="1"
+                    android:background="@drawable/day_chip_background"
+                    android:button="@null"
+                    android:text="@string/S"
+                    android:textAlignment="center" />
+            </RadioGroup>
+
+
+            <TextView
+                android:id="@+id/popular_times"
+                style="@style/DTI.CardHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/popular"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dayChips" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/historicalDataCard"
                 style="@style/MyCardView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                app:layout_constraintBottom_toTopOf="@id/menuCard"
+                android:layout_marginTop="8dp"
+                android:clickable="false"
+                android:focusable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dayChips">
+                app:layout_constraintTop_toBottomOf="@id/popular_times">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -227,16 +245,6 @@
                     android:padding="8dp"
                     android:paddingBottom="16dp">
 
-                    <TextView
-                        android:id="@+id/popular_times"
-                        style="@style/DTI.CardHeader"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:text="@string/popular"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
                     <com.github.mikephil.charting.charts.BarChart
                         android:id="@+id/densityChart"
                         android:layout_width="match_parent"
@@ -246,49 +254,118 @@
                         app:layout_constraintBottom_toTopOf="@+id/todayHours"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/popular_times" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/todayHours"
                         style="@style/DTI.Subtitle2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
+                        android:layout_marginTop="8dp"
                         android:gravity="center"
-                        android:text=""
-                        app:layout_constraintBottom_toTopOf="@id/facilityHours"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toTopOf="@id/todayDate"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/densityChart" />
 
                     <TextView
-                        android:id="@+id/facilityHours"
+                        android:id="@+id/todayDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="1dp"
+                        android:layout_marginBottom="8dp"
                         android:gravity="center"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:textColor="@color/dark_grey"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toTopOf="@id/facilityHours"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/todayHours" />
 
+                    <TextView
+                        android:id="@+id/facilityHours"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingBottom="8dp"
+                        android:textColor="@color/dark_grey"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/todayDate" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/menu_header"
+                style="@style/DTI.CardHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/menu"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/historicalDataCard" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/menuChips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                app:chipSpacingHorizontal="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/menu_header"
+                app:singleLine="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/breakfast"
+                    style="@style/BaseChipStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/breakfast" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/brunch"
+                    style="@style/BaseChipStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/brunch" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/lunch"
+                    style="@style/BaseChipStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/lunch" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/dinner"
+                    style="@style/BaseChipStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/dinner" />
+
+            </com.google.android.material.chip.ChipGroup>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/menuCard"
                 style="@style/MyCardView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="8dp"
+                android:clickable="false"
+                android:focusable="false"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/menuChips">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -296,75 +373,19 @@
                     android:orientation="vertical"
                     android:padding="8dp">
 
-                    <TextView
-                        android:id="@+id/menu"
-                        style="@style/DTI.CardHeader"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:text="@string/menu"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/menuChips"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:chipSpacingHorizontal="0dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/menu"
-                        app:singleLine="true"
-                        app:singleSelection="true">
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/breakfast"
-                            style="@style/BaseChipStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/breakfast" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/brunch"
-                            style="@style/BaseChipStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/brunch" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/lunch"
-                            style="@style/BaseChipStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/lunch" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/lite_lunch"
-                            style="@style/BaseChipStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/lite_lunch" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/dinner"
-                            style="@style/BaseChipStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/dinner" />
-
-                    </com.google.android.material.chip.ChipGroup>
-
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/menuItemsList"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clipChildren="false"
                         android:clipToPadding="false"
-                        android:padding="8dp"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/menuChips">
+                        app:layout_constraintTop_toTopOf="parent">
 
                     </androidx.recyclerview.widget.RecyclerView>
                 </androidx.constraintlayout.widget.ConstraintLayout>

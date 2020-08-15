@@ -5,7 +5,6 @@ data class MenuClass(
         val breakfastItems: List<MenuItem>,
         val brunchItems: List<MenuItem>,
         val lunchItems: List<MenuItem>,
-        val liteLunchItems: List<MenuItem>,
         val dinnerItems: List<MenuItem>
 )
 

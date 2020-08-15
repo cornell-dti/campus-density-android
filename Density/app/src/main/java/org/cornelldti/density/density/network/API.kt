@@ -9,7 +9,6 @@ import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.data.MenuClass
-import org.cornelldti.density.density.util.FluxUtil
 import org.json.JSONArray
 import org.json.JSONException
 
@@ -118,16 +117,8 @@ class API(context: Context) {
     fun fetchHistoricalJSON(
             day: String,
             facilityId: String,
-            fetchOperatingHoursOnResponse: (operatingHours: List<String>) -> Unit,
             fetchHistoricalJSONOnResponse: (densities: List<Double>) -> Unit
     ) {
-        val operatingHoursRequest = getRequest(
-                url = "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=${FluxUtil.getDate(day)}&endDate=${FluxUtil.getDate(day)}",
-                onResponse = { response ->
-                    fetchOperatingHoursOnResponse(JsonParser.parseOperatingHours(response))
-                },
-                onError = { error -> Log.d("ERROR MESSAGE", error.toString()) }
-        )
         val historicalDataRequest = getRequest(
                 url = "$HISTORICAL_DATA_ENDPOINT?id=$facilityId",
                 onResponse = { response ->
@@ -135,7 +126,6 @@ class API(context: Context) {
                 },
                 onError = { error -> Log.d("ERROR MESSAGE", error.toString()) }
         )
-        queue.add(operatingHoursRequest)
         queue.add(historicalDataRequest)
     }
 
@@ -163,14 +153,32 @@ class API(context: Context) {
     ) {
         val menuRequest = getRequest(
                 url = "$MENU_DATA_ENDPOINT?facility=$facilityId&date=$day",
-                onResponse = {response ->
+                onResponse = { response ->
                     fetchMenuJSONOnResponse(JsonParser.parseMenu(response, day))
                 },
-                onError = {
-                    error -> Log.d("Error Fetching Menu", error.networkResponse.toString())
+                onError = { error ->
+                    Log.d("Error Fetching Menu", error.networkResponse.toString())
                 }
         )
         queue.add(menuRequest)
+    }
+
+    /**
+     * This function applies the onResponse functions passed in as params on the response of the api request.
+     */
+    fun facilityHours(facilityId: String, startDate: String, endDate: String, facilityHoursTimeStampsOnResponse: (List<Pair<Long, Long>>) -> Unit,
+                      facilityHoursStringsOnResponse: (List<String>) -> Unit) {
+        val facilityHoursRequest = getRequest(
+                url = "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=$startDate&endDate=$endDate",
+                onResponse = { response ->
+                    facilityHoursTimeStampsOnResponse(JsonParser.parseOperatingHoursToTimestampList(response))
+                    facilityHoursStringsOnResponse(JsonParser.parseOperatingHoursToStringList(response, startDate))
+                },
+                onError = { error ->
+                    Log.d("Error fetching hours", error.networkResponse.toString());
+                }
+        )
+        queue.add(facilityHoursRequest)
     }
 
     private fun getRequest(
