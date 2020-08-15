@@ -212,6 +212,117 @@
                     android:textAlignment="center" />
             </RadioGroup>
 
+            <TextView
+                android:id="@+id/menu_header"
+                style="@style/DTI.CardHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/menu"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dayChips" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/menuChips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                app:chipSpacingHorizontal="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/menu_header"
+                app:singleLine="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/breakfast"
+                    style="@style/BaseChipStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/breakfast" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/brunch"
+                    style="@style/BaseChipStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/brunch" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/lunch"
+                    style="@style/BaseChipStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/lunch" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/dinner"
+                    style="@style/BaseChipStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/dinner" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/menuCard"
+                style="@style/MyCardView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:clickable="false"
+                android:focusable="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/menuChips">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/menuItemsList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                    </androidx.recyclerview.widget.RecyclerView>
+
+                    <TextView
+                        android:id="@+id/defaultMenuText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:text="@string/menu_default_text" />
+
+                    <ProgressBar
+                        android:id="@+id/menuProgressBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
 
             <TextView
                 android:id="@+id/popular_times"
@@ -221,8 +332,9 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/popular"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dayChips" />
+                app:layout_constraintTop_toBottomOf="@id/menuCard" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/historicalDataCard"
@@ -232,6 +344,7 @@
                 android:layout_marginTop="8dp"
                 android:clickable="false"
                 android:focusable="false"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/popular_times">
@@ -295,99 +408,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/todayDate" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <TextView
-                android:id="@+id/menu_header"
-                style="@style/DTI.CardHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/menu"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/historicalDataCard" />
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/menuChips"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:visibility="gone"
-                app:chipSpacingHorizontal="0dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/menu_header"
-                app:singleLine="true"
-                app:singleSelection="true">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/breakfast"
-                    style="@style/BaseChipStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/breakfast" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/brunch"
-                    style="@style/BaseChipStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/brunch" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/lunch"
-                    style="@style/BaseChipStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/lunch" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/dinner"
-                    style="@style/BaseChipStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/dinner" />
-
-            </com.google.android.material.chip.ChipGroup>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/menuCard"
-                style="@style/MyCardView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:clickable="false"
-                android:focusable="false"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/menuChips">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:padding="8dp">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/menuItemsList"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clipChildren="false"
-                        android:clipToPadding="false"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                    </androidx.recyclerview.widget.RecyclerView>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>

@@ -433,17 +433,20 @@ class FacilityInfoPage : BaseActivity() {
                 day = day,
                 facilityId = facilityId
         ) { menu ->
+            menuProgressBar.isGone = true
             if (menu?.breakfastItems?.size == 0
                     && menu.brunchItems.isEmpty()
                     && menu.lunchItems.isEmpty()
                     && menu.dinnerItems.isEmpty()) {
-                menu_header.isGone = true
+//                menu_header.isGone = true
+//                menuCard.isGone = true
                 menuChips.isGone = true
-                menuCard.isGone = true
+                defaultMenuText.isVisible = true
             } else {
                 menu_header.isVisible = true
                 menuChips.isVisible = true
                 menuCard.isVisible = true
+                defaultMenuText.isGone = true
                 breakfast.isGone = !(menu?.breakfastItems?.isNotEmpty() ?: false)
                 brunch.isGone = !(menu?.brunchItems?.isNotEmpty() ?: false)
                 lunch.isGone = !(menu?.lunchItems?.isNotEmpty() ?: false)
