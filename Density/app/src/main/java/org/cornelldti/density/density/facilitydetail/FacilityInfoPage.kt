@@ -408,7 +408,7 @@ class FacilityInfoPage : BaseActivity() {
         todayDate.text = todayDateFormat.format(date)
         val todayDayDateFormat = SimpleDateFormat("EEE, MMM dd", Locale.US)
         todayDayDate.text = todayDayDateFormat.format(date)
-        if (opHoursStrings.isEmpty()) facilityHours.text = "No operating hours available."
+        if (opHoursStrings.isEmpty()) facilityHours.text = getString(R.string.no_operating_hours)
         for (operatingSegment in opHoursStrings) {
             val allHours = facilityHours.text.toString() + operatingSegment + if (opHoursStrings.indexOf(operatingSegment) == opHoursStrings.size - 1) "" else "\n"
             facilityHours.text = allHours

@@ -91,7 +91,7 @@
     <string name="availability_range">%d - %d</string>
     <string name="max_capacity">Max Capacity: %d</string>
     <string name="menu_default_text">No menu items available.</string>
-    <string name="day_date">%s, %s %s</string>
+    <string name="no_operating_hours">No operating hours available.</string>
 
     <!-- failure page strings -->
     <string name="sorry_failure">Sorry, there\'s an error loading the data.</string>
