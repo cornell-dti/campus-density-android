@@ -404,8 +404,11 @@ class FacilityInfoPage : BaseActivity() {
         Log.d("SET", "OPERATING")
         val hourTitle = FluxUtil.dayFullString(day)
         todayHours.text = hourTitle
-        todayDate.text = months[date.month] + " " + date.date
-        facilityHours.text = ""
+        val todayDateFormat = SimpleDateFormat("MMMMM dd", Locale.US)
+        todayDate.text = todayDateFormat.format(date)
+        val todayDayDateFormat = SimpleDateFormat("EEE, MMM dd", Locale.US)
+        todayDayDate.text = todayDayDateFormat.format(date)
+        if (opHoursStrings.isEmpty()) facilityHours.text = "No operating hours available."
         for (operatingSegment in opHoursStrings) {
             val allHours = facilityHours.text.toString() + operatingSegment + if (opHoursStrings.indexOf(operatingSegment) == opHoursStrings.size - 1) "" else "\n"
             facilityHours.text = allHours
