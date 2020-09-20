@@ -212,90 +212,53 @@
                     android:textAlignment="center" />
             </RadioGroup>
 
-
             <TextView
-                android:id="@+id/popular_times"
+                android:id="@+id/operatingHoursHeader"
                 style="@style/DTI.CardHeader"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:text="@string/popular"
+                android:text="Operating Hours"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/dayChips" />
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/historicalDataCard"
+                android:id="@+id/operatingHoursCard"
                 style="@style/MyCardView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:clickable="false"
-                android:focusable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/popular_times">
+                app:layout_constraintTop_toBottomOf="@id/operatingHoursHeader">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
                     android:orientation="vertical"
-                    android:padding="8dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
                     android:paddingBottom="16dp">
 
-                    <com.github.mikephil.charting.charts.BarChart
-                        android:id="@+id/densityChart"
-                        android:layout_width="match_parent"
-                        android:layout_height="275dp"
-                        android:layout_marginTop="12dp"
-                        android:layout_marginBottom="4dp"
-                        app:layout_constraintBottom_toTopOf="@+id/todayHours"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
                     <TextView
-                        android:id="@+id/todayHours"
-                        style="@style/DTI.Subtitle2"
+                        android:id="@+id/todayDayDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toTopOf="@id/todayDate"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/densityChart" />
-
-                    <TextView
-                        android:id="@+id/todayDate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:gravity="center"
-                        android:textColor="@color/dark_grey"
-                        android:textSize="14sp"
-                        app:layout_constraintBottom_toTopOf="@id/facilityHours"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/todayHours" />
+                        android:layout_marginTop="15dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="17sp" />
 
                     <TextView
                         android:id="@+id/facilityHours"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:paddingBottom="8dp"
+                        android:layout_marginTop="2dp"
+                        android:lineSpacingExtra="2dp"
                         android:textColor="@color/dark_grey"
-                        android:textSize="14sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/todayDate" />
+                        android:textSize="14sp" />
+                </LinearLayout>
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
 
@@ -307,9 +270,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/menu"
-                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/historicalDataCard" />
+                app:layout_constraintTop_toBottomOf="@id/operatingHoursCard" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/menuChips"
@@ -362,7 +324,6 @@
                 android:layout_marginTop="8dp"
                 android:clickable="false"
                 android:focusable="false"
-                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/menuChips">
@@ -388,6 +349,118 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                     </androidx.recyclerview.widget.RecyclerView>
+
+                    <TextView
+                        android:id="@+id/defaultMenuText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/menu_default_text"
+                        android:textColor="@color/dark_grey"
+                        android:textSize="14sp"
+                        android:padding="8dp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ProgressBar
+                        android:id="@+id/menuProgressBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/popular_times"
+                style="@style/DTI.CardHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/popular"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/menuCard" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/historicalDataCard"
+                style="@style/MyCardView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/popular_times">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:padding="8dp"
+                    android:paddingBottom="16dp">
+
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/densityChart"
+                        android:layout_width="match_parent"
+                        android:layout_height="275dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="4dp"
+                        app:layout_constraintBottom_toTopOf="@+id/todayHours"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/todayHours"
+                        style="@style/DTI.Subtitle2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toTopOf="@id/todayDate"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/densityChart" />
+
+                    <TextView
+                        android:id="@+id/todayDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center"
+                        android:textColor="@color/dark_grey"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/todayHours" />
+                    <!--                    app:layout_constraintBottom_toTopOf="@id/facilityHours"-->
+
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/facilityHours"-->
+                    <!--                        android:layout_width="match_parent"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:gravity="center"-->
+                    <!--                        android:paddingBottom="8dp"-->
+                    <!--                        android:textColor="@color/dark_grey"-->
+                    <!--                        android:textSize="14sp"-->
+                    <!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+                    <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--                        app:layout_constraintStart_toStartOf="parent"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@id/todayDate" />-->
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>

@@ -404,8 +404,12 @@ class FacilityInfoPage : BaseActivity() {
         Log.d("SET", "OPERATING")
         val hourTitle = FluxUtil.dayFullString(day)
         todayHours.text = hourTitle
-        todayDate.text = months[date.month] + " " + date.date
-        facilityHours.text = ""
+        val todayDateFormat = SimpleDateFormat("MMMMM dd", Locale.US)
+        todayDate.text = todayDateFormat.format(date)
+        val todayDayDateFormat = SimpleDateFormat("EEE, MMM dd", Locale.US)
+        todayDayDate.text = todayDayDateFormat.format(date)
+        if (opHoursStrings.isEmpty()) facilityHours.text = getString(R.string.no_operating_hours)
+        else facilityHours.text = ""
         for (operatingSegment in opHoursStrings) {
             val allHours = facilityHours.text.toString() + operatingSegment + if (opHoursStrings.indexOf(operatingSegment) == opHoursStrings.size - 1) "" else "\n"
             facilityHours.text = allHours
@@ -433,17 +437,20 @@ class FacilityInfoPage : BaseActivity() {
                 day = day,
                 facilityId = facilityId
         ) { menu ->
+            menuProgressBar.isGone = true
             if (menu?.breakfastItems?.size == 0
                     && menu.brunchItems.isEmpty()
                     && menu.lunchItems.isEmpty()
                     && menu.dinnerItems.isEmpty()) {
-                menu_header.isGone = true
+//                menu_header.isGone = true
+//                menuCard.isGone = true
                 menuChips.isGone = true
-                menuCard.isGone = true
+                defaultMenuText.isVisible = true
             } else {
                 menu_header.isVisible = true
                 menuChips.isVisible = true
                 menuCard.isVisible = true
+                defaultMenuText.isGone = true
                 breakfast.isGone = !(menu?.breakfastItems?.isNotEmpty() ?: false)
                 brunch.isGone = !(menu?.brunchItems?.isNotEmpty() ?: false)
                 lunch.isGone = !(menu?.lunchItems?.isNotEmpty() ?: false)
