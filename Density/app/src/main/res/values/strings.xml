@@ -93,6 +93,10 @@
     <string name="menu_default_text">No menu items available.</string>
     <string name="no_operating_hours">No operating hours available.</string>
 
+    <!-- facilities page strings -->
+    <string name="covid_policy">Face Coverings Required at all dining halls.</string>
+    <string name="covid_policy_button">View Dining Policies</string>
+
     <!-- failure page strings -->
     <string name="sorry_failure">Sorry, there\'s an error loading the data.</string>
     <string name="check_internet">Please check your internet connection.</string>
