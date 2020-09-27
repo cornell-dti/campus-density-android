@@ -56,7 +56,7 @@ class FacilitiesActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.facilities_activity)
 
-        covidPolicyButton.setBackgroundColor(Color.parseColor("#979797"))
+        covidPolicyButton.setBackgroundColor(resources.getColor(R.color.dark_grey))
         spinner = findViewById(R.id.progressBar)
 
         setOnRefreshListener()
