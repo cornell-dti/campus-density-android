@@ -99,6 +99,61 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/covidPolicyCard"
+                    style="@style/MyCardView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:id="@+id/masks_required_img"
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/masks_required"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/faceCoveringText"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="25dp"
+                            android:text="@string/covid_policy"
+                            android:textColor="#5C5C5C"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/masks_required_img"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <Button
+                            android:id="@+id/covidPolicyButton"
+                            style="@style/Widget.MaterialComponents.Button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@color/dark_grey"
+                            android:onClick="openCovidPolicy"
+                            android:text="@string/covid_policy_button"
+                            android:textColor="@android:color/white"
+                            android:textSize="12sp"
+                            android:layout_marginTop="16dp"
+                            app:layout_constraintStart_toStartOf="@id/faceCoveringText"
+                            app:layout_constraintTop_toBottomOf="@+id/faceCoveringText"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/facilities"
                     android:layout_width="match_parent"

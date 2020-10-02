@@ -1,6 +1,8 @@
 package org.cornelldti.density.density.facilities
 
 import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -54,6 +56,7 @@ class FacilitiesActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.facilities_activity)
 
+        covidPolicyButton.setBackgroundColor(resources.getColor(R.color.dark_grey))
         spinner = findViewById(R.id.progressBar)
 
         setOnRefreshListener()
@@ -291,5 +294,10 @@ class FacilitiesActivity : BaseActivity() {
                 -1 -> all!!.isChecked = true
             }
         }
+    }
+
+    fun openCovidPolicy(v: View?) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://scl.cornell.edu/news-events/news/guide-cornell-dining-fall-2020"))
+        startActivity(browserIntent)
     }
 }
