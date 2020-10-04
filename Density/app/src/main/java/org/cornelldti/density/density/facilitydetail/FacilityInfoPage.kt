@@ -30,6 +30,7 @@ import org.cornelldti.density.density.colorbarutil.ColorBarDataSet
 import org.cornelldti.density.density.colorbarutil.ColorBarMarkerView
 import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.data.MenuClass
+import org.cornelldti.density.density.data.OperatingHoursClass
 import org.cornelldti.density.density.util.FluxUtil
 import org.cornelldti.density.density.util.ValueFormatter
 import java.text.SimpleDateFormat
@@ -59,7 +60,7 @@ class FacilityInfoPage : BaseActivity() {
     private var opHoursStrings: List<String> = ArrayList() // KEEPS TRACK OF OPERATING HOURS STRINGS FOR FACILITY
     // USED FOR DISPLAYING OPERATING HOURS OF FACILITY AT SELECTED DAY
 
-    private var opHoursTimestamps: List<Pair<Long, Long>> = ArrayList() // KEEPS TRACK OF OPERATING HOURS TIMESTAMPS FOR FACILITY,
+    private lateinit var opHoursTimestamps: OperatingHoursClass // KEEPS TRACK OF OPERATING HOURS TIMESTAMPS FOR FACILITY,
     // USED FOR CHECKING WHETHER OPEN/WHEN IT WILL OPEN
 
     private var densities: List<Double> = ArrayList() // KEEPS TRACK OF HISTORICAL DENSITIES
@@ -319,32 +320,48 @@ class FacilityInfoPage : BaseActivity() {
         var opensNext: Long = -1L
 
         val currentTime = System.currentTimeMillis() / 1000L
+        val todayOperatingHours = opHoursTimestamps.todayOperatingHours
+        val tomorrowFirstOpHours = opHoursTimestamps.tomorrowFirstOpHours
 
-        Log.d("timestamps", opHoursTimestamps.toString())
-        if (opHoursTimestamps.size >= 2) {
+        if(todayOperatingHours.isNotEmpty()) {
             // Current Time before first time slot of day
-            if (currentTime < opHoursTimestamps[0].first) {
-                opensNext = opHoursTimestamps[0].first
+            if (currentTime < todayOperatingHours[0].first) {
+                opensNext = todayOperatingHours[0].first
                 openUntil = -1L
             }
-            // Current Time is after the last time slot of day
-            else if (currentTime >= opHoursTimestamps[opHoursTimestamps.size - 2].second) {
-                opensNext = opHoursTimestamps[opHoursTimestamps.size - 1].first
+            // Current Time is after the last time slot of day and there is hours tomorrow
+            else if (tomorrowFirstOpHours.first != -1L && tomorrowFirstOpHours.second != -1L
+                    && currentTime >= todayOperatingHours[todayOperatingHours.size - 1].second) {
+                opensNext = tomorrowFirstOpHours.first
                 openUntil = -1L
-            } else {
-                for (i in 0 until opHoursTimestamps.size - 1) {
+            }
+            // Current Time is after the last time slot of day and there are no hours tomorrow
+            else if(tomorrowFirstOpHours.first == -1L && tomorrowFirstOpHours.second == -1L &&
+                    currentTime >= todayOperatingHours[todayOperatingHours.size - 1].second) {
+                opensNext = -1L
+                openUntil = -1L
+            }
+            else {
+                for (i in 0 until todayOperatingHours.size) {
                     // Current Time falls into one of the open time slots
-                    if (currentTime >= opHoursTimestamps[i].first && currentTime < opHoursTimestamps[i].second) {
+                    if (currentTime >= todayOperatingHours[i].first && currentTime < todayOperatingHours[i].second) {
                         isOpen = true
-                        openUntil = opHoursTimestamps[i].second
+                        openUntil = todayOperatingHours[i].second
                         opensNext = -1L
                     }
                     // Current Time is between two time slots in day
-                    else if (i > 0 && currentTime >= opHoursTimestamps[i - 1].second && currentTime < opHoursTimestamps[i].first) {
-                        opensNext = opHoursTimestamps[i].first
+                    else if (i > 0 && currentTime >= todayOperatingHours[i - 1].second && currentTime < todayOperatingHours[i].first) {
+                        opensNext = todayOperatingHours[i].first
                         openUntil = -1L
                     }
                 }
+            }
+        }
+        // NO OP HOURS TODAY, CHECK TOMORROW!
+        else{
+            // This is the case that there are hours tomorrow
+            if(tomorrowFirstOpHours.first != -1L && tomorrowFirstOpHours.second != -1L) {
+                opensNext = tomorrowFirstOpHours.first
             }
         }
         // SET TOOLBAR TEXT ACCORDINGLY

@@ -115,30 +115,30 @@ object JsonParser {
      * This is returned in format of a list of pairs of start and end timestamps.
      * Sample Response: [(1000000, 1200000), (1300000, 1500000), (1600000, 1800000)]
      */
-    fun parseOperatingHoursToTimestampList(jsonArray: JSONArray): List<Pair<Long, Long>> {
-        val operatingHours = arrayListOf<Pair<Long, Long>>()
+    fun parseOperatingHoursToTimestampList(jsonArray: JSONArray): OperatingHoursClass {
+        val todayOperatingHours = arrayListOf<Pair<Long, Long>>()
+        var tomorrowFirstOpHours = Pair(-1L, -1L)
         try {
             val hours = jsonArray.getJSONObject(0).getJSONArray("hours")
             val currDate = FluxUtil.getCurrentDate()
-            var firstSlotNextDayAdded = false
             for (i in 0 until hours.length()) {
                 if (hours.getJSONObject(i).getString("date") == currDate) {
                     val segment = hours.getJSONObject(i).getJSONObject("dailyHours")
                     val start = segment.getLong("startTimestamp")
                     val end = segment.getLong("endTimestamp")
-                    operatingHours.add(Pair(start, end))
-                } else if (!firstSlotNextDayAdded) {
+                    todayOperatingHours.add(Pair(start, end))
+                } else {
                     val segment = hours.getJSONObject(i).getJSONObject("dailyHours")
                     val start = segment.getLong("startTimestamp")
                     val end = segment.getLong("endTimestamp")
-                    operatingHours.add(Pair(start, end))
+                    tomorrowFirstOpHours = Pair(start, end)
                     break
                 }
             }
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-        return operatingHours
+        return OperatingHoursClass(todayOperatingHours, tomorrowFirstOpHours)
     }
 
     fun parseHistorical(jsonArray: JSONArray, day: String): List<Double> {
