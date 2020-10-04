@@ -38,6 +38,23 @@ _Screenshots showing major parts of app_
 ## Contributors
 ​
 **School Year**
+### **2019-2020**
+
+ * **Yvonne Chan** - Product Manager
+ * **Ashneel Das** - Technical Project Manager
+ 
+ * **Benjamin Shen** - Backend Developer
+ * **Ansh Godha** - iOS Developer
+ * **Mihikaa Goenka** - iOS Developer
+ * **Changyuan Lin** - iOS Developer
+ * **Kaushik Ravikumar** - Android Developer
+ * **Andrew Gao** - Android Developer
+ 
+ * **Kaitlyn Son** - Designer
+ * **Chelsea Wang** - Designer
+ * **Katherine Go** - Designer
+ * **Isabella Zhou** - Designer
+
 ### **2018-2019**
 
  * **Neha Rao** - Product Manager
