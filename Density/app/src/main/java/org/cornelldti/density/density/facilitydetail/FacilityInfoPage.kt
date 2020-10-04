@@ -403,7 +403,7 @@ class FacilityInfoPage : BaseActivity() {
                 dayAvailableMenus.add("dinner")
             }
 
-            if (menu?.breakfastItems?.size == 0
+            if (menu?.breakfastItems?.isEmpty() == true
                     && menu.brunchItems.isEmpty()
                     && menu.lunchItems.isEmpty()
                     && menu.dinnerItems.isEmpty()) {
@@ -425,12 +425,9 @@ class FacilityInfoPage : BaseActivity() {
 
                 var selectedMealIndex = availableMenus.indexOf(lastSelectedMeal)
 
-                if (selectedMealIndex == -1) {
-                    menuTabs.selectTab(menuTabs.getTabAt(0))
+                if (selectedMealIndex == -1)
                     selectedMealIndex = 0
-                } else {
-                    menuTabs.selectTab(menuTabs.getTabAt(selectedMealIndex))
-                }
+                menuTabs.selectTab(menuTabs.getTabAt(selectedMealIndex))
                 showMenu(menu, availableMenus[selectedMealIndex])
             }
         }
