@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.format.DateFormat
-import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.widget.RadioButton
@@ -46,8 +45,6 @@ class FacilityInfoPage : BaseActivity() {
             "July", "August", "September", "October", "November", "December")
 
     private val maxCapacity: Int = 100
-
-    private lateinit var feedback: TextView
 
     /**
      * Ordered list of available meals (e.g., ["breakfast", "lunch", "dinner"]
@@ -91,9 +88,6 @@ class FacilityInfoPage : BaseActivity() {
 
         topBar.title = facilityClass!!.name
         topBar.setNavigationOnClickListener { onBackPressed() }
-
-        feedback = findViewById(R.id.accuracy)
-        feedback.movementMethod = LinkMovementMethod.getInstance()
 
         setAvailability()
         setToday(FluxUtil.dayString)
