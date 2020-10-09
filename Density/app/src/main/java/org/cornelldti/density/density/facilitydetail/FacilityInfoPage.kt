@@ -21,6 +21,7 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.facility_info_page.*
 import org.cornelldti.density.density.BaseActivity
 import org.cornelldti.density.density.DensityApplication
@@ -39,7 +40,7 @@ import kotlin.collections.ArrayList
 
 class FacilityInfoPage : BaseActivity() {
 
-    private var selectedDay: String? = null
+    private var selectedDay: String = FluxUtil.dayString
 
     private val months = listOf("January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December")
@@ -48,6 +49,16 @@ class FacilityInfoPage : BaseActivity() {
 
     private lateinit var feedback: TextView
 
+    /**
+     * Ordered list of available meals (e.g., ["breakfast", "lunch", "dinner"]
+     */
+    private var availableMenus: List<String> = listOf()
+
+    /**
+     * Current menu of the day
+     */
+    private var currentMenu: MenuClass? = null
+
     private lateinit var menuItemList: RecyclerView
     private lateinit var menuItemListViewAdapter: RecyclerView.Adapter<*>
     private lateinit var menuItemListViewManager: RecyclerView.LayoutManager
@@ -55,7 +66,6 @@ class FacilityInfoPage : BaseActivity() {
     private var facilityClass: FacilityClass? = null
 
     private var wasCheckedDay: Int = -1
-    private var wasCheckedMenu: Int = -1
 
     private var opHoursStrings: List<String> = ArrayList() // KEEPS TRACK OF OPERATING HOURS STRINGS FOR FACILITY
     // USED FOR DISPLAYING OPERATING HOURS OF FACILITY AT SELECTED DAY
@@ -90,6 +100,7 @@ class FacilityInfoPage : BaseActivity() {
         setDayChipsDate()
         setDayChipOnClickListener()
         setDataLastUpdated()
+        setOnTabSelectedListener()
     }
 
     private fun setDataLastUpdated() {
@@ -138,44 +149,26 @@ class FacilityInfoPage : BaseActivity() {
     private fun setDayChipOnClickListener() {
         dayChips.setOnCheckedChangeListener { _, checkedId ->
             setDay(checkedId)
-            setDayMenu(checkedId)
         }
     }
 
     private fun setDay(checkedId: Int) {
-        var day = ""
-        when (checkedId) {
-            R.id.sun -> day = getString(R.string.SUN)
-            R.id.mon -> day = getString(R.string.MON)
-            R.id.tue -> day = getString(R.string.TUE)
-            R.id.wed -> day = getString(R.string.WED)
-            R.id.thu -> day = getString(R.string.THU)
-            R.id.fri -> day = getString(R.string.FRI)
-            R.id.sat -> day = getString(R.string.SAT)
-            -1 -> dayChips.check(wasCheckedDay)
+        val day = when (checkedId) {
+            R.id.sun -> getString(R.string.SUN)
+            R.id.mon -> getString(R.string.MON)
+            R.id.tue -> getString(R.string.TUE)
+            R.id.wed -> getString(R.string.WED)
+            R.id.thu -> getString(R.string.THU)
+            R.id.fri -> getString(R.string.FRI)
+            R.id.sat -> getString(R.string.SAT)
+            else -> FluxUtil.dayString
         }
         if (checkedId != -1 && wasCheckedDay != checkedId) {
             wasCheckedDay = checkedId
             selectedDay = day
-            val daysDifference = FluxUtil.getDayDifference(FluxUtil.dayString, selectedDay!!)
-            updateOperatingHoursOfSelectedDay(FluxUtil.getDateDaysAfter(daysDifference))
+            val daysDifference = FluxUtil.getDayDifference(FluxUtil.dayString, selectedDay)
+            fetchMenuJSON(day = FluxUtil.getDateStringDaysAfter(daysDifference), facilityId = facilityClass!!.id)
         }
-    }
-
-    private fun setDayMenu(checkedId: Int) {
-        var selectedDay = FluxUtil.dayString
-        when (checkedId) {
-            R.id.sun -> selectedDay = getString(R.string.SUN)
-            R.id.mon -> selectedDay = getString(R.string.MON)
-            R.id.tue -> selectedDay = getString(R.string.TUE)
-            R.id.wed -> selectedDay = getString(R.string.WED)
-            R.id.thu -> selectedDay = getString(R.string.THU)
-            R.id.fri -> selectedDay = getString(R.string.FRI)
-            R.id.sat -> selectedDay = getString(R.string.SAT)
-            -1 -> FluxUtil.dayString
-        }
-        val daysDifference = FluxUtil.getDayDifference(FluxUtil.dayString, selectedDay)
-        fetchMenuJSON(day = FluxUtil.getDateStringDaysAfter(daysDifference), facilityId = facilityClass!!.id)
     }
 
     private fun setupBarChart() {
@@ -283,30 +276,8 @@ class FacilityInfoPage : BaseActivity() {
                     opHoursTimestamps = hoursTimeStampsList
                     setOpenOrClosedOnToolbar()
                 },
-                facilityHoursStringsOnResponse = { hoursStringsList ->
-                    opHoursStrings = hoursStringsList
-                    setOperatingHoursText(day = selectedDay!!, date = date)
-                    fetchHistoricalJSON(day = selectedDay!!, facilityId = facilityClass!!.id)
-                    fetchMenuJSON(day = FluxUtil.getCurrentDate(), facilityId = facilityClass!!.id)
-                })
-    }
-
-    /**
-     * This function is meant to only update the facility hours under the historical data chart
-     * for the selected day, and does not affect the facility hours used to check if the place is open. Thus, here
-     * facilityHoursTimeStampsOnResponse is not defined.
-     */
-    private fun updateOperatingHoursOfSelectedDay(date: Date) {
-        val dateString = FluxUtil.convertDateObjectToString(date)
-        api.facilityHours(facilityId = facilityClass!!.id, startDate = dateString,
-                endDate = dateString,
-                facilityHoursTimeStampsOnResponse = {
-                    // Isn't Defined!
-                },
-                facilityHoursStringsOnResponse = { hoursStringsList ->
-                    opHoursStrings = hoursStringsList
-                    setOperatingHoursText(day = selectedDay!!, date = date)
-                    fetchHistoricalJSON(day = selectedDay!!, facilityId = facilityClass!!.id)
+                facilityHoursStringsOnResponse = {
+                    fetchMenuJSON(FluxUtil.getCurrentDate(), facilityClass!!.id)
                 })
     }
 
@@ -402,7 +373,7 @@ class FacilityInfoPage : BaseActivity() {
     private fun setToday(dayString: String) {
         selectedDay = dayString
 
-        val dayChipList = arrayListOf<RadioButton>(sun, mon, tue, wed, thu, fri, sat);
+        val dayChipList = arrayListOf<RadioButton>(sun, mon, tue, wed, thu, fri, sat)
         dayChips.removeAllViews()
 
         val todayInt = FluxUtil.dayInt
@@ -413,40 +384,9 @@ class FacilityInfoPage : BaseActivity() {
         wasCheckedDay = dayChips.checkedRadioButtonId
     }
 
-    /**
-     * This function sets the operating hours text under the historical data chart
-     * @param day The day for which the operating hours is set
-     */
-    private fun setOperatingHoursText(day: String, date: Date) {
-        Log.d("SET", "OPERATING")
-        val hourTitle = FluxUtil.dayFullString(day)
-        todayHours.text = hourTitle
-        val todayDateFormat = SimpleDateFormat("MMMMM dd", Locale.US)
-        todayDate.text = todayDateFormat.format(date)
-        val todayDayDateFormat = SimpleDateFormat("EEE, MMM dd", Locale.US)
-        todayDayDate.text = todayDayDateFormat.format(date)
-        if (opHoursStrings.isEmpty()) facilityHours.text = getString(R.string.no_operating_hours)
-        else facilityHours.text = ""
-        for (operatingSegment in opHoursStrings) {
-            val allHours = facilityHours.text.toString() + operatingSegment + if (opHoursStrings.indexOf(operatingSegment) == opHoursStrings.size - 1) "" else "\n"
-            facilityHours.text = allHours
-        }
-    }
-
     override fun updateUI() {
         Log.d("updatedFPUI", "updating")
         fetchOperatingHours(date = FluxUtil.getDateObject(selectedDay!!)) // TODO FIX!! ON REFRESH!!
-    }
-
-    private fun fetchHistoricalJSON(day: String, facilityId: String) {
-        api.fetchHistoricalJSON(
-                day = day,
-                facilityId = facilityId,
-                fetchHistoricalJSONOnResponse = { historicalDensities ->
-                    densities = historicalDensities
-                    setupBarChart()
-                }
-        )
     }
 
     private fun fetchMenuJSON(day: String, facilityId: String) {
@@ -454,76 +394,93 @@ class FacilityInfoPage : BaseActivity() {
                 day = day,
                 facilityId = facilityId
         ) { menu ->
+            // set the current menu to the fetched menu
+            currentMenu = menu
+
+            // once loaded, hide the loader
             menuProgressBar.isGone = true
-            if (menu?.breakfastItems?.size == 0
+
+            val dayAvailableMenus = mutableListOf<String>()
+            val dayAvailableMenuTabs = mutableListOf<TabLayout.Tab>()
+
+            if (menu?.breakfastItems?.size != 0) {
+                dayAvailableMenuTabs.add(menuTabs.newTab().setText(R.string.breakfast))
+                dayAvailableMenus.add("breakfast")
+            }
+            if (menu?.brunchItems?.size != 0) {
+                dayAvailableMenuTabs.add(menuTabs.newTab().setText(R.string.brunch))
+                dayAvailableMenus.add("brunch")
+            }
+            if (menu?.lunchItems?.size != 0) {
+                dayAvailableMenuTabs.add(menuTabs.newTab().setText(R.string.lunch))
+                dayAvailableMenus.add("lunch")
+            }
+            if (menu?.dinnerItems?.size != 0) {
+                dayAvailableMenuTabs.add(menuTabs.newTab().setText(R.string.dinner))
+                dayAvailableMenus.add("dinner")
+            }
+
+            if (menu?.breakfastItems?.isEmpty() == true
                     && menu.brunchItems.isEmpty()
                     && menu.lunchItems.isEmpty()
                     && menu.dinnerItems.isEmpty()) {
-//                menu_header.isGone = true
-//                menuCard.isGone = true
-                menuChips.isGone = true
+                menuTabs.isGone = true
                 defaultMenuText.isVisible = true
+                showMenu(menu, "")
             } else {
-                menu_header.isVisible = true
-                menuChips.isVisible = true
-                menuCard.isVisible = true
+                menuTabs.isVisible = true
                 defaultMenuText.isGone = true
-                breakfast.isGone = !(menu?.breakfastItems?.isNotEmpty() ?: false)
-                brunch.isGone = !(menu?.brunchItems?.isNotEmpty() ?: false)
-                lunch.isGone = !(menu?.lunchItems?.isNotEmpty() ?: false)
-                dinner.isGone = !(menu?.dinnerItems?.isNotEmpty() ?: false)
-                wasCheckedMenu = firstVisibleChipId(menu)
-                showMenu(menu, wasCheckedMenu)
-                menuChips.setOnCheckedChangeListener { _, checkedId -> showMenu(menu, checkedId) }
+
+                var lastSelectedMeal = ""
+                if (availableMenus.isNotEmpty())
+                    lastSelectedMeal = availableMenus[menuTabs.selectedTabPosition]
+
+                availableMenus = dayAvailableMenus
+                menuTabs.removeAllTabs()
+                for (tab in dayAvailableMenuTabs)
+                    menuTabs.addTab(tab)
+
+                var selectedMealIndex = availableMenus.indexOf(lastSelectedMeal)
+
+                if (selectedMealIndex == -1)
+                    selectedMealIndex = 0
+                menuTabs.selectTab(menuTabs.getTabAt(selectedMealIndex))
+                showMenu(menu, availableMenus[selectedMealIndex])
             }
         }
     }
 
-    /**
-     * Helper function that selects first visible chip and returns its ID
-     */
-    private fun firstVisibleChipId(menu: MenuClass?): Int {
-        if (menu != null) {
-            when {
-                menu.breakfastItems.isNotEmpty() -> {
-                    breakfast.isChecked = true
-                    return R.id.breakfast
-                }
-                menu.brunchItems.isNotEmpty() -> {
-                    brunch.isChecked = true
-                    return R.id.brunch
-                }
-                menu.lunchItems.isNotEmpty() -> {
-                    lunch.isChecked = true
-                    return R.id.lunch
-                }
-                menu.dinnerItems.isNotEmpty() -> {
-                    dinner.isChecked = true
-                    return R.id.dinner
-                }
-                else -> {
-                    return -1
+    private fun setOnTabSelectedListener() {
+        val listener = object : TabLayout.OnTabSelectedListener {
+
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                // Handle tab select
+                if (availableMenus.isNotEmpty()) {
+                    showMenu(currentMenu, availableMenus[menuTabs.selectedTabPosition])
                 }
             }
-        } else {
-            return -1
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                // Handle tab reselect
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+                // Handle tab unselect
+            }
         }
+
+        menuTabs.addOnTabSelectedListener(listener)
     }
 
-
-    private fun showMenu(menu: MenuClass?, mealOfDay: Int) {
+    private fun showMenu(menu: MenuClass?, mealOfDay: String) {
         if (menu != null) {
             menuItemListViewManager = LinearLayoutManager(this)
-            when (mealOfDay) {
-                R.id.breakfast -> menuItemListViewAdapter = MenuListAdapter(menu.breakfastItems, this)
-                R.id.brunch -> menuItemListViewAdapter = MenuListAdapter(menu.brunchItems, this)
-                R.id.lunch -> menuItemListViewAdapter = MenuListAdapter(menu.lunchItems, this)
-                R.id.dinner -> menuItemListViewAdapter = MenuListAdapter(menu.dinnerItems, this)
-                -1 -> if (wasCheckedMenu != -1) menuChips.check(wasCheckedMenu)
-                else menuItemListViewAdapter = MenuListAdapter(ArrayList(), this)
-            }
-            if (mealOfDay != -1 && wasCheckedMenu != mealOfDay) {
-                wasCheckedMenu = mealOfDay
+            menuItemListViewAdapter = when (mealOfDay) {
+                "breakfast" -> MenuListAdapter(menu.breakfastItems, this)
+                "brunch" -> MenuListAdapter(menu.brunchItems, this)
+                "lunch" -> MenuListAdapter(menu.lunchItems, this)
+                "dinner" -> MenuListAdapter(menu.dinnerItems, this)
+                else -> MenuListAdapter(listOf(), this)
             }
 
             menuItemList = findViewById<RecyclerView>(R.id.menuItemsList).apply {
@@ -534,7 +491,6 @@ class FacilityInfoPage : BaseActivity() {
                 layoutManager = menuItemListViewManager
 
                 adapter = menuItemListViewAdapter
-
             }
 
         } else {
