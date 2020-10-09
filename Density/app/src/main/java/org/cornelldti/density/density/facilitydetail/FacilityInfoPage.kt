@@ -270,9 +270,12 @@ class FacilityInfoPage : BaseActivity() {
                     opHoursTimestamps = hoursTimeStampsList
                     setOpenOrClosedOnToolbar()
                 },
+
                 facilityHoursStringsOnResponse = {
                     fetchMenuJSON(FluxUtil.getCurrentDate(), facilityClass!!.id)
-                })
+                    menuHours.text = opHoursStrings[menuTabs.selectedTabPosition]
+                }
+        )
     }
 
     /**
