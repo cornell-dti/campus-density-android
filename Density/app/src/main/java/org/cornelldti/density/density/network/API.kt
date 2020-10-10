@@ -12,6 +12,7 @@ import org.cornelldti.density.density.data.MenuClass
 import org.cornelldti.density.density.data.OperatingHoursClass
 import org.json.JSONArray
 import org.json.JSONException
+import org.json.JSONObject
 
 class API(context: Context) {
     @Transient

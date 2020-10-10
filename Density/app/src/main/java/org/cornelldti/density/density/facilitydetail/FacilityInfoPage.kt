@@ -7,6 +7,7 @@ import android.text.SpannableStringBuilder
 import android.text.format.DateFormat
 import android.text.style.ForegroundColorSpan
 import android.util.Log
+import android.view.View
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -271,9 +272,9 @@ class FacilityInfoPage : BaseActivity() {
                     setOpenOrClosedOnToolbar()
                 },
 
-                facilityHoursStringsOnResponse = {
+                facilityHoursStringsOnResponse = { opHoursStringsList ->
+                    opHoursStrings = opHoursStringsList
                     fetchMenuJSON(FluxUtil.getCurrentDate(), facilityClass!!.id)
-                    menuHours.text = opHoursStrings[menuTabs.selectedTabPosition]
                 }
         )
     }
@@ -488,6 +489,16 @@ class FacilityInfoPage : BaseActivity() {
                 layoutManager = menuItemListViewManager
 
                 adapter = menuItemListViewAdapter
+            }
+
+            // This is where the operating hours for the selected meal of day is set!
+            if(availableMenus.isNotEmpty() && opHoursStrings.isNotEmpty()) {
+                menuHours.text = opHoursStrings[availableMenus.indexOf(mealOfDay)]
+                clock_image.visibility = View.VISIBLE
+            }
+            else {
+                menuHours.text = ""
+                clock_image.visibility = View.INVISIBLE
             }
 
         } else {

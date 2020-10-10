@@ -40,15 +40,21 @@ object JsonParser {
                 for (i in 0 until dayMenus.length()) {
                     val categoryItemsJSONArray = dayMenus.getJSONObject(i).getJSONArray("menu")
                     val menuItems = arrayListOf<MenuItem>()
-                    for (j in 0 until categoryItemsJSONArray.length()) {
-                        val category = categoryItemsJSONArray.getJSONObject(j).getString("category")
-                        val categoryItem = CategoryItem(category)
-                        menuItems.add(categoryItem)
-                        val foodItemJSONArray = categoryItemsJSONArray.getJSONObject(j).getJSONArray("items")
-                        for (k in 0 until foodItemJSONArray.length()) {
-                            val food = foodItemJSONArray.getString(k)
-                            val foodItem = FoodItem(food)
-                            menuItems.add(foodItem)
+                    // Menu is empty in API response, but there is still a meal.
+                    if(categoryItemsJSONArray.length() == 0) {
+                        menuItems.add(CategoryItem(""))
+                    }
+                    else {
+                        for (j in 0 until categoryItemsJSONArray.length()) {
+                            val category = categoryItemsJSONArray.getJSONObject(j).getString("category")
+                            val categoryItem = CategoryItem(category)
+                            menuItems.add(categoryItem)
+                            val foodItemJSONArray = categoryItemsJSONArray.getJSONObject(j).getJSONArray("items")
+                            for (k in 0 until foodItemJSONArray.length()) {
+                                val food = foodItemJSONArray.getString(k)
+                                val foodItem = FoodItem(food)
+                                menuItems.add(foodItem)
+                            }
                         }
                     }
                     when (dayMenus.getJSONObject(i).getString("description")) {
