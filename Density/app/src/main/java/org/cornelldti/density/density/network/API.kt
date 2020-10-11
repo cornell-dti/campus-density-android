@@ -12,7 +12,6 @@ import org.cornelldti.density.density.data.MenuClass
 import org.cornelldti.density.density.data.OperatingHoursClass
 import org.json.JSONArray
 import org.json.JSONException
-import org.json.JSONObject
 
 class API(context: Context) {
     @Transient
@@ -168,13 +167,12 @@ class API(context: Context) {
     /**
      * This function applies the onResponse functions passed in as params on the response of the api request.
      */
-    fun facilityHours(facilityId: String, startDate: String, endDate: String, facilityHoursTimeStampsOnResponse: (OperatingHoursClass) -> Unit,
-                      facilityHoursStringsOnResponse: (List<String>) -> Unit) {
+    fun facilityHours(facilityId: String, startDate: String, endDate: String, facilityHoursTimeStampsOnResponse: (OperatingHoursClass) -> Unit)
+    {
         val facilityHoursRequest = getRequest(
                 url = "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=$startDate&endDate=$endDate",
                 onResponse = { response ->
                     facilityHoursTimeStampsOnResponse(JsonParser.parseOperatingHoursToTimestampList(response))
-                    facilityHoursStringsOnResponse(JsonParser.parseOperatingHoursToStringList(response, startDate))
                 },
                 onError = { error ->
                     Log.d("Error fetching hours", error.networkResponse.toString());
