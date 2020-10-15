@@ -5,7 +5,8 @@ data class MenuClass(
         val breakfastItems: List<MenuItem>,
         val brunchItems: List<MenuItem>,
         val lunchItems: List<MenuItem>,
-        val dinnerItems: List<MenuItem>
+        val dinnerItems: List<MenuItem>,
+        val operatingHours: List<String>
 )
 
 abstract class MenuItem {

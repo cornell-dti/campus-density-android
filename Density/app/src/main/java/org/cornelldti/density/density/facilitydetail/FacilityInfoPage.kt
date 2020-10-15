@@ -5,11 +5,10 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.format.DateFormat
-import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
 import android.util.Log
+import android.view.View
 import android.widget.RadioButton
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isGone
@@ -47,8 +46,6 @@ class FacilityInfoPage : BaseActivity() {
 
     private val maxCapacity: Int = 100
 
-    private lateinit var feedback: TextView
-
     /**
      * Ordered list of available meals (e.g., ["breakfast", "lunch", "dinner"]
      */
@@ -66,12 +63,6 @@ class FacilityInfoPage : BaseActivity() {
     private var facilityClass: FacilityClass? = null
 
     private var wasCheckedDay: Int = -1
-
-    private var opHoursStrings: List<String> = ArrayList() // KEEPS TRACK OF OPERATING HOURS STRINGS FOR FACILITY
-    // USED FOR DISPLAYING OPERATING HOURS OF FACILITY AT SELECTED DAY
-
-    private lateinit var opHoursTimestamps: OperatingHoursClass // KEEPS TRACK OF OPERATING HOURS TIMESTAMPS FOR FACILITY,
-    // USED FOR CHECKING WHETHER OPEN/WHEN IT WILL OPEN
 
     private var densities: List<Double> = ArrayList() // KEEPS TRACK OF HISTORICAL DENSITIES
 
@@ -91,9 +82,6 @@ class FacilityInfoPage : BaseActivity() {
 
         topBar.title = facilityClass!!.name
         topBar.setNavigationOnClickListener { onBackPressed() }
-
-        feedback = findViewById(R.id.accuracy)
-        feedback.movementMethod = LinkMovementMethod.getInstance()
 
         setAvailability()
         setToday(FluxUtil.dayString)
@@ -273,19 +261,16 @@ class FacilityInfoPage : BaseActivity() {
         api.facilityHours(facilityId = facilityClass!!.id, startDate = FluxUtil.convertDateObjectToString(date),
                 endDate = FluxUtil.convertDateObjectToString(nextDay),
                 facilityHoursTimeStampsOnResponse = { hoursTimeStampsList ->
-                    opHoursTimestamps = hoursTimeStampsList
-                    setOpenOrClosedOnToolbar()
-                },
-                facilityHoursStringsOnResponse = {
-                    fetchMenuJSON(FluxUtil.getCurrentDate(), facilityClass!!.id)
-                })
+                    setOpenOrClosedOnToolbar(hoursTimeStampsList)
+                }
+        )
     }
 
     /**
      * This function uses the opHoursTimestamps class variable in order to determine if the facility is open or closed
      * given the current time. It also keeps track of when it is open until, if open and when it opens next, if closed.
      */
-    private fun setOpenOrClosedOnToolbar() {
+    private fun setOpenOrClosedOnToolbar(opHoursTimestamps: OperatingHoursClass) {
         var isOpen = false
         var openUntil: Long = -1L
         var opensNext: Long = -1L
@@ -386,7 +371,8 @@ class FacilityInfoPage : BaseActivity() {
 
     override fun updateUI() {
         Log.d("updatedFPUI", "updating")
-        fetchOperatingHours(date = FluxUtil.getDateObject(selectedDay!!)) // TODO FIX!! ON REFRESH!!
+        fetchOperatingHours(date = FluxUtil.getCurrentDateObject()) // TODO FIX!! ON REFRESH!!
+        fetchMenuJSON(FluxUtil.getCurrentDate(), facilityClass!!.id)
     }
 
     private fun fetchMenuJSON(day: String, facilityId: String) {
@@ -491,6 +477,16 @@ class FacilityInfoPage : BaseActivity() {
                 layoutManager = menuItemListViewManager
 
                 adapter = menuItemListViewAdapter
+            }
+
+            // This is where the operating hours for the selected meal of day is set!
+            if(availableMenus.isNotEmpty() && menu.operatingHours.isNotEmpty()) {
+                menuHours.text = menu.operatingHours[availableMenus.indexOf(mealOfDay)]
+                clock_image.visibility = View.VISIBLE
+            }
+            else {
+                menuHours.text = ""
+                clock_image.visibility = View.GONE
             }
 
         } else {

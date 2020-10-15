@@ -36,19 +36,27 @@ object JsonParser {
             val lunch = arrayListOf<MenuItem>()
             val liteLunch = arrayListOf<MenuItem>()
             val dinner = arrayListOf<MenuItem>()
+            val operatingHoursList = arrayListOf<String>()
             if (dayMenus != null) {
                 for (i in 0 until dayMenus.length()) {
                     val categoryItemsJSONArray = dayMenus.getJSONObject(i).getJSONArray("menu")
                     val menuItems = arrayListOf<MenuItem>()
-                    for (j in 0 until categoryItemsJSONArray.length()) {
-                        val category = categoryItemsJSONArray.getJSONObject(j).getString("category")
-                        val categoryItem = CategoryItem(category)
-                        menuItems.add(categoryItem)
-                        val foodItemJSONArray = categoryItemsJSONArray.getJSONObject(j).getJSONArray("items")
-                        for (k in 0 until foodItemJSONArray.length()) {
-                            val food = foodItemJSONArray.getString(k)
-                            val foodItem = FoodItem(food)
-                            menuItems.add(foodItem)
+                    // Menu is empty in API response, but there is still a meal.
+                    if(categoryItemsJSONArray.length() == 0) {
+                        menuItems.add(CategoryItem(""))
+                    }
+                    else {
+                        for (j in 0 until categoryItemsJSONArray.length()) {
+                            val category = categoryItemsJSONArray.getJSONObject(j).getString("category")
+                            val categoryItem = CategoryItem(category)
+                            menuItems.add(categoryItem)
+                            val foodItemJSONArray = categoryItemsJSONArray.getJSONObject(j).getJSONArray("items")
+                            for (k in 0 until foodItemJSONArray.length()) {
+                                val food = foodItemJSONArray.getString(k)
+                                val foodItem = FoodItem(food)
+                                menuItems.add(foodItem)
+                            }
+
                         }
                     }
                     when (dayMenus.getJSONObject(i).getString("description")) {
@@ -58,13 +66,17 @@ object JsonParser {
                         "Lite Lunch" -> liteLunch.addAll(menuItems)
                         "Dinner" -> dinner.addAll(menuItems)
                     }
+                    val start = dayMenus.getJSONObject(i).getLong("startTime")
+                    val end = dayMenus.getJSONObject(i).getLong("endTime")
+                    operatingHoursList.add(FluxUtil.parseTime(start) + " – " + FluxUtil.parseTime(end))
                 }
             }
             return MenuClass(
                     breakfastItems = breakfast,
                     brunchItems = brunch,
                     lunchItems = lunch,
-                    dinnerItems = dinner
+                    dinnerItems = dinner,
+                    operatingHours = operatingHoursList
             )
         } catch (e: JSONException) {
             e.printStackTrace()
@@ -86,28 +98,6 @@ object JsonParser {
             e.printStackTrace()
             return null
         }
-    }
-
-    /**
-     * This function returns a list of the operating hours for a facility on one day, where each time slot is denoted as a string.
-     * An example response would be ["8:00am-2:00pm", "6:00pm-9:00pm"].
-     */
-    fun parseOperatingHoursToStringList(jsonArray: JSONArray, date: String): List<String> {
-        val operatingHours = arrayListOf<String>()
-        try {
-            val hours = jsonArray.getJSONObject(0).getJSONArray("hours")
-            for (i in 0 until hours.length()) {
-                if (hours.getJSONObject(i).getString("date") == date) {
-                    val segment = hours.getJSONObject(i).getJSONObject("dailyHours")
-                    val start = segment.getLong("startTimestamp")
-                    val end = segment.getLong("endTimestamp")
-                    operatingHours.add(FluxUtil.parseTime(start) + " – " + FluxUtil.parseTime(end))
-                }
-            }
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-        return operatingHours
     }
 
     /**
