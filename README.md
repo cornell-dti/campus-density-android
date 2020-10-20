@@ -36,8 +36,26 @@ _Screenshots showing major parts of app_
 
 ​
 ## Contributors
-​
+
 **School Year**
+### **2020-2021**
+
+ * **Yvonne Chan** - Product Manager 
+ * **Andrew Gao** - Product Manager
+ * **Kaushik Ravikumar** - Technical Project Manager
+
+ * **Ansh Godha** - iOS Developer
+ * **Mihikaa Goenka** - iOS Developer
+ * **Changyuan Lin** - iOS Developer
+ * **Toby Ko** - Android Developer
+ * **Jessica Feng** - Backend Developer
+ * **Vaishnavi Gupta** - Backend Developer
+
+ * **Buma Gana** - Designer
+ * **Katherine Go** - Designer
+ * **Rebecca Fu** - Designer 
+ * **Isabella Zhou** - Designer
+​
 ### **2019-2020**
 
  * **Yvonne Chan** - Product Manager
