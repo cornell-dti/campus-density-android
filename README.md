@@ -23,6 +23,8 @@ _Last updated **02/08/2019**_.
 ## Dependencies & Libraries
  * [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart) - a 3rd party library that allows us to easily input data and generate various graphs and charts to visualize it. 
  * [Volley](https://developer.android.com/training/volley/) - an Android Library that allows us to make HTTP Requests in a more simplified and abstracted manner using library functions.
+  * [sdp](https://github.com/intuit/sdp) - an android library that provides a scalable size unit for densities.
+  * [ssp](https://github.com/intuit/ssp) - an android library that provides a scalable size unit for texts.
 ​
 ## External Documentation
 * [Backend API Documentation](https://campusdensity.docs.apiary.io/) - this is an external Apiary documenting the endpoints for our application.
