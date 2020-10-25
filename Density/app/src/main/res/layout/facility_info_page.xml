@@ -86,7 +86,7 @@
                         android:contentDescription="@string/availability_icon"
                         android:paddingVertical="3dp"
                         android:src="@drawable/ic_baseline_accessibility_new_24"
-                        android:tint="@android:color/white"
+                        app:tint="@android:color/white"
                         app:layout_constraintBottom_toBottomOf="@+id/availability_num"
                         app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintEnd_toEndOf="parent"
