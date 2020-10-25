@@ -103,21 +103,21 @@
                     android:id="@+id/covidPolicyCard"
                     style="@style/MyCardView"
                     android:layout_width="fill_parent"
-                    android:layout_height="120dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="8dp">
+                    android:layout_height="@dimen/_100sdp"
+                    android:layout_marginStart="@dimen/_13sdp"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:layout_marginEnd="@dimen/_13sdp"
+                    android:layout_marginBottom="@dimen/_6sdp">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="?android:attr/selectableItemBackground"
-                        android:padding="16dp">
+                        android:padding="@dimen/_13sdp">
 
                         <ImageView
                             android:id="@+id/masks_required_img"
-                            android:layout_width="120dp"
+                            android:layout_width="@dimen/_100sdp"
                             android:layout_height="wrap_content"
                             android:src="@drawable/masks_required"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -128,10 +128,10 @@
                             android:id="@+id/faceCoveringText"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="25dp"
+                            android:layout_marginStart="@dimen/_11sdp"
                             android:text="@string/covid_policy"
                             android:textColor="#5C5C5C"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/_11ssp"
                             android:textStyle="bold"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@id/masks_required_img"
@@ -146,8 +146,8 @@
                             android:onClick="openCovidPolicy"
                             android:text="@string/covid_policy_button"
                             android:textColor="@android:color/white"
-                            android:textSize="12sp"
-                            android:layout_marginTop="16dp"
+                            android:textSize="@dimen/_9ssp"
+                            android:layout_marginTop="@dimen/_13sdp"
                             app:layout_constraintStart_toStartOf="@id/faceCoveringText"
                             app:layout_constraintTop_toBottomOf="@+id/faceCoveringText"
                             app:layout_constraintBottom_toBottomOf="parent"/>
