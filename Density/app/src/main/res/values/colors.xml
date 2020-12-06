@@ -12,6 +12,8 @@
     <color name="filler_boxes">#EDEDED</color>
     <color name="very_empty_old">#87E9BA</color>
 
+    <color name="hyperlink">#4A90E2</color>
+
     <color name="border">#dad7d7</color>
 
     <color name="chip_background">#EFEFEF</color>

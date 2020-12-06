@@ -9,6 +9,7 @@ import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.View
 import android.widget.RadioButton
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isGone
@@ -46,6 +47,8 @@ class FacilityInfoPage : BaseActivity() {
 
     private val maxCapacity: Int = 100
 
+    private lateinit var feedback: TextView
+
     /**
      * Ordered list of available meals (e.g., ["breakfast", "lunch", "dinner"]
      */
@@ -82,6 +85,8 @@ class FacilityInfoPage : BaseActivity() {
 
         topBar.title = facilityClass!!.name
         topBar.setNavigationOnClickListener { onBackPressed() }
+
+        feedback = findViewById(R.id.accuracy)
 
         setAvailability()
         setToday(FluxUtil.dayString)
