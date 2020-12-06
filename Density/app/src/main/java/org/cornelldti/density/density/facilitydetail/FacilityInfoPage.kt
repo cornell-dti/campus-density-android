@@ -86,7 +86,7 @@ class FacilityInfoPage : BaseActivity() {
         topBar.title = facilityClass!!.name
         topBar.setNavigationOnClickListener { onBackPressed() }
 
-        feedback = findViewById(R.id.accuracy)
+        setFeedbackOnClickListener()
 
         setAvailability()
         setToday(FluxUtil.dayString)
@@ -94,6 +94,14 @@ class FacilityInfoPage : BaseActivity() {
         setDayChipOnClickListener()
         setDataLastUpdated()
         setOnTabSelectedListener()
+    }
+
+    private fun setFeedbackOnClickListener(){
+        feedback = findViewById(R.id.accuracy)
+        feedback.setOnClickListener{
+            val feedbackDialogFragment = FeedbackDialogFragment()
+            feedbackDialogFragment.show(supportFragmentManager, "FeedbackDialogFragment")
+        }
     }
 
     private fun setDataLastUpdated() {
