@@ -100,5 +100,20 @@
     <!-- failure page strings -->
     <string name="sorry_failure">Sorry, there\'s an error loading the data.</string>
     <string name="check_internet">Please check your internet connection.</string>
+    
+    <!--  facility info page feedback strings  -->
+    <string name="accuracy_feedback">Accuracy Feedback</string>
+    <string name="question_accurate">Is this information accurate</string>
+    <!--  need to fix this dynamically later  -->
+    <string name="question_crowdedness">How crowded do you think North Stat at Appel is right now?</string>
+    <string name="question_textbox">Is there anything else you would like to share?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="button_next">Next</string>
+    <string name="button_previous">Previous</string>
+    <string name="button_submit">Submit</string>
+    <string name="message_thank">Thank You!</string>
+    <string name="message_help">This helps us fix any discrepancies and create a better experience for you.</string>
+
 
 </resources>

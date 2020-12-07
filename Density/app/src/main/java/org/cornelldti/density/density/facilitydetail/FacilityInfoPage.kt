@@ -32,6 +32,7 @@ import org.cornelldti.density.density.colorbarutil.ColorBarMarkerView
 import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.data.MenuClass
 import org.cornelldti.density.density.data.OperatingHoursClass
+import org.cornelldti.density.density.facilitydetail.feedback.FeedbackDialogFragment
 import org.cornelldti.density.density.util.FluxUtil
 import org.cornelldti.density.density.util.ValueFormatter
 import java.text.SimpleDateFormat
