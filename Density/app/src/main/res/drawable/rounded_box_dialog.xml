@@ -1,0 +1,9 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid
+        android:color="@color/filler_boxes" />
+    <corners
+        android:radius="5pt" />
+    <size
+        android:height="9pt"
+        android:width="28pt" />
+</shape>

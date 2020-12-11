@@ -20,6 +20,11 @@
 
     <color name="open_facility">#87d9ac</color>
     <color name="closed_facility">#FA4735</color>
+    
+    <color name="feedback_button">#5AD993</color>
+    <color name="feedback_title">#5C5C5C</color>
+    <color name="feedback_question">#B5B5B5</color>
+    <color name="feedback_textarea">#B5B5B5</color>
 
     <color name="dark_grey">#979797</color>
     <color name="mid_grey">#CDCDCD</color>

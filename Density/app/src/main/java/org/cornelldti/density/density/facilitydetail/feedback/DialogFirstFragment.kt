@@ -12,7 +12,7 @@ class DialogFirstFragment : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_first_dialog, container, false)
+        return inflater.inflate(R.layout.fragment_dialog_first, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

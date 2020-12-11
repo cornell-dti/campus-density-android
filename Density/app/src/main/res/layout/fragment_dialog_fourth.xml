@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/button_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dialog_close_margin"
+        android:layout_marginEnd="@dimen/dialog_close_margin"
+        android:src="@drawable/ic_close"
+        android:contentDescription="@string/button_close"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:id="@+id/title_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/message_thank"
+        android:textSize="@dimen/dialog_title"
+        android:textColor="@color/feedback_title"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@+id/button_close"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <RelativeLayout
+        android:id="@+id/group_icon"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@id/title_dialog"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <ImageView
+            android:id="@+id/ic_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_message"
+            android:paddingTop="15dp"
+            android:paddingStart="135dp"
+            android:contentDescription="@string/icon_message"/>
+
+        <ImageView
+            android:id="@+id/ic_thumb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_thumb"
+            android:paddingLeft="95dp"
+            android:paddingTop="60dp"
+            android:contentDescription="@string/icon_thumb"/>
+
+        <ImageView
+            android:id="@+id/ic_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_star"
+            android:paddingStart="170dp"
+            android:paddingTop="65dp"
+            android:contentDescription="@string/icon_star"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/description_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/message_help"
+        android:textSize="@dimen/dialog_text"
+        android:textColor="@color/feedback_question"
+        android:lineSpacingExtra="@dimen/line_spacing_extra"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/group_icon"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
