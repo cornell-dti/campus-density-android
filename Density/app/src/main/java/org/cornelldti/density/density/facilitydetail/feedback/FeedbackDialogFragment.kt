@@ -7,13 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import org.cornelldti.density.density.R
-
 
 class FeedbackDialogFragment : DialogFragment() {
 
-    private lateinit var viewPager: ViewPager
+    private lateinit var viewPager: ViewPager2
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -32,12 +31,12 @@ class FeedbackDialogFragment : DialogFragment() {
     }
 
     private fun setUpViewPager(){
-        val adapter = FeedbackPagerAdapter(childFragmentManager)
+        val adapter = FeedbackStateAdapter(childFragmentManager, lifecycle)
 
-        adapter.addFragment(DialogFirstFragment())
-        adapter.addFragment(DialogSecondFragment())
-        adapter.addFragment(DialogThirdFragment())
-        adapter.addFragment(DialogFourthFragment())
+        adapter.addFragment(FeedbackFirstFragment())
+        adapter.addFragment(FeedbackSecondFragment())
+        adapter.addFragment(FeedbackThirdFragment())
+        adapter.addFragment(FeedbackFourthFragment())
 
         viewPager!!.adapter = adapter
     }

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".facilitydetail.feedback.FeedbackDialogFragment">
 
-    <androidx.viewpager.widget.ViewPager
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="@dimen/_250sdp"
         android:layout_height="@dimen/_260sdp"
