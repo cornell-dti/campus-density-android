@@ -2,8 +2,8 @@
     <solid
         android:color="@color/filler_boxes" />
     <corners
-        android:radius="5pt" />
+        android:radius="@dimen/_9sdp" />
     <size
-        android:height="9pt"
-        android:width="28pt" />
+        android:height="@dimen/_17sdp"
+        android:width="@dimen/_52sdp" />
 </shape>
