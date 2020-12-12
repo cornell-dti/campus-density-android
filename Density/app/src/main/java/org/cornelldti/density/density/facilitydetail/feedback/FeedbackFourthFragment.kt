@@ -22,7 +22,13 @@ class FeedbackFourthFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         buttonClose = view.findViewById(R.id.button_close)
+
+        setButtonClose()
+    }
+
+    private fun setButtonClose(){
         buttonClose.setOnClickListener {
             val intent = Intent("BROADCAST_ACTION")
             LocalBroadcastManager.getInstance(context!!).sendBroadcast(intent)
