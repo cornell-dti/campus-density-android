@@ -30,7 +30,7 @@ class FeedbackDialogFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewPager = view.findViewById(R.id.viewPager)
-//        viewPager.isUserInputEnabled = false
+        viewPager.isUserInputEnabled = false
         setUpViewPager()
 
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
