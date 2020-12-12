@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -21,7 +20,7 @@ class FeedbackFirstFragment : Fragment() {
     private lateinit var radioGroup : RadioGroup
     private lateinit var buttonNext : Button
     private lateinit var buttonClose : ImageView
-    private var selectedAnswer : String = ""
+    private var selectedAnswer : Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -36,32 +35,35 @@ class FeedbackFirstFragment : Fragment() {
         buttonNext = view.findViewById(R.id.button_next)
         buttonClose = view.findViewById(R.id.button_close)
 
-        setRadioGroup(selectedAnswer)
-        setButtonNext(selectedAnswer)
+        setRadioGroup()
+        setButtonNext()
         setButtonClose()
     }
 
-    private fun setRadioGroup(selectedAnswer: String){
+    private fun setRadioGroup(){
         radioGroup.setOnCheckedChangeListener { radioGroup, i ->
-            this.selectedAnswer = view?.findViewById<RadioButton>(i)?.text.toString()
-            if (selectedAnswer=="Yes"){
+            if (i==R.id.answer_yes){
+                this.selectedAnswer = 1
                 buttonNext.isEnabled = true
                 buttonNext.setBackgroundColor(resources.getColor(R.color.feedback_button))
-            } else if (selectedAnswer=="No") {
+            } else if (i==R.id.answer_no) {
+                this.selectedAnswer = 0
                 buttonNext.isEnabled = true
                 buttonNext.setBackgroundColor(resources.getColor(R.color.feedback_button))
             }
         }
     }
 
-    private fun setButtonNext(selectedAnswer: String){
+    private fun setButtonNext(){
         buttonNext.isEnabled = false
         buttonNext.setBackgroundColor(resources.getColor(R.color.dark_grey))
 
         buttonNext.setOnClickListener {
-            if (selectedAnswer=="Yes"){
+            if (this.selectedAnswer==1){
+                (parentFragment as FeedbackDialogFragment).setFirstInput(this.selectedAnswer)
                 viewPager.setCurrentItem(getItem(2), false)
-            } else if (selectedAnswer=="No") {
+            } else if (this.selectedAnswer==0) {
+                (parentFragment as FeedbackDialogFragment).setFirstInput(this.selectedAnswer)
                 viewPager.setCurrentItem(getItem(1), false)
             }
         }

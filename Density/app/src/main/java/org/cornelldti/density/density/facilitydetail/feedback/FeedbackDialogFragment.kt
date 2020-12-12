@@ -20,6 +20,9 @@ class FeedbackDialogFragment : DialogFragment() {
 
     private lateinit var viewPager: ViewPager2
     private val BROADCAST_ACTION = "BROADCAST_ACTION"
+    private var FIRST_INPUT = 0
+    private var SECOND_INPUT = 0
+    private var THIRD_INPUT = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -68,6 +71,30 @@ class FeedbackDialogFragment : DialogFragment() {
     override fun onPause() {
         super.onPause()
         context?.let { LocalBroadcastManager.getInstance(it).unregisterReceiver(broadcastReceiver) }
+    }
+
+    fun setFirstInput(int : Int){
+        FIRST_INPUT = int
+    }
+
+    fun getFirstInput(): Int {
+        return FIRST_INPUT
+    }
+
+    fun setSecondInput(int : Int){
+        SECOND_INPUT = int
+    }
+
+    fun getSecondInput(): Int {
+        return SECOND_INPUT
+    }
+
+    fun setThirdInput(string : String){
+        THIRD_INPUT = string
+    }
+
+    fun getThirdInput(): String {
+        return THIRD_INPUT
     }
 
 }

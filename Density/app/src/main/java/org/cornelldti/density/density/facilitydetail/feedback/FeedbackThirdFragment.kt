@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -15,10 +16,12 @@ import org.cornelldti.density.density.R
 
 class FeedbackThirdFragment : Fragment() {
 
-    private lateinit var viewPager: ViewPager2
+    private lateinit var viewPager : ViewPager2
+    private lateinit var editText : EditText
     private lateinit var buttonPrev : Button
     private lateinit var buttonNext : Button
     private lateinit var buttonClose : ImageView
+    private var selectedAnswer : String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -29,6 +32,7 @@ class FeedbackThirdFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewPager = parentFragment?.view?.findViewById(R.id.viewPager) ?: context?.let { ViewPager2(it) }!!
+        editText = view.findViewById(R.id.answer_dialog_edittext)
         buttonPrev = view.findViewById(R.id.button_previous)
         buttonNext = view.findViewById(R.id.button_next)
         buttonClose = view.findViewById(R.id.button_close)
@@ -40,12 +44,18 @@ class FeedbackThirdFragment : Fragment() {
 
     private fun setButtonPrev(){
         buttonPrev.setOnClickListener{
-            viewPager.setCurrentItem(getItem(-1),false)
+            if((parentFragment as FeedbackDialogFragment).getFirstInput()==1){
+                viewPager.setCurrentItem(getItem(-2),false)
+            } else {
+                viewPager.setCurrentItem(getItem(-1),false)
+            }
         }
     }
 
     private fun setButtonNext(){
         buttonNext.setOnClickListener{
+            this.selectedAnswer = editText.text.toString()
+            (parentFragment as FeedbackDialogFragment).setThirdInput(this.selectedAnswer)
             viewPager.setCurrentItem(getItem(1), false)
         }
     }
