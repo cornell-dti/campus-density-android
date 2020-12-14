@@ -8,3 +8,5 @@ const val OPERATING_HOURS_ENDPOINT = "https://flux.api.internal.cornelldti.org/v
 const val HISTORICAL_DATA_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/historicalData"
 
 const val MENU_DATA_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/menuData"
+
+const val FEEDBACK_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/addFeedback"

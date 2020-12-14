@@ -508,6 +508,14 @@ class FacilityInfoPage : BaseActivity() {
         }
     }
 
+    fun getCampusLocation(): String {
+        return facilityClass!!.id
+    }
+
+    fun getPredictedAccuracy(): Int {
+        return facilityClass!!.occupancyRating
+    }
+
     override fun onBackPressed(): Unit = finish()
 
     companion object {
