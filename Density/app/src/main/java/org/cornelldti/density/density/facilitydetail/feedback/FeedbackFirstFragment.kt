@@ -20,7 +20,7 @@ class FeedbackFirstFragment : Fragment() {
     private lateinit var radioGroup : RadioGroup
     private lateinit var buttonNext : Button
     private lateinit var buttonClose : ImageView
-    private var selectedAnswer : Int = 0
+    private var selectedAnswer = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

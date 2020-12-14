@@ -80,7 +80,7 @@
         app:layout_constraintLeft_toLeftOf="parent"/>
 
     <Button
-        android:id="@+id/button_next"
+        android:id="@+id/button_submit"
         android:layout_width="@dimen/dialog_button_width"
         android:layout_height="wrap_content"
         android:text="@string/button_submit"

@@ -2,6 +2,8 @@ package org.cornelldti.density.density.facilitydetail.feedback
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,9 +21,9 @@ class FeedbackThirdFragment : Fragment() {
     private lateinit var viewPager : ViewPager2
     private lateinit var editText : EditText
     private lateinit var buttonPrev : Button
-    private lateinit var buttonNext : Button
+    private lateinit var buttonSubmit : Button
     private lateinit var buttonClose : ImageView
-    private var selectedAnswer : String = ""
+    private var selectedAnswer = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -34,12 +36,28 @@ class FeedbackThirdFragment : Fragment() {
         viewPager = parentFragment?.view?.findViewById(R.id.viewPager) ?: context?.let { ViewPager2(it) }!!
         editText = view.findViewById(R.id.answer_dialog_edittext)
         buttonPrev = view.findViewById(R.id.button_previous)
-        buttonNext = view.findViewById(R.id.button_next)
+        buttonSubmit = view.findViewById(R.id.button_submit)
         buttonClose = view.findViewById(R.id.button_close)
 
+        setEditText()
         setButtonPrev()
-        setButtonNext()
+        setButtonSubmit()
         setButtonClose()
+    }
+
+    private fun setEditText(){
+        editText.addTextChangedListener( object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                selectedAnswer = p0.toString()
+                (parentFragment as FeedbackDialogFragment).setThirdInput(selectedAnswer)
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+        })
     }
 
     private fun setButtonPrev(){
@@ -52,10 +70,8 @@ class FeedbackThirdFragment : Fragment() {
         }
     }
 
-    private fun setButtonNext(){
-        buttonNext.setOnClickListener{
-            this.selectedAnswer = editText.text.toString()
-            (parentFragment as FeedbackDialogFragment).setThirdInput(this.selectedAnswer)
+    private fun setButtonSubmit(){
+        buttonSubmit.setOnClickListener{
             viewPager.setCurrentItem(getItem(1), false)
         }
     }

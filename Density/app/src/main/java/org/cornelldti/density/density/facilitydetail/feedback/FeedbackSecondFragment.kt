@@ -23,7 +23,7 @@ class FeedbackSecondFragment : Fragment() {
     private lateinit var buttonPrev : Button
     private lateinit var buttonNext : Button
     private lateinit var buttonClose : ImageView
-    private var selectedAnswer : Int = 0
+    private var selectedAnswer = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -52,11 +52,11 @@ class FeedbackSecondFragment : Fragment() {
                 buttonNext.setBackgroundColor(resources.getColor(R.color.feedback_button))
                 setBars(i)
                 when (i) {
-                    null -> this.selectedAnswer = 0
-                    R.id.first_radio -> this.selectedAnswer = 1
-                    R.id.second_radio -> this.selectedAnswer = 2
-                    R.id.third_radio -> this.selectedAnswer = 3
-                    R.id.fourth_radio -> this.selectedAnswer = 4
+                    null -> this.selectedAnswer = -1
+                    R.id.first_radio -> this.selectedAnswer = 0
+                    R.id.second_radio -> this.selectedAnswer = 1
+                    R.id.third_radio -> this.selectedAnswer = 2
+                    R.id.fourth_radio -> this.selectedAnswer = 3
                 }
             }
         }
