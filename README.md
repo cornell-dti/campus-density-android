@@ -27,6 +27,7 @@ _Last updated **02/08/2019**_.
   * [ssp](https://github.com/intuit/ssp) - an android library that provides a scalable size unit for texts.
 ​
 ## External Documentation
+* [Frontend Documentation](https://github.com/cornell-dti/campus-density-android/wiki)
 * [Backend API Documentation](https://campusdensity.docs.apiary.io/) - this is an external Apiary documenting the endpoints for our application.
 ​
 ## Screenshots
