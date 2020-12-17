@@ -28,6 +28,7 @@ _Last updated **02/08/2019**_.
 ​
 ## Documentation
 * [Frontend Documentation](https://github.com/cornell-dti/campus-density-android/wiki)
+* [Backend Documentation](https://app.swaggerhub.com/apis-docs/benjamin-shen/campus-density-backend/1.0.0)
 ​
 ## Screenshots
 ​
