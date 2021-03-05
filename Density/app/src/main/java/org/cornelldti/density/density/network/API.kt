@@ -170,8 +170,7 @@ class API(context: Context) {
     /**
      * This function applies the onResponse functions passed in as params on the response of the api request.
      */
-    fun facilityHours(facilityId: String, startDate: String, endDate: String, facilityHoursTimeStampsOnResponse: (OperatingHoursClass) -> Unit)
-    {
+    fun facilityHours(facilityId: String, startDate: String, endDate: String, facilityHoursTimeStampsOnResponse: (OperatingHoursClass) -> Unit) {
         val facilityHoursRequest = getRequest(
                 url = "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=$startDate&endDate=$endDate",
                 onResponse = { response ->
@@ -187,15 +186,14 @@ class API(context: Context) {
     /**
      * This function submits the FacilityInfoPage feedback
      */
-    fun addFeedback(campusLocation: String, predicted: Int, observed: Int, comment: String)
-    {
+    fun addFeedback(campusLocation: String, predicted: Int, observed: Int, comment: String) {
         val feedback = JSONObject()
         try {
             feedback.put("eatery", campusLocation)
             feedback.put("predicted", predicted)
             feedback.put("observed", observed)
             feedback.put("comment", comment)
-        } catch (e: JSONException){
+        } catch (e: JSONException) {
             e.printStackTrace()
         }
 
@@ -206,8 +204,8 @@ class API(context: Context) {
                 { response ->
                     Log.d("Success Response", response.toString())
                 }, { error ->
-                    Log.d("Error Response", error.networkResponse.toString())
-                }
+            Log.d("Error Response", error.networkResponse.toString())
+        }
         )
         queue.add(feedbackRequest)
     }

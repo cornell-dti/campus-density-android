@@ -18,11 +18,11 @@ import org.cornelldti.density.density.R
 
 class FeedbackThirdFragment : Fragment() {
 
-    private lateinit var viewPager : ViewPager2
-    private lateinit var editText : EditText
-    private lateinit var buttonPrev : Button
-    private lateinit var buttonSubmit : Button
-    private lateinit var buttonClose : ImageView
+    private lateinit var viewPager: ViewPager2
+    private lateinit var editText: EditText
+    private lateinit var buttonPrev: Button
+    private lateinit var buttonSubmit: Button
+    private lateinit var buttonClose: ImageView
     private var selectedAnswer = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -33,7 +33,8 @@ class FeedbackThirdFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewPager = parentFragment?.view?.findViewById(R.id.viewPager) ?: context?.let { ViewPager2(it) }!!
+        viewPager = parentFragment?.view?.findViewById(R.id.viewPager)
+                ?: context?.let { ViewPager2(it) }!!
         editText = view.findViewById(R.id.answer_dialog_edittext)
         buttonPrev = view.findViewById(R.id.button_previous)
         buttonSubmit = view.findViewById(R.id.button_submit)
@@ -45,8 +46,8 @@ class FeedbackThirdFragment : Fragment() {
         setButtonClose()
     }
 
-    private fun setEditText(){
-        editText.addTextChangedListener( object : TextWatcher {
+    private fun setEditText() {
+        editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
@@ -60,23 +61,23 @@ class FeedbackThirdFragment : Fragment() {
         })
     }
 
-    private fun setButtonPrev(){
-        buttonPrev.setOnClickListener{
-            if((parentFragment as FeedbackDialogFragment).getFirstInput()==1){
-                viewPager.setCurrentItem(getItem(-2),false)
+    private fun setButtonPrev() {
+        buttonPrev.setOnClickListener {
+            if ((parentFragment as FeedbackDialogFragment).getFirstInput() == 1) {
+                viewPager.setCurrentItem(getItem(-2), false)
             } else {
-                viewPager.setCurrentItem(getItem(-1),false)
+                viewPager.setCurrentItem(getItem(-1), false)
             }
         }
     }
 
-    private fun setButtonSubmit(){
-        buttonSubmit.setOnClickListener{
+    private fun setButtonSubmit() {
+        buttonSubmit.setOnClickListener {
             viewPager.setCurrentItem(getItem(1), false)
         }
     }
 
-    private fun setButtonClose(){
+    private fun setButtonClose() {
         buttonClose.setOnClickListener {
             val intent = Intent("BROADCAST_ACTION")
             LocalBroadcastManager.getInstance(context!!).sendBroadcast(intent)

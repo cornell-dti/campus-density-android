@@ -97,9 +97,9 @@ class FacilityInfoPage : BaseActivity() {
         setOnTabSelectedListener()
     }
 
-    private fun setFeedbackOnClickListener(){
+    private fun setFeedbackOnClickListener() {
         feedback = findViewById(R.id.accuracy)
-        feedback.setOnClickListener{
+        feedback.setOnClickListener {
             val feedbackDialogFragment = FeedbackDialogFragment()
             feedbackDialogFragment.show(supportFragmentManager, "FeedbackDialogFragment")
         }
@@ -293,7 +293,7 @@ class FacilityInfoPage : BaseActivity() {
         val todayOperatingHours = opHoursTimestamps.todayOperatingHours
         val tomorrowFirstOpHours = opHoursTimestamps.tomorrowFirstOpHours
 
-        if(todayOperatingHours.isNotEmpty()) {
+        if (todayOperatingHours.isNotEmpty()) {
             // Current Time before first time slot of day
             if (currentTime < todayOperatingHours[0].first) {
                 opensNext = todayOperatingHours[0].first
@@ -306,12 +306,11 @@ class FacilityInfoPage : BaseActivity() {
                 openUntil = -1L
             }
             // Current Time is after the last time slot of day and there are no hours tomorrow
-            else if(tomorrowFirstOpHours.first == -1L && tomorrowFirstOpHours.second == -1L &&
+            else if (tomorrowFirstOpHours.first == -1L && tomorrowFirstOpHours.second == -1L &&
                     currentTime >= todayOperatingHours[todayOperatingHours.size - 1].second) {
                 opensNext = -1L
                 openUntil = -1L
-            }
-            else {
+            } else {
                 for (i in 0 until todayOperatingHours.size) {
                     // Current Time falls into one of the open time slots
                     if (currentTime >= todayOperatingHours[i].first && currentTime < todayOperatingHours[i].second) {
@@ -328,9 +327,9 @@ class FacilityInfoPage : BaseActivity() {
             }
         }
         // NO OP HOURS TODAY, CHECK TOMORROW!
-        else{
+        else {
             // This is the case that there are hours tomorrow
-            if(tomorrowFirstOpHours.first != -1L && tomorrowFirstOpHours.second != -1L) {
+            if (tomorrowFirstOpHours.first != -1L && tomorrowFirstOpHours.second != -1L) {
                 opensNext = tomorrowFirstOpHours.first
             }
         }
@@ -494,11 +493,10 @@ class FacilityInfoPage : BaseActivity() {
             }
 
             // This is where the operating hours for the selected meal of day is set!
-            if(availableMenus.isNotEmpty() && menu.operatingHours.isNotEmpty()) {
+            if (availableMenus.isNotEmpty() && menu.operatingHours.isNotEmpty()) {
                 menuHours.text = menu.operatingHours[availableMenus.indexOf(mealOfDay)]
                 clock_image.visibility = View.VISIBLE
-            }
-            else {
+            } else {
                 menuHours.text = ""
                 clock_image.visibility = View.GONE
             }

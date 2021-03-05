@@ -42,10 +42,9 @@ object JsonParser {
                     val categoryItemsJSONArray = dayMenus.getJSONObject(i).getJSONArray("menu")
                     val menuItems = arrayListOf<MenuItem>()
                     // Menu is empty in API response, but there is still a meal.
-                    if(categoryItemsJSONArray.length() == 0) {
+                    if (categoryItemsJSONArray.length() == 0) {
                         menuItems.add(CategoryItem(""))
-                    }
-                    else {
+                    } else {
                         for (j in 0 until categoryItemsJSONArray.length()) {
                             val category = categoryItemsJSONArray.getJSONObject(j).getString("category")
                             val categoryItem = CategoryItem(category)

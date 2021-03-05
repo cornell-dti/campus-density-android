@@ -41,7 +41,7 @@ class FeedbackDialogFragment : DialogFragment() {
         dialog?.setCanceledOnTouchOutside(false)
     }
 
-    private fun setUpViewPager(){
+    private fun setUpViewPager() {
         val adapter = FeedbackStateAdapter(childFragmentManager, lifecycle)
 
         adapter.addFragment(FeedbackFirstFragment())
@@ -73,7 +73,7 @@ class FeedbackDialogFragment : DialogFragment() {
         context?.let { LocalBroadcastManager.getInstance(it).unregisterReceiver(broadcastReceiver) }
     }
 
-    fun setFirstInput(int : Int){
+    fun setFirstInput(int: Int) {
         FIRST_INPUT = int
     }
 
@@ -81,7 +81,7 @@ class FeedbackDialogFragment : DialogFragment() {
         return FIRST_INPUT
     }
 
-    fun setSecondInput(int : Int){
+    fun setSecondInput(int: Int) {
         SECOND_INPUT = int
     }
 
@@ -89,7 +89,7 @@ class FeedbackDialogFragment : DialogFragment() {
         return SECOND_INPUT
     }
 
-    fun setThirdInput(string : String){
+    fun setThirdInput(string: String) {
         THIRD_INPUT = string
     }
 

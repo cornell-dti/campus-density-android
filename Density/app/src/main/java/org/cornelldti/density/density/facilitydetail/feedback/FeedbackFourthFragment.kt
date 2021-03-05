@@ -16,7 +16,7 @@ import org.cornelldti.density.density.network.API
 class FeedbackFourthFragment : Fragment() {
 
     private lateinit var api: API
-    private lateinit var buttonClose : ImageView
+    private lateinit var buttonClose: ImageView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -32,34 +32,34 @@ class FeedbackFourthFragment : Fragment() {
         submitFeedback()
     }
 
-    private fun setButtonClose(){
+    private fun setButtonClose() {
         buttonClose.setOnClickListener {
             val intent = Intent("BROADCAST_ACTION")
             LocalBroadcastManager.getInstance(context!!).sendBroadcast(intent)
         }
     }
 
-    private fun submitFeedback(){
+    private fun submitFeedback() {
         val campusLocation = (activity as FacilityInfoPage).getCampusLocation()
         val predicted = (activity as FacilityInfoPage).getPredictedAccuracy()
         val firstInput = (parentFragment as FeedbackDialogFragment).getFirstInput()
         val secondInput = (parentFragment as FeedbackDialogFragment).getSecondInput()
         val thirdInput = (parentFragment as FeedbackDialogFragment).getThirdInput()
 
-        if(firstInput == 1){
-            api.addFeedback(
-                    campusLocation,
-                    predicted,
-                    predicted,
-                    thirdInput
-            )
-        } else {
-            api.addFeedback(
-                    campusLocation,
-                    predicted,
-                    secondInput,
-                    thirdInput
-            )
-        }
+//        if(firstInput == 1){
+//            api.addFeedback(
+//                    campusLocation,
+//                    predicted,
+//                    predicted,
+//                    thirdInput
+//            )
+//        } else {
+//            api.addFeedback(
+//                    campusLocation,
+//                    predicted,
+//                    secondInput,
+//                    thirdInput
+//            )
+//        }
     }
 }

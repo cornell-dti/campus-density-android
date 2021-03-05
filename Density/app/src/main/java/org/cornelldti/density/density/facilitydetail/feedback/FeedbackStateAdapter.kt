@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class FeedbackStateAdapter(fm: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fm, lifecycle){
+class FeedbackStateAdapter(fm: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fm, lifecycle) {
     private val mFragmentList: ArrayList<Fragment> = ArrayList()
 
     override fun getItemCount(): Int {
@@ -16,7 +16,7 @@ class FeedbackStateAdapter(fm: FragmentManager, lifecycle: Lifecycle) : Fragment
         return mFragmentList[position]
     }
 
-    fun addFragment(dialogFragment: Fragment){
+    fun addFragment(dialogFragment: Fragment) {
         mFragmentList.add(dialogFragment)
     }
 

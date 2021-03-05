@@ -17,9 +17,9 @@ import org.cornelldti.density.density.R
 class FeedbackFirstFragment : Fragment() {
 
     private lateinit var viewPager: ViewPager2
-    private lateinit var radioGroup : RadioGroup
-    private lateinit var buttonNext : Button
-    private lateinit var buttonClose : ImageView
+    private lateinit var radioGroup: RadioGroup
+    private lateinit var buttonNext: Button
+    private lateinit var buttonClose: ImageView
     private var selectedAnswer = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -30,7 +30,8 @@ class FeedbackFirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewPager = parentFragment?.view?.findViewById(R.id.viewPager) ?: context?.let { ViewPager2(it) }!!
+        viewPager = parentFragment?.view?.findViewById(R.id.viewPager)
+                ?: context?.let { ViewPager2(it) }!!
         radioGroup = view.findViewById(R.id.answer_dialog_radio)
         buttonNext = view.findViewById(R.id.button_next)
         buttonClose = view.findViewById(R.id.button_close)
@@ -40,13 +41,13 @@ class FeedbackFirstFragment : Fragment() {
         setButtonClose()
     }
 
-    private fun setRadioGroup(){
+    private fun setRadioGroup() {
         radioGroup.setOnCheckedChangeListener { radioGroup, i ->
-            if (i==R.id.answer_yes){
+            if (i == R.id.answer_yes) {
                 this.selectedAnswer = 1
                 buttonNext.isEnabled = true
                 buttonNext.setBackgroundColor(resources.getColor(R.color.feedback_button))
-            } else if (i==R.id.answer_no) {
+            } else if (i == R.id.answer_no) {
                 this.selectedAnswer = 0
                 buttonNext.isEnabled = true
                 buttonNext.setBackgroundColor(resources.getColor(R.color.feedback_button))
@@ -54,22 +55,22 @@ class FeedbackFirstFragment : Fragment() {
         }
     }
 
-    private fun setButtonNext(){
+    private fun setButtonNext() {
         buttonNext.isEnabled = false
         buttonNext.setBackgroundColor(resources.getColor(R.color.dark_grey))
 
         buttonNext.setOnClickListener {
-            if (this.selectedAnswer==1){
+            if (this.selectedAnswer == 1) {
                 (parentFragment as FeedbackDialogFragment).setFirstInput(this.selectedAnswer)
                 viewPager.setCurrentItem(getItem(2), false)
-            } else if (this.selectedAnswer==0) {
+            } else if (this.selectedAnswer == 0) {
                 (parentFragment as FeedbackDialogFragment).setFirstInput(this.selectedAnswer)
                 viewPager.setCurrentItem(getItem(1), false)
             }
         }
     }
 
-    private fun setButtonClose(){
+    private fun setButtonClose() {
         buttonClose.setOnClickListener {
             val intent = Intent("BROADCAST_ACTION")
             LocalBroadcastManager.getInstance(context!!).sendBroadcast(intent)
