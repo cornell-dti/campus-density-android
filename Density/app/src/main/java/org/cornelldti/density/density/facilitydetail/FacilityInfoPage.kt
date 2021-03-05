@@ -510,7 +510,7 @@ class FacilityInfoPage : BaseActivity() {
         return facilityClass!!.id
     }
 
-    fun getPredictedAccuracy(): Int {
+    fun getPredictedDensity(): Int {
         return facilityClass!!.occupancyRating
     }
 

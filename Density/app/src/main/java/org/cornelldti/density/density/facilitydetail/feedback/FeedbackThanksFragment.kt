@@ -13,14 +13,14 @@ import org.cornelldti.density.density.facilitydetail.FacilityInfoPage
 import org.cornelldti.density.density.network.API
 
 
-class FeedbackFourthFragment : Fragment() {
+class FeedbackThanksFragment : Fragment() {
 
     private lateinit var api: API
     private lateinit var buttonClose: ImageView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_feedback_fourth, container, false)
+        return inflater.inflate(R.layout.fragment_feedback_thanks, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,24 +41,24 @@ class FeedbackFourthFragment : Fragment() {
 
     private fun submitFeedback() {
         val campusLocation = (activity as FacilityInfoPage).getCampusLocation()
-        val predicted = (activity as FacilityInfoPage).getPredictedAccuracy()
-        val firstInput = (parentFragment as FeedbackDialogFragment).getFirstInput()
-        val secondInput = (parentFragment as FeedbackDialogFragment).getSecondInput()
-        val thirdInput = (parentFragment as FeedbackDialogFragment).getThirdInput()
+        val predictedDensity = (activity as FacilityInfoPage).getPredictedDensity()
+        val accuracyInput = (parentFragment as FeedbackDialogFragment).getAccuracyInput()
+        val observedDensityInput = (parentFragment as FeedbackDialogFragment).getObservedDensityInput()
+        val commentInput = (parentFragment as FeedbackDialogFragment).getCommentInput()
 
-//        if(firstInput == 1){
-//            api.addFeedback(
+//        if(accuracyInput == 1){
+//            api.addFacilityInfoFeedback(
 //                    campusLocation,
-//                    predicted,
-//                    predicted,
-//                    thirdInput
+//                    predictedDensity,
+//                    predictedDensity,
+//                    commentInput
 //            )
 //        } else {
-//            api.addFeedback(
+//            api.addFacilityInfoFeedback(
 //                    campusLocation,
-//                    predicted,
-//                    secondInput,
-//                    thirdInput
+//                    predictedDensity,
+//                    observedDensityInput,
+//                    commentInput
 //            )
 //        }
     }

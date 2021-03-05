@@ -186,7 +186,7 @@ class API(context: Context) {
     /**
      * This function submits the FacilityInfoPage feedback
      */
-    fun addFeedback(campusLocation: String, predicted: Int, observed: Int, comment: String) {
+    fun addFacilityInfoFeedback(campusLocation: String, predicted: Int, observed: Int, comment: String) {
         val feedback = JSONObject()
         try {
             feedback.put("eatery", campusLocation)

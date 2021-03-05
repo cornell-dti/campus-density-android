@@ -14,7 +14,7 @@ import androidx.viewpager2.widget.ViewPager2
 import org.cornelldti.density.density.R
 
 
-class FeedbackFirstFragment : Fragment() {
+class FeedbackAccuracyFragment : Fragment() {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var radioGroup: RadioGroup
@@ -24,7 +24,7 @@ class FeedbackFirstFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_feedback_first, container, false)
+        return inflater.inflate(R.layout.fragment_feedback_accuracy, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,10 +61,10 @@ class FeedbackFirstFragment : Fragment() {
 
         buttonNext.setOnClickListener {
             if (this.selectedAnswer == 1) {
-                (parentFragment as FeedbackDialogFragment).setFirstInput(this.selectedAnswer)
+                (parentFragment as FeedbackDialogFragment).setAccuracyInput(this.selectedAnswer)
                 viewPager.setCurrentItem(getItem(2), false)
             } else if (this.selectedAnswer == 0) {
-                (parentFragment as FeedbackDialogFragment).setFirstInput(this.selectedAnswer)
+                (parentFragment as FeedbackDialogFragment).setAccuracyInput(this.selectedAnswer)
                 viewPager.setCurrentItem(getItem(1), false)
             }
         }

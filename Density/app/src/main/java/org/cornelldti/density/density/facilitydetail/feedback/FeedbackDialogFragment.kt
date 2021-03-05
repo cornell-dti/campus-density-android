@@ -20,9 +20,9 @@ class FeedbackDialogFragment : DialogFragment() {
 
     private lateinit var viewPager: ViewPager2
     private val BROADCAST_ACTION = "BROADCAST_ACTION"
-    private var FIRST_INPUT = 0
-    private var SECOND_INPUT = 0
-    private var THIRD_INPUT = ""
+    private var accuracyInput = 0
+    private var observedDensityInput = 0
+    private var commentInput = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -44,10 +44,10 @@ class FeedbackDialogFragment : DialogFragment() {
     private fun setUpViewPager() {
         val adapter = FeedbackStateAdapter(childFragmentManager, lifecycle)
 
-        adapter.addFragment(FeedbackFirstFragment())
-        adapter.addFragment(FeedbackSecondFragment())
-        adapter.addFragment(FeedbackThirdFragment())
-        adapter.addFragment(FeedbackFourthFragment())
+        adapter.addFragment(FeedbackAccuracyFragment())
+        adapter.addFragment(FeedbackObservedDensityFragment())
+        adapter.addFragment(FeedbackCommentFragment())
+        adapter.addFragment(FeedbackThanksFragment())
 
         viewPager.adapter = adapter
     }
@@ -73,28 +73,28 @@ class FeedbackDialogFragment : DialogFragment() {
         context?.let { LocalBroadcastManager.getInstance(it).unregisterReceiver(broadcastReceiver) }
     }
 
-    fun setFirstInput(int: Int) {
-        FIRST_INPUT = int
+    fun setAccuracyInput(int: Int) {
+        accuracyInput = int
     }
 
-    fun getFirstInput(): Int {
-        return FIRST_INPUT
+    fun getAccuracyInput(): Int {
+        return accuracyInput
     }
 
-    fun setSecondInput(int: Int) {
-        SECOND_INPUT = int
+    fun setObservedDensityInput(int: Int) {
+        observedDensityInput = int
     }
 
-    fun getSecondInput(): Int {
-        return SECOND_INPUT
+    fun getObservedDensityInput(): Int {
+        return observedDensityInput
     }
 
-    fun setThirdInput(string: String) {
-        THIRD_INPUT = string
+    fun setCommentInput(string: String) {
+        commentInput = string
     }
 
-    fun getThirdInput(): String {
-        return THIRD_INPUT
+    fun getCommentInput(): String {
+        return commentInput
     }
 
 }

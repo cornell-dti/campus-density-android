@@ -16,7 +16,7 @@ import androidx.viewpager2.widget.ViewPager2
 import org.cornelldti.density.density.R
 
 
-class FeedbackSecondFragment : Fragment() {
+class FeedbackObservedDensityFragment : Fragment() {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var radioGroup: RadioGroup
@@ -27,7 +27,7 @@ class FeedbackSecondFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_feedback_second, container, false)
+        return inflater.inflate(R.layout.fragment_feedback_observed_density, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -74,7 +74,7 @@ class FeedbackSecondFragment : Fragment() {
         buttonNext.setBackgroundColor(resources.getColor(R.color.dark_grey))
 
         buttonNext.setOnClickListener {
-            (parentFragment as FeedbackDialogFragment).setSecondInput(this.selectedAnswer)
+            (parentFragment as FeedbackDialogFragment).setObservedDensityInput(this.selectedAnswer)
             viewPager.setCurrentItem(getItem(1), false)
         }
     }

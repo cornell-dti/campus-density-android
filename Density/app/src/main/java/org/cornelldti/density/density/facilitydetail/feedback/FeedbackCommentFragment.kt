@@ -16,7 +16,7 @@ import androidx.viewpager2.widget.ViewPager2
 import org.cornelldti.density.density.R
 
 
-class FeedbackThirdFragment : Fragment() {
+class FeedbackCommentFragment : Fragment() {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var editText: EditText
@@ -27,7 +27,7 @@ class FeedbackThirdFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_feedback_third, container, false)
+        return inflater.inflate(R.layout.fragment_feedback_comment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,7 +53,7 @@ class FeedbackThirdFragment : Fragment() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 selectedAnswer = p0.toString()
-                (parentFragment as FeedbackDialogFragment).setThirdInput(selectedAnswer)
+                (parentFragment as FeedbackDialogFragment).setCommentInput(selectedAnswer)
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -63,7 +63,7 @@ class FeedbackThirdFragment : Fragment() {
 
     private fun setButtonPrev() {
         buttonPrev.setOnClickListener {
-            if ((parentFragment as FeedbackDialogFragment).getFirstInput() == 1) {
+            if ((parentFragment as FeedbackDialogFragment).getAccuracyInput() == 1) {
                 viewPager.setCurrentItem(getItem(-2), false)
             } else {
                 viewPager.setCurrentItem(getItem(-1), false)
