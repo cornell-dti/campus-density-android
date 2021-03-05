@@ -53,7 +53,7 @@ class FeedbackCommentFragment : Fragment() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 selectedAnswer = p0.toString()
-                (parentFragment as FeedbackDialogFragment).setCommentInput(selectedAnswer)
+                (parentFragment as FeedbackDialogFragment).commentInput = selectedAnswer
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -63,7 +63,7 @@ class FeedbackCommentFragment : Fragment() {
 
     private fun setButtonPrev() {
         buttonPrev.setOnClickListener {
-            if ((parentFragment as FeedbackDialogFragment).getAccuracyInput() == 1) {
+            if ((parentFragment as FeedbackDialogFragment).accuracyInput == 1) {
                 viewPager.setCurrentItem(getItem(-2), false)
             } else {
                 viewPager.setCurrentItem(getItem(-1), false)

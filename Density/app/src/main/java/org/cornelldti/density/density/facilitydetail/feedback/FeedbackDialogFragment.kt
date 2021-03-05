@@ -20,9 +20,9 @@ class FeedbackDialogFragment : DialogFragment() {
 
     private lateinit var viewPager: ViewPager2
     private val BROADCAST_ACTION = "BROADCAST_ACTION"
-    private var accuracyInput = 0
-    private var observedDensityInput = 0
-    private var commentInput = ""
+    var accuracyInput = 0
+    var observedDensityInput = 0
+    var commentInput = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -71,30 +71,6 @@ class FeedbackDialogFragment : DialogFragment() {
     override fun onPause() {
         super.onPause()
         context?.let { LocalBroadcastManager.getInstance(it).unregisterReceiver(broadcastReceiver) }
-    }
-
-    fun setAccuracyInput(int: Int) {
-        accuracyInput = int
-    }
-
-    fun getAccuracyInput(): Int {
-        return accuracyInput
-    }
-
-    fun setObservedDensityInput(int: Int) {
-        observedDensityInput = int
-    }
-
-    fun getObservedDensityInput(): Int {
-        return observedDensityInput
-    }
-
-    fun setCommentInput(string: String) {
-        commentInput = string
-    }
-
-    fun getCommentInput(): String {
-        return commentInput
     }
 
 }

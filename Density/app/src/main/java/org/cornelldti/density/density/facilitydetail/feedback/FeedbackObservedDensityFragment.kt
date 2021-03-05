@@ -74,7 +74,7 @@ class FeedbackObservedDensityFragment : Fragment() {
         buttonNext.setBackgroundColor(resources.getColor(R.color.dark_grey))
 
         buttonNext.setOnClickListener {
-            (parentFragment as FeedbackDialogFragment).setObservedDensityInput(this.selectedAnswer)
+            (parentFragment as FeedbackDialogFragment).observedDensityInput = this.selectedAnswer
             viewPager.setCurrentItem(getItem(1), false)
         }
     }
