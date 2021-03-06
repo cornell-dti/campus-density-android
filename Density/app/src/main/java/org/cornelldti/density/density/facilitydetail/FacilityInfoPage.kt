@@ -506,6 +506,10 @@ class FacilityInfoPage : BaseActivity() {
         }
     }
 
+    fun getFacilityName(): String {
+        return facilityClass!!.name
+    }
+
     fun getCampusLocation(): String {
         return facilityClass!!.id
     }

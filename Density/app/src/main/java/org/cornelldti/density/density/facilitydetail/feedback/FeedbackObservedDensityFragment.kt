@@ -9,11 +9,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.RadioGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
 import org.cornelldti.density.density.R
+import org.cornelldti.density.density.facilitydetail.FacilityInfoPage
 
 
 class FeedbackObservedDensityFragment : Fragment() {
@@ -23,6 +25,7 @@ class FeedbackObservedDensityFragment : Fragment() {
     private lateinit var buttonPrev: Button
     private lateinit var buttonNext: Button
     private lateinit var buttonClose: ImageView
+    private lateinit var textQuestion: TextView
     private var selectedAnswer = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -39,11 +42,13 @@ class FeedbackObservedDensityFragment : Fragment() {
         buttonPrev = view.findViewById(R.id.button_previous)
         buttonNext = view.findViewById(R.id.button_next)
         buttonClose = view.findViewById(R.id.button_close)
+        textQuestion = view.findViewById(R.id.question_dialog)
 
         setRadioGroup()
         setButtonPrev()
         setButtonNext()
         setButtonClose()
+        setTextQuestion()
     }
 
     private fun setRadioGroup() {
@@ -84,6 +89,10 @@ class FeedbackObservedDensityFragment : Fragment() {
             val intent = Intent("BROADCAST_ACTION")
             LocalBroadcastManager.getInstance(context!!).sendBroadcast(intent)
         }
+    }
+
+    private fun setTextQuestion() {
+        textQuestion.setText("How crowded do you think " + (activity as FacilityInfoPage).getFacilityName() + " is right now?")
     }
 
     private fun setBars(rating: Int) {
