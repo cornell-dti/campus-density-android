@@ -2,32 +2,27 @@ package org.cornelldti.density.density.facilitydetail.feedback
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
 import org.cornelldti.density.density.R
 
-
-class FeedbackCommentFragment : Fragment() {
+class FeedbackWaitTimeFragment : Fragment() {
 
     private lateinit var viewPager: ViewPager2
-    private lateinit var editText: EditText
+    private lateinit var waitTimePicker: NumberPicker
     private lateinit var buttonPrev: Button
-    private lateinit var buttonSubmit: Button
+    private lateinit var buttonNext: Button
     private lateinit var buttonClose: ImageView
-    private var selectedAnswer = ""
+    private var selectedAnswer = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_feedback_comment, container, false)
+        return inflater.inflate(R.layout.fragment_feedback_wait_time, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,44 +30,38 @@ class FeedbackCommentFragment : Fragment() {
 
         viewPager = parentFragment?.view?.findViewById(R.id.viewPager)
                 ?: context?.let { ViewPager2(it) }!!
-        editText = view.findViewById(R.id.answer_dialog_edittext)
+        waitTimePicker = view.findViewById(R.id.picker_wait_time)
         buttonPrev = view.findViewById(R.id.button_previous)
-        buttonSubmit = view.findViewById(R.id.button_submit)
+        buttonNext = view.findViewById(R.id.button_next)
         buttonClose = view.findViewById(R.id.button_close)
 
-        setEditText()
+        setWaitTimePicker()
         setButtonPrev()
-        setButtonSubmit()
+        setButtonNext()
         setButtonClose()
     }
 
-    private fun setEditText() {
-        editText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
+    private fun setWaitTimePicker() {
+        val options = arrayOf("0 - 2", "2 - 4", "4 - 6", "6 - 8", "8 - 10", "10 - 12", "12 - 14", "14 - 16", "16 - 18", "18 - 20", "20 +")
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                selectedAnswer = p0.toString()
-                (parentFragment as FeedbackDialogFragment).commentInput = selectedAnswer
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-        })
+        waitTimePicker.maxValue = 0
+        waitTimePicker.maxValue = options.size - 1
+        waitTimePicker.displayedValues = options
+        waitTimePicker.wrapSelectorWheel = false
+        waitTimePicker.setOnValueChangedListener{ picker, oldVal, newVal ->
+            this.selectedAnswer = newVal*2
+        }
     }
 
     private fun setButtonPrev() {
         buttonPrev.setOnClickListener {
-            if ((parentFragment as FeedbackDialogFragment).accuracyInput == 1) {
-                viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(-3), false)
-            } else {
-                viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(-1), false)
-            }
+            viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(-1), false)
         }
     }
 
-    private fun setButtonSubmit() {
-        buttonSubmit.setOnClickListener {
+    private fun setButtonNext() {
+        buttonNext.setOnClickListener {
+            (parentFragment as FeedbackDialogFragment).observedWaitTime = this.selectedAnswer
             viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(1), false)
         }
     }

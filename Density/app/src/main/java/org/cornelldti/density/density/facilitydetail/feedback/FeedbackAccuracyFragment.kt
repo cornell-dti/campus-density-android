@@ -62,7 +62,7 @@ class FeedbackAccuracyFragment : Fragment() {
         buttonNext.setOnClickListener {
             if (this.selectedAnswer == 1) {
                 (parentFragment as FeedbackDialogFragment).accuracyInput = this.selectedAnswer
-                viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(2), false)
+                viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(3), false)
             } else if (this.selectedAnswer == 0) {
                 (parentFragment as FeedbackDialogFragment).accuracyInput = this.selectedAnswer
                 viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(1), false)

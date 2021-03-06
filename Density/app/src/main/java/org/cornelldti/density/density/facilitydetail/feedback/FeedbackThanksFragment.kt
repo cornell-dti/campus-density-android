@@ -2,7 +2,6 @@ package org.cornelldti.density.density.facilitydetail.feedback
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +44,7 @@ class FeedbackThanksFragment : Fragment() {
         val predictedDensity = (activity as FacilityInfoPage).getPredictedDensity()
         val accuracyInput = (parentFragment as FeedbackDialogFragment).accuracyInput
         val observedDensityInput = (parentFragment as FeedbackDialogFragment).observedDensityInput
+        val observedWaitTime = (parentFragment as FeedbackDialogFragment).observedWaitTime
         val commentInput = (parentFragment as FeedbackDialogFragment).commentInput
 
 //        if(accuracyInput == 1){

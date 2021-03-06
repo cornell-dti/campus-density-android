@@ -22,6 +22,7 @@ class FeedbackDialogFragment : DialogFragment() {
     private val BROADCAST_ACTION = "BROADCAST_ACTION"
     var accuracyInput = 0
     var observedDensityInput = 0
+    var observedWaitTime = 0
     var commentInput = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -46,6 +47,7 @@ class FeedbackDialogFragment : DialogFragment() {
 
         adapter.addFragment(FeedbackAccuracyFragment())
         adapter.addFragment(FeedbackObservedDensityFragment())
+        adapter.addFragment(FeedbackWaitTimeFragment())
         adapter.addFragment(FeedbackCommentFragment())
         adapter.addFragment(FeedbackThanksFragment())
 

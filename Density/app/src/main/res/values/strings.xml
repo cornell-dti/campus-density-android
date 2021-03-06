@@ -97,6 +97,7 @@
     <string name="accuracy_feedback">Accuracy Feedback</string>
     <string name="question_accurate">Is this information accurate?</string>
     <string name="question_crowdedness">How crowded do you think North Star at Appel is right now?</string>
+    <string name="question_waittime">How many minutes did you wait in line?</string>
     <string name="question_textarea">Is there anything else you would like to share?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
