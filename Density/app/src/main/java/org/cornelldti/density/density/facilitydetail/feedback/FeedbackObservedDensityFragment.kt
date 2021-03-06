@@ -65,7 +65,7 @@ class FeedbackObservedDensityFragment : Fragment() {
 
     private fun setButtonPrev() {
         buttonPrev.setOnClickListener {
-            viewPager.setCurrentItem(getItem(-1), false)
+            viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(-1), false)
         }
     }
 
@@ -75,7 +75,7 @@ class FeedbackObservedDensityFragment : Fragment() {
 
         buttonNext.setOnClickListener {
             (parentFragment as FeedbackDialogFragment).observedDensityInput = this.selectedAnswer
-            viewPager.setCurrentItem(getItem(1), false)
+            viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(1), false)
         }
     }
 
@@ -84,10 +84,6 @@ class FeedbackObservedDensityFragment : Fragment() {
             val intent = Intent("BROADCAST_ACTION")
             LocalBroadcastManager.getInstance(context!!).sendBroadcast(intent)
         }
-    }
-
-    private fun getItem(i: Int): Int {
-        return viewPager.getCurrentItem() + i
     }
 
     private fun setBars(rating: Int) {

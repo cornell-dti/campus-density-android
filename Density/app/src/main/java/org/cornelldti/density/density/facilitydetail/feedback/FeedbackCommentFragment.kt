@@ -64,16 +64,16 @@ class FeedbackCommentFragment : Fragment() {
     private fun setButtonPrev() {
         buttonPrev.setOnClickListener {
             if ((parentFragment as FeedbackDialogFragment).accuracyInput == 1) {
-                viewPager.setCurrentItem(getItem(-2), false)
+                viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(-2), false)
             } else {
-                viewPager.setCurrentItem(getItem(-1), false)
+                viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(-1), false)
             }
         }
     }
 
     private fun setButtonSubmit() {
         buttonSubmit.setOnClickListener {
-            viewPager.setCurrentItem(getItem(1), false)
+            viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(1), false)
         }
     }
 
@@ -84,7 +84,4 @@ class FeedbackCommentFragment : Fragment() {
         }
     }
 
-    private fun getItem(i: Int): Int {
-        return viewPager.getCurrentItem() + i
-    }
 }

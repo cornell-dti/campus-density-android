@@ -73,4 +73,7 @@ class FeedbackDialogFragment : DialogFragment() {
         context?.let { LocalBroadcastManager.getInstance(it).unregisterReceiver(broadcastReceiver) }
     }
 
+    fun getPagerItem(i: Int): Int {
+        return viewPager.currentItem + i
+    }
 }
