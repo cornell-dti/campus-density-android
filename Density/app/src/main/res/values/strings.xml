@@ -69,14 +69,6 @@
     <string name="very_crowded">Very Busy</string>
     <string name="unknown">Unknown</string>
 
-    <!-- old facilityClass status names -->
-    <!--
-    <string name="very_empty">Very Empty</string>
-    <string name="pretty_empty">Pretty Empty</string>
-    <string name="pretty_crowded">Pretty Crowded</string>
-    <string name="very_crowded">Very Crowded</string>
-    -->
-
     <!-- content descriptions -->
     <string name="back_button_desc">Back button to return list of locations</string>
 
