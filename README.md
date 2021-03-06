@@ -8,7 +8,7 @@ by [Cornell Design Tech Initiative](https://www.cornelldti.org/)
   - [About](#about)
   - [Getting Started](#getting-started)
   - [Dependencies & Libraries](#dependencies--libraries)
-  - [External Documentation](#external-documentation)
+  - [Documentation](#documentation)
   - [Screenshots](#screenshots)
   - [Contributors](#contributors)
 ​
@@ -26,8 +26,9 @@ _Last updated **02/08/2019**_.
   * [sdp](https://github.com/intuit/sdp) - an android library that provides a scalable size unit for densities.
   * [ssp](https://github.com/intuit/ssp) - an android library that provides a scalable size unit for texts.
 ​
-## External Documentation
-* [Backend API Documentation](https://campusdensity.docs.apiary.io/) - this is an external Apiary documenting the endpoints for our application.
+## Documentation
+* [Frontend Documentation](https://github.com/cornell-dti/campus-density-android/wiki)
+* [Backend Documentation](https://app.swaggerhub.com/apis-docs/benjamin-shen/campus-density-backend/1.0.0)
 ​
 ## Screenshots
 ​
