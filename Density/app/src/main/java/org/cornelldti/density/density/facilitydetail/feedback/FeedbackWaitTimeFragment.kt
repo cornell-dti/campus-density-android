@@ -49,7 +49,7 @@ class FeedbackWaitTimeFragment : Fragment() {
         waitTimePicker.displayedValues = options
         waitTimePicker.wrapSelectorWheel = false
         waitTimePicker.setOnValueChangedListener{ picker, oldVal, newVal ->
-            this.selectedAnswer = newVal*2
+            selectedAnswer = newVal*2
         }
     }
 
@@ -61,7 +61,7 @@ class FeedbackWaitTimeFragment : Fragment() {
 
     private fun setButtonNext() {
         buttonNext.setOnClickListener {
-            (parentFragment as FeedbackDialogFragment).observedWaitTime = this.selectedAnswer
+            (parentFragment as FeedbackDialogFragment).observedWaitTime = selectedAnswer
             viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(1), false)
         }
     }

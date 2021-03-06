@@ -44,11 +44,11 @@ class FeedbackAccuracyFragment : Fragment() {
     private fun setRadioGroup() {
         radioGroup.setOnCheckedChangeListener { radioGroup, i ->
             if (i == R.id.answer_yes) {
-                this.selectedAnswer = 1
+                selectedAnswer = 1
                 buttonNext.isEnabled = true
                 buttonNext.setBackgroundColor(resources.getColor(R.color.feedback_button))
             } else if (i == R.id.answer_no) {
-                this.selectedAnswer = 0
+                selectedAnswer = 0
                 buttonNext.isEnabled = true
                 buttonNext.setBackgroundColor(resources.getColor(R.color.feedback_button))
             }
@@ -60,11 +60,11 @@ class FeedbackAccuracyFragment : Fragment() {
         buttonNext.setBackgroundColor(resources.getColor(R.color.dark_grey))
 
         buttonNext.setOnClickListener {
-            if (this.selectedAnswer == 1) {
-                (parentFragment as FeedbackDialogFragment).accuracyInput = this.selectedAnswer
+            if (selectedAnswer == 1) {
+                (parentFragment as FeedbackDialogFragment).accuracyInput = selectedAnswer
                 viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(3), false)
-            } else if (this.selectedAnswer == 0) {
-                (parentFragment as FeedbackDialogFragment).accuracyInput = this.selectedAnswer
+            } else if (selectedAnswer == 0) {
+                (parentFragment as FeedbackDialogFragment).accuracyInput = selectedAnswer
                 viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(1), false)
             }
         }

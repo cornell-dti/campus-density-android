@@ -58,11 +58,11 @@ class FeedbackObservedDensityFragment : Fragment() {
                 buttonNext.setBackgroundColor(resources.getColor(R.color.feedback_button))
                 setBars(i)
                 when (i) {
-                    null -> this.selectedAnswer = -1
-                    R.id.first_radio -> this.selectedAnswer = 0
-                    R.id.second_radio -> this.selectedAnswer = 1
-                    R.id.third_radio -> this.selectedAnswer = 2
-                    R.id.fourth_radio -> this.selectedAnswer = 3
+                    null -> selectedAnswer = -1
+                    R.id.first_radio -> selectedAnswer = 0
+                    R.id.second_radio -> selectedAnswer = 1
+                    R.id.third_radio -> selectedAnswer = 2
+                    R.id.fourth_radio -> selectedAnswer = 3
                 }
             }
         }
@@ -79,7 +79,7 @@ class FeedbackObservedDensityFragment : Fragment() {
         buttonNext.setBackgroundColor(resources.getColor(R.color.dark_grey))
 
         buttonNext.setOnClickListener {
-            (parentFragment as FeedbackDialogFragment).observedDensityInput = this.selectedAnswer
+            (parentFragment as FeedbackDialogFragment).observedDensityInput = selectedAnswer
             viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(1), false)
         }
     }
