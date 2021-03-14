@@ -2,7 +2,6 @@ package org.cornelldti.density.density.network
 
 import android.content.Context
 import android.util.Log
-import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
@@ -30,7 +29,7 @@ class API(context: Context) {
             onDone: (facilities: List<FacilityClass>) -> Unit,
             onError: (error: VolleyError) -> Unit
     ) {
-        val facilityListRequest = getRequest(
+        val facilityListRequest = getJsonArrayRequest(
                 url = FACILITY_LIST_ENDPOINT,
                 onResponse = { response ->
                     Log.d("RESP1", response.toString())
@@ -52,7 +51,7 @@ class API(context: Context) {
             onDone: (facilities: List<FacilityClass>) -> Unit,
             onError: (error: VolleyError) -> Unit
     ) {
-        val facilityInfoRequest = getRequest(
+        val facilityInfoRequest = getJsonArrayRequest(
                 url = FACILITY_INFO_ENDPOINT,
                 onResponse = { response ->
                     try {
@@ -94,7 +93,7 @@ class API(context: Context) {
             onDone: (facilities: MutableList<FacilityClass>) -> Unit,
             onError: (error: VolleyError) -> Unit
     ) {
-        val facilityOccupancyRequest = getRequest(
+        val facilityOccupancyRequest = getJsonArrayRequest(
                 url = HOW_DENSE_ENDPOINT,
                 onResponse = { response ->
                     Log.d("RESP3", response.toString())
@@ -123,7 +122,7 @@ class API(context: Context) {
             facilityId: String,
             fetchHistoricalJSONOnResponse: (densities: List<Double>) -> Unit
     ) {
-        val historicalDataRequest = getRequest(
+        val historicalDataRequest = getJsonArrayRequest(
                 url = "$HISTORICAL_DATA_ENDPOINT?id=$facilityId",
                 onResponse = { response ->
                     fetchHistoricalJSONOnResponse(JsonParser.parseHistorical(response, day))
@@ -135,7 +134,7 @@ class API(context: Context) {
 
     // TODO Function returns a 403 Error Code!
     fun singleFacilityOccupancy(facId: String) {
-        val facilityRequest = getRequest(
+        val facilityRequest = getJsonArrayRequest(
                 url = "$HOW_DENSE_ENDPOINT?=$facId",
                 onResponse = { response ->
                     Log.d("GOTOCCRATING", response.toString())
@@ -155,7 +154,7 @@ class API(context: Context) {
             day: String,
             fetchMenuJSONOnResponse: ((menu: MenuClass?) -> Unit)
     ) {
-        val menuRequest = getRequest(
+        val menuRequest = getJsonArrayRequest(
                 url = "$MENU_DATA_ENDPOINT?facility=$facilityId&date=$day",
                 onResponse = { response ->
                     fetchMenuJSONOnResponse(JsonParser.parseMenu(response, day))
@@ -171,13 +170,13 @@ class API(context: Context) {
      * This function applies the onResponse functions passed in as params on the response of the api request.
      */
     fun facilityHours(facilityId: String, startDate: String, endDate: String, facilityHoursTimeStampsOnResponse: (OperatingHoursClass) -> Unit) {
-        val facilityHoursRequest = getRequest(
+        val facilityHoursRequest = getJsonArrayRequest(
                 url = "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=$startDate&endDate=$endDate",
                 onResponse = { response ->
                     facilityHoursTimeStampsOnResponse(JsonParser.parseOperatingHoursToTimestampList(response))
                 },
                 onError = { error ->
-                    Log.d("Error fetching hours", error.networkResponse.toString());
+                    Log.d("Error fetching hours", error.networkResponse.toString())
                 }
         )
         queue.add(facilityHoursRequest)
@@ -186,31 +185,87 @@ class API(context: Context) {
     /**
      * This function submits the FacilityInfoPage feedback
      */
-    fun addFacilityInfoFeedback(campusLocation: String, predicted: Int, observed: Int, comment: String) {
+    fun addFacilityInfoFeedback(campusLocation: String,
+                                predicted: Int,
+                                observed: Int,
+                                comment: String
+    ) {
         val feedback = JSONObject()
         try {
             feedback.put("eatery", campusLocation)
-            feedback.put("predicted", predicted)
-            feedback.put("observed", observed)
+            feedback.put("predictedWait", predicted)
+            feedback.put("observedWait", observed)
             feedback.put("comment", comment)
         } catch (e: JSONException) {
             e.printStackTrace()
         }
 
-        val feedbackRequest = JsonObjectRequest(
-                Request.Method.POST,
-                FEEDBACK_ENDPOINT,
-                feedback,
-                { response ->
+        val feedbackRequest = postJsonObjectRequest(
+                url = FEEDBACK_ENDPOINT,
+                body = feedback,
+                onResponse = { response ->
                     Log.d("Success Response", response.toString())
-                }, { error ->
-            Log.d("Error Response", error.networkResponse.toString())
-        }
+                },
+                onError = { error ->
+                    Log.d("Error Response", error.toString())
+                }
         )
         queue.add(feedbackRequest)
     }
 
-    private fun getRequest(
+    /**
+     * This function fetches the wait time of all dining locations
+     */
+    fun fetchWaitTimes(
+            onDone: (waitTimes: Map<String, Double>) -> Unit,
+            onError: (error: VolleyError) -> Unit
+    ) {
+        val waitTimesRequest = getJsonObjectRequest(
+                url = WAIT_TIME_ENDPOINT,
+                onResponse = { response ->
+                    val waitTimes = JsonParser.parseWaitTimes(jsonObject = response).toMap()
+                    onDone(waitTimes)
+                },
+                onError = { error ->
+                    Log.d("TAG", error.toString())
+                    onError
+                }
+        )
+        queue.add(waitTimesRequest)
+    }
+
+    private fun postJsonObjectRequest(
+            url: String,
+            body: JSONObject,
+            onResponse: (jsonObject: JSONObject) -> Unit,
+            onError: (error: VolleyError) -> Unit
+    ): JsonObjectRequest = object : JsonObjectRequest(
+            Method.POST,
+            url,
+            body,
+            Response.Listener(onResponse),
+            Response.ErrorListener(onError)
+    ) {
+        override fun getHeaders(): Map<String, String> =
+                hashMapOf("Authorization" to "Bearer $idToken")
+    }
+
+    private fun getJsonObjectRequest(
+            url: String,
+            onResponse: (jsonObject: JSONObject) -> Unit,
+            onError: (error: VolleyError) -> Unit
+    ): JsonObjectRequest = object : JsonObjectRequest(
+            Method.GET,
+            url,
+            null,
+            Response.Listener(onResponse),
+            Response.ErrorListener(onError)
+    ) {
+        override fun getHeaders(): Map<String, String> =
+                hashMapOf("Authorization" to "Bearer $idToken")
+    }
+
+    private fun getJsonArrayRequest(
             url: String,
             onResponse: (jsonArray: JSONArray) -> Unit,
             onError: (error: VolleyError) -> Unit

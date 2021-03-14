@@ -20,6 +20,7 @@ class FeedbackDialogFragment : DialogFragment() {
 
     private lateinit var viewPager: ViewPager2
     private val BROADCAST_ACTION = "BROADCAST_ACTION"
+    var predictedWaitTime = 0
     var accuracyInput = 0
     var observedDensityInput = 0
     var observedWaitTime = 0

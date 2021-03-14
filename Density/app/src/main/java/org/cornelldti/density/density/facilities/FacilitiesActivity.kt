@@ -1,7 +1,6 @@
 package org.cornelldti.density.density.facilities
 
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -32,6 +31,7 @@ import kotlin.math.absoluteValue
 class FacilitiesActivity : BaseActivity() {
 
     private lateinit var spinner: ProgressBar
+    private lateinit var waitTimesMap: Map<String, Double>
 
     private var adapter: FacilitiesListAdapter? = null
 
@@ -124,6 +124,17 @@ class FacilitiesActivity : BaseActivity() {
 
         layoutManager = LinearLayoutManager(this)
         facilities.layoutManager = layoutManager
+    }
+
+    private fun fetchWaitTimes() {
+        api.fetchWaitTimes(
+                onDone = { map ->
+                    waitTimesMap = map
+                },
+                onError = { error ->
+                    Log.d("ERROR", error.toString())
+                }
+        )
     }
 
     private fun fetchFacilities(refresh: Boolean, success: () -> Unit) {
@@ -266,6 +277,7 @@ class FacilitiesActivity : BaseActivity() {
             success: () -> Unit
     ) {
         if (!refresh) {
+            fetchWaitTimes()
             val adapter = FacilitiesListAdapter(list)
             adapter.setOnItemClickListener(object : FacilitiesListAdapter.ClickListener {
                 override fun onItemClick(position: Int, v: View) {
@@ -273,6 +285,7 @@ class FacilitiesActivity : BaseActivity() {
                     val b = Bundle()
                     b.putSerializable(FacilityInfoPage.ARG_PARAM, adapter.dataSet!![position])
                     intent.putExtras(b)
+                    intent.putExtra("waitTimes", waitTimesMap.get(adapter.dataSet!![position].id)?.toInt())
                     startActivity(intent)
                 }
             })
@@ -283,6 +296,7 @@ class FacilitiesActivity : BaseActivity() {
             success()
             setChipOnClickListener()
         } else {
+            fetchWaitTimes()
             val adapter = this.adapter!!
             adapter.setDataSet(list)
             success()

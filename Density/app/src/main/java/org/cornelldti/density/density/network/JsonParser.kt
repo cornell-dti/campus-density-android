@@ -1,14 +1,10 @@
 package org.cornelldti.density.density.network
 
-import android.text.format.DateFormat
-import android.util.Log
-import org.cornelldti.density.density.DensityApplication
 import org.cornelldti.density.density.data.*
 import org.cornelldti.density.density.util.FluxUtil
 import org.json.JSONArray
 import org.json.JSONException
-import java.text.SimpleDateFormat
-import java.util.*
+import org.json.JSONObject
 
 object JsonParser {
     fun parseFacilities(jsonArray: JSONArray): MutableList<FacilityClass>? =
@@ -142,5 +138,17 @@ object JsonParser {
             e.printStackTrace()
         }
         return densities
+    }
+
+    fun parseWaitTimes(jsonObject: JSONObject): MutableMap<String, Double> {
+        val waitTimes = mutableMapOf<String, Double>()
+        try {
+            for (key in jsonObject.keys()) {
+                waitTimes[key] = kotlin.math.floor(jsonObject.getDouble(key))
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        return waitTimes
     }
 }

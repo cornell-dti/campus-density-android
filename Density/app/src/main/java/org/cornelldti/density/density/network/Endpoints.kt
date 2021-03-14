@@ -10,3 +10,4 @@ const val HISTORICAL_DATA_ENDPOINT = "https://flux.api.internal.cornelldti.org/v
 const val MENU_DATA_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/menuData"
 
 const val FEEDBACK_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/addFeedback"
+const val WAIT_TIME_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/waitTime"

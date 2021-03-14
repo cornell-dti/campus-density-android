@@ -70,6 +70,8 @@ class FacilityInfoPage : BaseActivity() {
 
     private var densities: List<Double> = ArrayList() // KEEPS TRACK OF HISTORICAL DENSITIES
 
+    private var waitTimes: Int? = 0
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.facility_info_page)
@@ -77,6 +79,7 @@ class FacilityInfoPage : BaseActivity() {
         val b = intent.extras
         if (b != null) {
             facilityClass = b.getSerializable(ARG_PARAM) as FacilityClass
+            waitTimes = b.getInt("waitTimes")
         }
         // TODO Uncomment this
         //     facilityClass = refreshFacilityOccupancy(facilityClass);
