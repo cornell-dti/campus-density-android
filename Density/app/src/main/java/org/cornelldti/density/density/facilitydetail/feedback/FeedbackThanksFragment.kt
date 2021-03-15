@@ -44,6 +44,10 @@ class FeedbackThanksFragment : Fragment() {
         }
     }
 
+    /**
+     * This function re-requests for the user authentication token since the idToken field needs
+     * to be re-initialized due to this fragment not extending BaseActivity.
+     */
     private fun requestToken(user: FirebaseUser?) {
         user?.getIdToken(true)
                 ?.addOnCompleteListener { task ->
@@ -56,6 +60,11 @@ class FeedbackThanksFragment : Fragment() {
                 }
     }
 
+    /**
+     * This function submits the detail page feedback.
+     * If the user answered that the provided information was accurate, it replaces predictedWaitTime
+     * in place of observedWaitTime.
+     */
     private fun submitFeedback() {
         val campusLocation = (activity as FacilityInfoPage).getCampusLocation()
         val accuracyInput = (parentFragment as FeedbackDialogFragment).accuracyInput

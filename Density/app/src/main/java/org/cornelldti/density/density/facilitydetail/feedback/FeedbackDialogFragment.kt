@@ -43,6 +43,9 @@ class FeedbackDialogFragment : DialogFragment() {
         dialog?.setCanceledOnTouchOutside(false)
     }
 
+    /**
+     * This function sets up the feedback viewPager by appending fragments to the adapter.
+     */
     private fun setUpViewPager() {
         val adapter = FeedbackStateAdapter(childFragmentManager, lifecycle)
 
@@ -55,6 +58,9 @@ class FeedbackDialogFragment : DialogFragment() {
         viewPager.adapter = adapter
     }
 
+    /**
+     * This function receives the broadcast call to close the dialog.
+     */
     var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
             if (intent.action != null && intent.action == BROADCAST_ACTION) {

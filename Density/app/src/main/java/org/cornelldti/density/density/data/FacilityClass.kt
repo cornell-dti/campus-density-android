@@ -3,10 +3,23 @@ package org.cornelldti.density.density.data
 import org.cornelldti.density.density.R
 import java.io.Serializable
 
+/**
+ * This class holds the data model for dining facilities on campus.
+ * Refer to this class for getting / setting specific dining facility information.
+ */
 class FacilityClass(val name: String, val id: String) : Serializable, Comparable<FacilityClass> {
     var occupancyRating: Int = 0
     var description: String? = null
+
+    enum class CampusLocation { NORTH, WEST, CENTRAL }
+
+    var location: CampusLocation? = null
+        private set
+
     private var closingAt: Long = 0
+
+    val isOpen: Boolean
+        get() = this.closingAt != -1L
 
     val densityResId: Int
         get() = if (!this.isOpen) {
@@ -19,24 +32,6 @@ class FacilityClass(val name: String, val id: String) : Serializable, Comparable
             else -> R.string.unknown
         }
 
-    var location: CampusLocation? = null
-        private set
-
-    val isOpen: Boolean
-        get() = this.closingAt != -1L
-
-    val locationString: String
-        get() = when (this.location) {
-            CampusLocation.NORTH -> "NORTH"
-            CampusLocation.CENTRAL -> "CENTRAL"
-            CampusLocation.WEST -> "WEST"
-            else -> ""
-        }
-
-    fun setClosingAt(closingAt: Long) {
-        this.closingAt = closingAt
-    }
-
     override fun compareTo(other: FacilityClass): Int = when {
         !other.isOpen && this.isOpen -> -1
         other.isOpen && !this.isOpen -> 1
@@ -46,14 +41,7 @@ class FacilityClass(val name: String, val id: String) : Serializable, Comparable
         } else 0
     }
 
-    enum class CampusLocation {
-        NORTH, WEST, CENTRAL
-    }
-
-    constructor(name: String, id: String, description: String, nextOpen: Long, closingAt: Long, address: String, campusLocation: CampusLocation, occupancy_rating: Int) : this(name = name, id = id) {
-        this.description = description
-        this.location = campusLocation
-        this.occupancyRating = occupancy_rating
+    fun setClosingAt(closingAt: Long) {
         this.closingAt = closingAt
     }
 

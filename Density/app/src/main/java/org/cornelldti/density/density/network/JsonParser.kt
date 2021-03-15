@@ -7,6 +7,10 @@ import org.json.JSONException
 import org.json.JSONObject
 
 object JsonParser {
+
+    /**
+     * This function returns a MutableList of all dining facilities on campus.
+     */
     fun parseFacilities(jsonArray: JSONArray): MutableList<FacilityClass>? =
             try {
                 val facilities = arrayListOf<FacilityClass>()
@@ -24,6 +28,9 @@ object JsonParser {
                 null
             }
 
+    /**
+     * This function parses each category of daily dining menus and returns a MenuClass object.
+     */
     fun parseMenu(jsonArray: JSONArray, day: String): MenuClass? {
         try {
             val dayMenus = getDayMenu(jsonArray, day)
@@ -79,7 +86,9 @@ object JsonParser {
         }
     }
 
-    // Helper function that gets menus for specific day
+    /**
+     * This is a helper function that gets menus for specific day.
+     */
     private fun getDayMenu(jsonArray: JSONArray, day: String): JSONArray? {
         try {
             val weeksMenus = jsonArray.getJSONObject(0).getJSONArray("weeksMenus")
@@ -126,20 +135,10 @@ object JsonParser {
         return OperatingHoursClass(todayOperatingHours, tomorrowFirstOpHours)
     }
 
-    fun parseHistorical(jsonArray: JSONArray, day: String): List<Double> {
-        val densities = arrayListOf<Double>()
-        try {
-            val facilityHistory = jsonArray.getJSONObject(0).getJSONObject("hours")
-            val facOnDay = facilityHistory.getJSONObject(day)
-            for (hour in 7..23) {
-                densities.add(facOnDay.getDouble(hour.toString()))
-            }
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-        return densities
-    }
-
+    /**
+     * This function returns a mutable map object of the predicted waitTimes for all dining locations.
+     * The original predicted waitTimes are doubles, so we've decided to floor the decimals.
+     */
     fun parseWaitTimes(jsonObject: JSONObject): MutableMap<String, Double> {
         val waitTimes = mutableMapOf<String, Double>()
         try {

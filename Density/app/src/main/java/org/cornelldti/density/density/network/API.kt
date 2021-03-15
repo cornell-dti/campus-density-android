@@ -24,6 +24,9 @@ class API(context: Context) {
         this.idToken = idToken
     }
 
+    /**
+     * This function fetches the whole list of dining facilities. (1/3)
+     */
     fun fetchFacilities(
             success: () -> Unit,
             onDone: (facilities: List<FacilityClass>) -> Unit,
@@ -45,6 +48,9 @@ class API(context: Context) {
         queue.add(facilityListRequest)
     }
 
+    /**
+     * This function fetches fields in FacilityClass for all facilities. (2/3)
+     */
     private fun fetchFacilityInfo(
             list: MutableList<FacilityClass>,
             success: () -> Unit,
@@ -87,6 +93,9 @@ class API(context: Context) {
         queue.add(facilityInfoRequest)
     }
 
+    /**
+     * This function fetches the real-time density of each dining facility. (3/3)
+     */
     private fun fetchFacilityOccupancy(
             list: MutableList<FacilityClass>,
             success: () -> Unit,
@@ -117,38 +126,9 @@ class API(context: Context) {
         queue.add(facilityOccupancyRequest)
     }
 
-    fun fetchHistoricalJSON(
-            day: String,
-            facilityId: String,
-            fetchHistoricalJSONOnResponse: (densities: List<Double>) -> Unit
-    ) {
-        val historicalDataRequest = getJsonArrayRequest(
-                url = "$HISTORICAL_DATA_ENDPOINT?id=$facilityId",
-                onResponse = { response ->
-                    fetchHistoricalJSONOnResponse(JsonParser.parseHistorical(response, day))
-                },
-                onError = { error -> Log.d("ERROR MESSAGE", error.toString()) }
-        )
-        queue.add(historicalDataRequest)
-    }
-
-    // TODO Function returns a 403 Error Code!
-    fun singleFacilityOccupancy(facId: String) {
-        val facilityRequest = getJsonArrayRequest(
-                url = "$HOW_DENSE_ENDPOINT?=$facId",
-                onResponse = { response ->
-                    Log.d("GOTOCCRATING", response.toString())
-                    // try {
-                    //   facilityOccupancyRating = response.getInt("density");
-                    // } catch(JSONException e) {
-                    //   e.printStackTrace();
-                    // }
-                },
-                onError = { error -> Log.d("ERRORSON", error.toString()) }
-        )
-        queue.add(facilityRequest)
-    }
-
+    /**
+     * This function fetches dining menu for each day in a specific facility.
+     */
     fun fetchMenuJSON(
             facilityId: String,
             day: String,
@@ -183,7 +163,7 @@ class API(context: Context) {
     }
 
     /**
-     * This function submits the FacilityInfoPage feedback
+     * This function submits the FacilityInfoPage feedback.
      */
     fun addFacilityInfoFeedback(campusLocation: String,
                                 predicted: Int,
@@ -214,7 +194,7 @@ class API(context: Context) {
     }
 
     /**
-     * This function fetches the wait time of all dining locations
+     * This function fetches the waitTimes for all dining locations.
      */
     fun fetchWaitTimes(
             onDone: (waitTimes: Map<String, Double>) -> Unit,
@@ -228,7 +208,7 @@ class API(context: Context) {
                 },
                 onError = { error ->
                     Log.d("TAG", error.toString())
-                    onError
+                    onError(error)
                 }
         )
         queue.add(waitTimesRequest)

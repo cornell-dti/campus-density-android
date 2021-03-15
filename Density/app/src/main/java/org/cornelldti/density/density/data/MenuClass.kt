@@ -1,6 +1,9 @@
 package org.cornelldti.density.density.data
 
-
+/**
+ * This class holds the data model for available dining menus.
+ * Refer to this class for different MenuItem or operatingHours by facility.
+ */
 data class MenuClass(
         val breakfastItems: List<MenuItem>,
         val brunchItems: List<MenuItem>,

@@ -41,6 +41,10 @@ class FeedbackWaitTimeFragment : Fragment() {
         setButtonClose()
     }
 
+    /**
+     * This function sets the observedWaitTime input. Input is set as the lower bound for each 2-min time range.
+     * (e.g. 0 for "0-2" and 2 for "2-4")
+     */
     private fun setWaitTimePicker() {
         val options = arrayOf("0 - 2", "2 - 4", "4 - 6", "6 - 8", "8 - 10", "10 - 12", "12 - 14", "14 - 16", "16 - 18", "18 - 20", "20 +")
 

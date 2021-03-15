@@ -39,15 +39,16 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * This class holds the detail page activity for each individual dining location.
+ * Display: Menus, waitTimes, and availabilities.
+ * Authentication takes place in BaseActivity.
+ */
 class FacilityInfoPage : BaseActivity() {
 
-    private var selectedDay: String = FluxUtil.dayString
-
-    private val months = listOf("January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December")
-
-    private val maxCapacity: Int = 100
-
+    private lateinit var menuItemList: RecyclerView
+    private lateinit var menuItemListViewAdapter: RecyclerView.Adapter<*>
+    private lateinit var menuItemListViewManager: RecyclerView.LayoutManager
     private lateinit var feedback: TextView
 
     /**
@@ -55,22 +56,16 @@ class FacilityInfoPage : BaseActivity() {
      */
     private var availableMenus: List<String> = listOf()
 
-    /**
-     * Current menu of the day
-     */
     private var currentMenu: MenuClass? = null
-
-    private lateinit var menuItemList: RecyclerView
-    private lateinit var menuItemListViewAdapter: RecyclerView.Adapter<*>
-    private lateinit var menuItemListViewManager: RecyclerView.LayoutManager
-
     private var facilityClass: FacilityClass? = null
-
     private var wasCheckedDay: Int = -1
-
     private var densities: List<Double> = ArrayList() // KEEPS TRACK OF HISTORICAL DENSITIES
-
     private var waitTimes: Int? = 0
+    private var selectedDay: String = FluxUtil.dayString
+
+    private val maxCapacity: Int = 100
+    private val months = listOf("January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December")
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,10 +76,7 @@ class FacilityInfoPage : BaseActivity() {
             facilityClass = b.getSerializable(ARG_PARAM) as FacilityClass
             waitTimes = b.getInt("waitTimes")
         }
-        // TODO Uncomment this
-        //     facilityClass = refreshFacilityOccupancy(facilityClass);
 
-        // initialize view
         densityChart.setNoDataText("")
 
         topBar.title = facilityClass!!.name
@@ -100,6 +92,9 @@ class FacilityInfoPage : BaseActivity() {
         setOnTabSelectedListener()
     }
 
+    /**
+     * This function sets a listener to open the detail page feedback.
+     */
     private fun setFeedbackOnClickListener() {
         feedback = findViewById(R.id.accuracy)
         feedback.setOnClickListener {
@@ -108,6 +103,9 @@ class FacilityInfoPage : BaseActivity() {
         }
     }
 
+    /**
+     * This function calculates and sets text for "Last Updated."
+     */
     private fun setDataLastUpdated() {
         val currDate = FluxUtil.getCurrentDateObject()
         val timeZone = Calendar.getInstance().timeZone
@@ -119,12 +117,9 @@ class FacilityInfoPage : BaseActivity() {
         lastUpdated.setText("Last updated " + months[currDate.month] + " " + currDate.date + ", " + format.format(currDate).toLowerCase(Locale.US))
     }
 
-    // TODO: complete or remove
-    private fun refreshFacilityOccupancy(fac: FacilityClass): FacilityClass {
-        api.singleFacilityOccupancy(fac.id)
-        return fac.setOccupancyRating(super.facilityOccupancyRating)
-    }
-
+    /**
+     * This function sets the text and color for the availability card.
+     */
     private fun setAvailability() {
         max_capacity.text = getString(R.string.max_capacity, maxCapacity)
         when (facilityClass!!.densityResId) {
@@ -157,6 +152,9 @@ class FacilityInfoPage : BaseActivity() {
         }
     }
 
+    /**
+     * This function sets each day of the week from today, and fetches menu accordingly
+     */
     private fun setDay(checkedId: Int) {
         val day = when (checkedId) {
             R.id.sun -> getString(R.string.SUN)
@@ -176,6 +174,25 @@ class FacilityInfoPage : BaseActivity() {
         }
     }
 
+    /**
+     * This function sets the chips (menu) for each day of the week from today
+     */
+    private fun setDayChipsDate() {
+        val chipsList = listOf(sun, mon, tue, wed, thu, fri, sat)
+        val dayStrings = listOf(getString(R.string.SUN), getString(R.string.MON), getString(R.string.TUE), getString(R.string.WED),
+                getString(R.string.THU), getString(R.string.FRI), getString(R.string.SAT))
+        for (i in 0..6) {
+            val daysDifference = FluxUtil.getDayDifference(FluxUtil.dayString, dayStrings.get(i))
+            val date = FluxUtil.getDateDaysAfter(daysDifference)
+            val chip = chipsList.get(i)
+            chip.text = HtmlCompat.fromHtml(chip.text.toString() + "<br>" + "<br>" +
+                    "<b>" + date.date + "</b>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        }
+    }
+
+    /**
+     * TODO: Decide whether we're going to use or remove this function
+     */
     private fun setupBarChart() {
         Log.d("SETUP", "BARCHART")
         val entries = ArrayList<BarEntry>()
@@ -270,6 +287,9 @@ class FacilityInfoPage : BaseActivity() {
 
     }
 
+    /**
+     * This function fetches the operating hours for each dining facility, and indicates availability
+     */
     private fun fetchOperatingHours(date: Date) {
         val c = Calendar.getInstance()
         c.time = date
@@ -353,19 +373,6 @@ class FacilityInfoPage : BaseActivity() {
         }
     }
 
-    private fun setDayChipsDate() {
-        val chipsList = listOf(sun, mon, tue, wed, thu, fri, sat)
-        val dayStrings = listOf(getString(R.string.SUN), getString(R.string.MON), getString(R.string.TUE), getString(R.string.WED),
-                getString(R.string.THU), getString(R.string.FRI), getString(R.string.SAT))
-        for (i in 0..6) {
-            val daysDifference = FluxUtil.getDayDifference(FluxUtil.dayString, dayStrings.get(i))
-            val date = FluxUtil.getDateDaysAfter(daysDifference)
-            val chip = chipsList.get(i)
-            chip.text = HtmlCompat.fromHtml(chip.text.toString() + "<br>" + "<br>" +
-                    "<b>" + date.date + "</b>", HtmlCompat.FROM_HTML_MODE_LEGACY)
-        }
-    }
-
     /**
      * Updates the chip to be "checked" when it is selected
      *
@@ -385,12 +392,20 @@ class FacilityInfoPage : BaseActivity() {
         wasCheckedDay = dayChips.checkedRadioButtonId
     }
 
+    /**
+     * This function fetches operating hours and menu after user authentication.
+     * This function overrides updateUI in BaseActivity.
+     */
     override fun updateUI() {
         Log.d("updatedFPUI", "updating")
         fetchOperatingHours(date = FluxUtil.getCurrentDateObject()) // TODO FIX!! ON REFRESH!!
         fetchMenuJSON(FluxUtil.getCurrentDate(), facilityClass!!.id)
     }
 
+    /**
+     * This function fetches dining location's menu and displays on each tabs.
+     * If empty, tabs are invisible.
+     */
     private fun fetchMenuJSON(day: String, facilityId: String) {
         api.fetchMenuJSON(
                 day = day,
@@ -452,6 +467,9 @@ class FacilityInfoPage : BaseActivity() {
         }
     }
 
+    /**
+     * This function sets a listener for tabs to select and show each day's available menu
+     */
     private fun setOnTabSelectedListener() {
         val listener = object : TabLayout.OnTabSelectedListener {
 
@@ -474,6 +492,9 @@ class FacilityInfoPage : BaseActivity() {
         menuTabs.addOnTabSelectedListener(listener)
     }
 
+    /**
+     * This function gets menu list from the adapter and displays on layout if available.
+     */
     private fun showMenu(menu: MenuClass?, mealOfDay: String) {
         if (menu != null) {
             menuItemListViewManager = LinearLayoutManager(this)
@@ -515,10 +536,6 @@ class FacilityInfoPage : BaseActivity() {
 
     fun getCampusLocation(): String {
         return facilityClass!!.id
-    }
-
-    fun getPredictedDensity(): Int {
-        return facilityClass!!.occupancyRating
     }
 
     override fun onBackPressed(): Unit = finish()
