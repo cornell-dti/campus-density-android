@@ -9,16 +9,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import org.cornelldti.density.density.network.API
 
-
+/**
+ * This class holds the main activity that checks for Firebase user authentication.
+ * This class is extended by other activities.
+ */
 open class BaseActivity :
         AppCompatActivity(), FirebaseAuth.IdTokenListener, FirebaseAuth.AuthStateListener {
 
     protected lateinit var api: API
-
-    /**
-     * GETTER FUNCTION FOR SELECTED FACILITY'S OCCUPANCY RATING
-     */
-    val facilityOccupancyRating: Int = 0 // KEEPS TRACK OF SELECTED FACILITY'S OCCUPANCY
 
     override fun onCreate(savedInstanceState: Bundle?) {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -47,9 +45,7 @@ open class BaseActivity :
         // TODO DISPLAY ERROR SCREEN AND ATTEMPT TO RE SIGN IN
     }
 
-    protected open fun updateUI() {
-        // add implementation
-    }
+    protected open fun updateUI() { }
 
     protected fun refreshToken() {
         requestToken(FirebaseAuth.getInstance().currentUser!!)

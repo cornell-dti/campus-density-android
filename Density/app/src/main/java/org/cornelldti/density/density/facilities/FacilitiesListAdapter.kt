@@ -17,6 +17,11 @@ import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.R
 import java.util.*
 
+
+/**
+ * This class holds FacilitiesActivity's adapter, which feeds in FacilityClass data into the Recyclerview.
+ * It also implements functions that handles layout filtering in the main facilities page.
+ */
 class FacilitiesListAdapter(data: List<FacilityClass>) : RecyclerView.Adapter<FacilitiesListAdapter.ViewHolder>(), Filterable {
 
     private var facilityClasses: List<FacilityClass>? = null
@@ -87,7 +92,9 @@ class FacilitiesListAdapter(data: List<FacilityClass>) : RecyclerView.Adapter<Fa
         }
     }
 
-
+    /**
+     * This function sets up the filters for the searchbar in main facilities page.
+     */
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(charSequence: CharSequence): FilterResults {
@@ -118,6 +125,9 @@ class FacilitiesListAdapter(data: List<FacilityClass>) : RecyclerView.Adapter<Fa
         }
     }
 
+    /**
+     * This function filters the data fed into adapter by iterating facilities
+     */
     fun filterFacilitiesByLocation(location: FacilityClass.CampusLocation) {
         val filteredList = ArrayList<FacilityClass>()
         for (f in facilityClasses!!) {
@@ -154,6 +164,9 @@ class FacilitiesListAdapter(data: List<FacilityClass>) : RecyclerView.Adapter<Fa
         }
     }
 
+    /**
+     * The 5 functions below sets the bar color for each facility item depending on density.
+     */
     private fun setClosed(holder: ViewHolder) {
         holder.firstBar.setColorFilter(ContextCompat.getColor(context!!, R.color.filler_boxes),
                 PorterDuff.Mode.MULTIPLY)

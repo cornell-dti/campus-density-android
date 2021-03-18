@@ -1,16 +1,16 @@
 package org.cornelldti.density.density.network
 
-import android.text.format.DateFormat
-import android.util.Log
-import org.cornelldti.density.density.DensityApplication
 import org.cornelldti.density.density.data.*
 import org.cornelldti.density.density.util.FluxUtil
 import org.json.JSONArray
 import org.json.JSONException
-import java.text.SimpleDateFormat
-import java.util.*
+import org.json.JSONObject
 
 object JsonParser {
+
+    /**
+     * This function returns a MutableList of all dining facilities on campus.
+     */
     fun parseFacilities(jsonArray: JSONArray): MutableList<FacilityClass>? =
             try {
                 val facilities = arrayListOf<FacilityClass>()
@@ -28,6 +28,9 @@ object JsonParser {
                 null
             }
 
+    /**
+     * This function parses each category of daily dining menus and returns a MenuClass object.
+     */
     fun parseMenu(jsonArray: JSONArray, day: String): MenuClass? {
         try {
             val dayMenus = getDayMenu(jsonArray, day)
@@ -42,10 +45,9 @@ object JsonParser {
                     val categoryItemsJSONArray = dayMenus.getJSONObject(i).getJSONArray("menu")
                     val menuItems = arrayListOf<MenuItem>()
                     // Menu is empty in API response, but there is still a meal.
-                    if(categoryItemsJSONArray.length() == 0) {
+                    if (categoryItemsJSONArray.length() == 0) {
                         menuItems.add(CategoryItem(""))
-                    }
-                    else {
+                    } else {
                         for (j in 0 until categoryItemsJSONArray.length()) {
                             val category = categoryItemsJSONArray.getJSONObject(j).getString("category")
                             val categoryItem = CategoryItem(category)
@@ -84,7 +86,9 @@ object JsonParser {
         }
     }
 
-    // Helper function that gets menus for specific day
+    /**
+     * This is a helper function that gets menus for specific day.
+     */
     private fun getDayMenu(jsonArray: JSONArray, day: String): JSONArray? {
         try {
             val weeksMenus = jsonArray.getJSONObject(0).getJSONArray("weeksMenus")
@@ -131,17 +135,19 @@ object JsonParser {
         return OperatingHoursClass(todayOperatingHours, tomorrowFirstOpHours)
     }
 
-    fun parseHistorical(jsonArray: JSONArray, day: String): List<Double> {
-        val densities = arrayListOf<Double>()
+    /**
+     * This function returns a mutable map object of the predicted waitTimes for all dining locations.
+     * The original predicted waitTimes are doubles, so we've decided to floor the decimals.
+     */
+    fun parseWaitTimes(jsonObject: JSONObject): MutableMap<String, Double> {
+        val waitTimes = mutableMapOf<String, Double>()
         try {
-            val facilityHistory = jsonArray.getJSONObject(0).getJSONObject("hours")
-            val facOnDay = facilityHistory.getJSONObject(day)
-            for (hour in 7..23) {
-                densities.add(facOnDay.getDouble(hour.toString()))
+            for (key in jsonObject.keys()) {
+                waitTimes[key] = kotlin.math.floor(jsonObject.getDouble(key))
             }
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-        return densities
+        return waitTimes
     }
 }

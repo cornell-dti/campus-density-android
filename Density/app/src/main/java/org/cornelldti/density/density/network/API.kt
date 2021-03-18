@@ -6,12 +6,14 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
+import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.data.MenuClass
 import org.cornelldti.density.density.data.OperatingHoursClass
 import org.json.JSONArray
 import org.json.JSONException
+import org.json.JSONObject
 
 class API(context: Context) {
     @Transient
@@ -22,12 +24,15 @@ class API(context: Context) {
         this.idToken = idToken
     }
 
+    /**
+     * This function fetches the whole list of dining facilities. (1/3)
+     */
     fun fetchFacilities(
             success: () -> Unit,
             onDone: (facilities: List<FacilityClass>) -> Unit,
             onError: (error: VolleyError) -> Unit
     ) {
-        val facilityListRequest = getRequest(
+        val facilityListRequest = getJsonArrayRequest(
                 url = FACILITY_LIST_ENDPOINT,
                 onResponse = { response ->
                     Log.d("RESP1", response.toString())
@@ -43,13 +48,16 @@ class API(context: Context) {
         queue.add(facilityListRequest)
     }
 
+    /**
+     * This function fetches fields in FacilityClass for all facilities. (2/3)
+     */
     private fun fetchFacilityInfo(
             list: MutableList<FacilityClass>,
             success: () -> Unit,
             onDone: (facilities: List<FacilityClass>) -> Unit,
             onError: (error: VolleyError) -> Unit
     ) {
-        val facilityInfoRequest = getRequest(
+        val facilityInfoRequest = getJsonArrayRequest(
                 url = FACILITY_INFO_ENDPOINT,
                 onResponse = { response ->
                     try {
@@ -85,13 +93,16 @@ class API(context: Context) {
         queue.add(facilityInfoRequest)
     }
 
+    /**
+     * This function fetches the real-time density of each dining facility. (3/3)
+     */
     private fun fetchFacilityOccupancy(
             list: MutableList<FacilityClass>,
             success: () -> Unit,
             onDone: (facilities: MutableList<FacilityClass>) -> Unit,
             onError: (error: VolleyError) -> Unit
     ) {
-        val facilityOccupancyRequest = getRequest(
+        val facilityOccupancyRequest = getJsonArrayRequest(
                 url = HOW_DENSE_ENDPOINT,
                 onResponse = { response ->
                     Log.d("RESP3", response.toString())
@@ -115,44 +126,15 @@ class API(context: Context) {
         queue.add(facilityOccupancyRequest)
     }
 
-    fun fetchHistoricalJSON(
-            day: String,
-            facilityId: String,
-            fetchHistoricalJSONOnResponse: (densities: List<Double>) -> Unit
-    ) {
-        val historicalDataRequest = getRequest(
-                url = "$HISTORICAL_DATA_ENDPOINT?id=$facilityId",
-                onResponse = { response ->
-                    fetchHistoricalJSONOnResponse(JsonParser.parseHistorical(response, day))
-                },
-                onError = { error -> Log.d("ERROR MESSAGE", error.toString()) }
-        )
-        queue.add(historicalDataRequest)
-    }
-
-    // TODO Function returns a 403 Error Code!
-    fun singleFacilityOccupancy(facId: String) {
-        val facilityRequest = getRequest(
-                url = "$HOW_DENSE_ENDPOINT?=$facId",
-                onResponse = { response ->
-                    Log.d("GOTOCCRATING", response.toString())
-                    // try {
-                    //   facilityOccupancyRating = response.getInt("density");
-                    // } catch(JSONException e) {
-                    //   e.printStackTrace();
-                    // }
-                },
-                onError = { error -> Log.d("ERRORSON", error.toString()) }
-        )
-        queue.add(facilityRequest)
-    }
-
+    /**
+     * This function fetches dining menu for each day in a specific facility.
+     */
     fun fetchMenuJSON(
             facilityId: String,
             day: String,
             fetchMenuJSONOnResponse: ((menu: MenuClass?) -> Unit)
     ) {
-        val menuRequest = getRequest(
+        val menuRequest = getJsonArrayRequest(
                 url = "$MENU_DATA_ENDPOINT?facility=$facilityId&date=$day",
                 onResponse = { response ->
                     fetchMenuJSONOnResponse(JsonParser.parseMenu(response, day))
@@ -167,21 +149,103 @@ class API(context: Context) {
     /**
      * This function applies the onResponse functions passed in as params on the response of the api request.
      */
-    fun facilityHours(facilityId: String, startDate: String, endDate: String, facilityHoursTimeStampsOnResponse: (OperatingHoursClass) -> Unit)
-    {
-        val facilityHoursRequest = getRequest(
+    fun facilityHours(facilityId: String, startDate: String, endDate: String, facilityHoursTimeStampsOnResponse: (OperatingHoursClass) -> Unit) {
+        val facilityHoursRequest = getJsonArrayRequest(
                 url = "$OPERATING_HOURS_ENDPOINT?id=$facilityId&startDate=$startDate&endDate=$endDate",
                 onResponse = { response ->
                     facilityHoursTimeStampsOnResponse(JsonParser.parseOperatingHoursToTimestampList(response))
                 },
                 onError = { error ->
-                    Log.d("Error fetching hours", error.networkResponse.toString());
+                    Log.d("Error fetching hours", error.networkResponse.toString())
                 }
         )
         queue.add(facilityHoursRequest)
     }
 
-    private fun getRequest(
+    /**
+     * This function submits the FacilityInfoPage feedback.
+     */
+    fun addFacilityInfoFeedback(campusLocation: String,
+                                predicted: Int,
+                                observed: Int,
+                                comment: String
+    ) {
+        val feedback = JSONObject()
+        try {
+            feedback.put("eatery", campusLocation)
+            feedback.put("predictedWait", predicted)
+            feedback.put("observedWait", observed)
+            feedback.put("comment", comment)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+        val feedbackRequest = postJsonObjectRequest(
+                url = FEEDBACK_ENDPOINT,
+                body = feedback,
+                onResponse = { response ->
+                    Log.d("Success Response", response.toString())
+                },
+                onError = { error ->
+                    Log.d("Error Response", error.toString())
+                }
+        )
+        queue.add(feedbackRequest)
+    }
+
+    /**
+     * This function fetches the waitTimes for all dining locations.
+     */
+    fun fetchWaitTimes(
+            onDone: (waitTimes: Map<String, Double>) -> Unit,
+            onError: (error: VolleyError) -> Unit
+    ) {
+        val waitTimesRequest = getJsonObjectRequest(
+                url = WAIT_TIME_ENDPOINT,
+                onResponse = { response ->
+                    val waitTimes = JsonParser.parseWaitTimes(jsonObject = response).toMap()
+                    onDone(waitTimes)
+                },
+                onError = { error ->
+                    Log.d("TAG", error.toString())
+                    onError(error)
+                }
+        )
+        queue.add(waitTimesRequest)
+    }
+
+    private fun postJsonObjectRequest(
+            url: String,
+            body: JSONObject,
+            onResponse: (jsonObject: JSONObject) -> Unit,
+            onError: (error: VolleyError) -> Unit
+    ): JsonObjectRequest = object : JsonObjectRequest(
+            Method.POST,
+            url,
+            body,
+            Response.Listener(onResponse),
+            Response.ErrorListener(onError)
+    ) {
+        override fun getHeaders(): Map<String, String> =
+                hashMapOf("Authorization" to "Bearer $idToken")
+    }
+
+    private fun getJsonObjectRequest(
+            url: String,
+            onResponse: (jsonObject: JSONObject) -> Unit,
+            onError: (error: VolleyError) -> Unit
+    ): JsonObjectRequest = object : JsonObjectRequest(
+            Method.GET,
+            url,
+            null,
+            Response.Listener(onResponse),
+            Response.ErrorListener(onError)
+    ) {
+        override fun getHeaders(): Map<String, String> =
+                hashMapOf("Authorization" to "Bearer $idToken")
+    }
+
+    private fun getJsonArrayRequest(
             url: String,
             onResponse: (jsonArray: JSONArray) -> Unit,
             onError: (error: VolleyError) -> Unit

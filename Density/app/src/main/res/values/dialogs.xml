@@ -1,0 +1,17 @@
+<resources>
+    <dimen name="dialog_title">@dimen/_15ssp</dimen>
+    <dimen name="dialog_title_margin">@dimen/_13sdp</dimen>
+    <dimen name="dialog_text">@dimen/_12ssp</dimen>
+    <dimen name="dialog_text_height">@dimen/_42sdp</dimen>
+    <dimen name="dialog_text_margin">@dimen/_4sdp</dimen>
+    <dimen name="dialog_text_padding">@dimen/_29sdp</dimen>
+    <dimen name="dialog_answer_height">@dimen/_100sdp</dimen>
+    <dimen name="dialog_answer_padding">@dimen/_29sdp</dimen>
+    <dimen name="dialog_button">@dimen/_11ssp</dimen>
+    <dimen name="dialog_button_width">@dimen/_82sdp</dimen>
+    <dimen name="dialog_button_margin">@dimen/_21sdp</dimen>
+    <dimen name="dialog_close_margin">@dimen/_13sdp</dimen>
+    <dimen name="line_spacing_extra">@dimen/_2sdp</dimen>
+    <dimen name="dialog_box_margin">@dimen/_2sdp</dimen>
+    <dimen name="dialog_radio_margin">@dimen/_9sdp</dimen>
+</resources>

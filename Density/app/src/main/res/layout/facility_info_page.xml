@@ -117,6 +117,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/current_view" />
 
+            <TextView
+                android:id="@+id/accuracy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/accuracy"
+                android:textColorLink="#4A90E2"
+                android:textSize="12sp"
+                android:textColor="@color/hyperlink"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/lastUpdated" />
+
             <RadioGroup
                 android:id="@+id/dayChips"
                 android:layout_width="0dp"
@@ -126,7 +137,7 @@
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lastUpdated"
+                app:layout_constraintTop_toBottomOf="@+id/accuracy"
                 app:singleLine="true"
                 app:singleSelection="true">
 

@@ -17,7 +17,7 @@ class MenuListAdapter(private val menuItems: List<MenuItem>, private val context
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
-    open inner class CategoryViewHolder(v: View) : RecyclerView.ViewHolder(v){
+    open inner class CategoryViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         private val categoryName = v.category_name
 
         fun bind(categoryItem: CategoryItem) {
@@ -25,7 +25,7 @@ class MenuListAdapter(private val menuItems: List<MenuItem>, private val context
         }
     }
 
-    open inner class FoodViewHolder(v: View) : RecyclerView.ViewHolder(v){
+    open inner class FoodViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         private val foodName = v.food_name
 
         fun bind(foodItem: FoodItem) {
@@ -49,11 +49,10 @@ class MenuListAdapter(private val menuItems: List<MenuItem>, private val context
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val type = getItemViewType(position)
-        if(type == MenuItem.TYPE_CATEGORY) {
+        if (type == MenuItem.TYPE_CATEGORY) {
             val categoryItem = menuItems[position] as CategoryItem
             (viewHolder as CategoryViewHolder).bind(categoryItem)
-        }
-        else {
+        } else {
             val foodItem = menuItems[position] as FoodItem
             (viewHolder as FoodViewHolder).bind(foodItem)
         }

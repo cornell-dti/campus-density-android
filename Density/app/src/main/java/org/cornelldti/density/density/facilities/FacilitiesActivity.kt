@@ -1,7 +1,6 @@
 package org.cornelldti.density.density.facilities
 
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -29,38 +28,51 @@ import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.facilitydetail.FacilityInfoPage
 import kotlin.math.absoluteValue
 
+/**
+ * This class holds the main page activity that the user will first interact with while using the app.
+ * Displays: waitTimes and density for all dining locations.
+ * Authentication takes place in BaseActivity.
+ */
 class FacilitiesActivity : BaseActivity() {
 
     private lateinit var spinner: ProgressBar
+    private lateinit var waitTimesMap: Map<String, Double>
 
     private var adapter: FacilitiesListAdapter? = null
-
     private var collapsingToolbarLayout: CollapsingToolbarLayout? = null
     private var appBarLayout: AppBarLayout? = null
-
     private var layoutManager: RecyclerView.LayoutManager? = null
+    private var searchView: SearchView? = null
+    private var loaded: Boolean = false
 
     private var filterChips: ChipGroup? = null
-
     private var all: Chip? = null
     private var wasChecked: Int = 0
 
-    private val facilitiesScroll: Float = 0.toFloat()
-
-    private var searchView: SearchView? = null
-
-    private var loaded: Boolean = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        loaded = false
         super.onCreate(savedInstanceState)
         setContentView(R.layout.facilities_activity)
 
-        covidPolicyButton.setBackgroundColor(resources.getColor(R.color.dark_grey))
-        spinner = findViewById(R.id.progressBar)
+        loaded = false
+        swipeRefresh.isNestedScrollingEnabled = true
 
         setOnRefreshListener()
+        setNestedScrollView()
+        setToolbar()
 
+        facilities.setHasFixedSize(true)
+        layoutManager = LinearLayoutManager(this)
+        facilities.layoutManager = layoutManager
+
+        covidPolicyButton.setBackgroundColor(resources.getColor(R.color.dark_grey))
+        spinner = findViewById(R.id.progressBar)
+        collapsingToolbarLayout = findViewById(R.id.collapsingToolbar)
+    }
+
+    /**
+     * This function handles the collapsing toolbar UI in the main facilities page.
+     */
+    private fun setNestedScrollView() {
         appBarLayout = findViewById(R.id.appbar)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -88,10 +100,12 @@ class FacilitiesActivity : BaseActivity() {
                 }
             }
         }
+    }
 
-        collapsingToolbarLayout = findViewById(R.id.collapsingToolbar)
-        swipeRefresh.isNestedScrollingEnabled = true
-
+    /**
+     * This function handles the toolbar UI in the main facilities page.
+     */
+    private fun setToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
         appBarLayout!!.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
@@ -119,27 +133,12 @@ class FacilitiesActivity : BaseActivity() {
                 appBarLayout.elevation = 0f
             }
         })
-
-        facilities.setHasFixedSize(true)
-
-        layoutManager = LinearLayoutManager(this)
-        facilities.layoutManager = layoutManager
     }
 
-    private fun fetchFacilities(refresh: Boolean, success: () -> Unit) {
-        api.fetchFacilities(
-                success = success,
-                onDone = { list ->
-                    failurePage.visibility = View.GONE
-                    fetchFacilityOnResponse(list = list, refresh = refresh, success = success)
-                },
-                onError = { error ->
-                    success()
-                    fetchFacilitiesOnError(error = error)
-                }
-        )
-    }
-
+    /**
+     * This function handles the swipeRefresh UI in the main facilities page.
+     * The swipeRefresh motion triggers to re-fetch facilities.
+     */
     private fun setOnRefreshListener() {
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = true
@@ -153,6 +152,10 @@ class FacilitiesActivity : BaseActivity() {
         }
     }
 
+    /**
+     * This function sets a listener for the location filter chips.
+     * Changes made to the chip checked states are handled by handleCheckChange function.
+     */
     private fun setChipOnClickListener() {
         all = findViewById(R.id.all)
 
@@ -161,6 +164,11 @@ class FacilitiesActivity : BaseActivity() {
         filterChips!!.setOnCheckedChangeListener { _, checkedId -> handleCheckChange(checkedId) }
     }
 
+    /**
+     * This function handles the changes made to the checked states of chips.
+     * Depending on the checked state, this function calls filterFacilitiesByLocation from
+     * the adapter to filter the layout.
+     */
     private fun handleCheckChange(checkedId: Int) {
         when (checkedId) {
             R.id.all -> {
@@ -191,6 +199,10 @@ class FacilitiesActivity : BaseActivity() {
         }
     }
 
+    /**
+     * This function fetches facilities after user authentication.
+     * This function overrides updateUI in BaseActivity.
+     */
     override fun updateUI() {
         Log.d("updatedMainUI", "success")
         if (adapter == null)
@@ -199,6 +211,10 @@ class FacilitiesActivity : BaseActivity() {
             fetchFacilities(true) { }
     }
 
+    /**
+     * This function handles the collapsing search-bar UI on the main facilities page.
+     * The searchable toolbar filters out the facilities list according to the search query.
+     */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val menuInflater = menuInflater
         menuInflater.inflate(R.menu.toolbar_search, menu)
@@ -246,8 +262,43 @@ class FacilitiesActivity : BaseActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    // FETCH FUNCTIONS OVERRIDES
+    /**
+     * This function fetches a list of estimated wait times for all dining locations.
+     * The returned values are real-time and are measured by our waitTimes algorithm.
+     */
+    private fun fetchWaitTimes() {
+        api.fetchWaitTimes(
+                onDone = { map ->
+                    waitTimesMap = map
+                },
+                onError = { error ->
+                    Log.d("ERROR", error.toString())
+                }
+        )
+    }
 
+    /**
+     * This function fetches a list of all dining facilities on campus.
+     * The returned list is handled by fetchFacilityOnResponse
+     */
+    private fun fetchFacilities(refresh: Boolean, success: () -> Unit) {
+        api.fetchFacilities(
+                success = success,
+                onDone = { list ->
+                    failurePage.visibility = View.GONE
+                    fetchFacilityOnResponse(list = list, refresh = refresh, success = success)
+                },
+                onError = { error ->
+                    success()
+                    fetchFacilitiesOnError(error = error)
+                }
+        )
+    }
+
+    /**
+     * This function handles the error response from fetchFacilities.
+     * If error persists, it prompts the failure page.
+     */
     private fun fetchFacilitiesOnError(error: VolleyError) {
         Log.d("ERROR", error.toString())
         val handler = Handler()
@@ -260,12 +311,19 @@ class FacilitiesActivity : BaseActivity() {
         }, 10000)
     }
 
+    /**
+     * This function handles the success response from fetchFacilities.
+     * On initial call, it sets up a listener to pass Bundled data to a specific FacilityInfoPage.
+     * On refresh, it resets waitTimes, adapter, the filter chips.
+     * This function also triggers to fetch waitTimes.
+     */
     private fun fetchFacilityOnResponse(
             list: List<FacilityClass>,
             refresh: Boolean,
             success: () -> Unit
     ) {
         if (!refresh) {
+            fetchWaitTimes()
             val adapter = FacilitiesListAdapter(list)
             adapter.setOnItemClickListener(object : FacilitiesListAdapter.ClickListener {
                 override fun onItemClick(position: Int, v: View) {
@@ -273,19 +331,25 @@ class FacilitiesActivity : BaseActivity() {
                     val b = Bundle()
                     b.putSerializable(FacilityInfoPage.ARG_PARAM, adapter.dataSet!![position])
                     intent.putExtras(b)
+                    intent.putExtra("waitTimes", waitTimesMap.get(adapter.dataSet!![position].id)?.toInt())
                     startActivity(intent)
                 }
             })
+
             this.adapter = adapter
             this.facilities.adapter = adapter
             this.spinner.visibility = View.GONE
             this.facilities.visibility = View.VISIBLE
+
             success()
             setChipOnClickListener()
+
         } else {
+            fetchWaitTimes()
             val adapter = this.adapter!!
             adapter.setDataSet(list)
             success()
+
             when (filterChips!!.checkedChipId) {
                 R.id.all -> adapter.showAllLocations()
                 R.id.north -> adapter.filterFacilitiesByLocation(FacilityClass.CampusLocation.NORTH)
@@ -296,6 +360,9 @@ class FacilitiesActivity : BaseActivity() {
         }
     }
 
+    /**
+     * This function creates an intent to open up the COVID-19 dining policies webpage.
+     */
     fun openCovidPolicy(v: View?) {
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://scl.cornell.edu/news-events/news/guide-cornell-dining-fall-2020"))
         startActivity(browserIntent)

@@ -11,7 +11,7 @@ class DensityApplication : Application() {
 
     companion object {
         private lateinit var myInstance: DensityApplication
-        fun getAppContext() : Context = myInstance.applicationContext
+        fun getAppContext(): Context = myInstance.applicationContext
     }
 }
 
