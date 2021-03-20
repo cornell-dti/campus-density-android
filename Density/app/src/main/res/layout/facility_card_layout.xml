@@ -29,17 +29,18 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:singleLine="false"
-            android:text="Facility Name"
+            android:text="@string/facility_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/openStatusDescription"/>
+            app:layout_constraintEnd_toStartOf="@id/facility_wait_time"/>
 
         <TextView
-            android:id="@+id/openStatusDescription"
+            android:id="@+id/facility_wait_time"
             style="@style/DTI.Subtitle2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Description"
+            android:text="@string/facility_wait_time"
+            android:textColor="@color/dark_grey"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/facility_name" />
 
