@@ -80,10 +80,14 @@ class FacilitiesListAdapter(data: List<FacilityClass>) : RecyclerView.Adapter<Fa
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.name.text = dataSet!![position].name
         val waitTimes = waitTimesMap?.get(dataSet!![position].id)?.toInt()
-        if (waitTimes != null) {
-            holder.waitTimes.text = "$waitTimes min. wait"
+        if (dataSet!![position].isOpen) {
+            if (waitTimes != null) {
+                holder.waitTimes.text = "$waitTimes min. wait"
+            } else {
+                holder.waitTimes.text = "Unknown min. wait"
+            }
         } else {
-            holder.waitTimes.text = "Unknown min. wait"
+            holder.waitTimes.text = "Closed"
         }
         setBars(if (dataSet!![position].isOpen) dataSet!![position].occupancyRating else -1, holder)
     }

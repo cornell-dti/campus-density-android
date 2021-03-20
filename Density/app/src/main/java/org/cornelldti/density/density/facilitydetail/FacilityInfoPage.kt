@@ -99,10 +99,14 @@ class FacilityInfoPage : BaseActivity() {
      */
     private fun setWaitTimes() {
         waitTimes = findViewById(R.id.waitTimes)
-        if (waitTimesValue != null) {
+        if (facilityClass!!.isOpen) {
+            if (waitTimesValue != null) {
             waitTimes.text = "$waitTimesValue min. wait"
+            } else {
+                waitTimes.text = "Unknown min. wait"
+            }
         } else {
-            waitTimes.text = "Unknown min. wait"
+            waitTimes.text = ""
         }
     }
 
