@@ -33,7 +33,7 @@ class FacilitiesListAdapter(data: List<FacilityClass>) : RecyclerView.Adapter<Fa
 
     open inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
         internal val name: TextView
-        internal val waitTime: TextView
+        internal val waitTimes: TextView
         internal val firstBar: ImageView
         internal val secondBar: ImageView
         internal val thirdBar: ImageView
@@ -42,7 +42,7 @@ class FacilitiesListAdapter(data: List<FacilityClass>) : RecyclerView.Adapter<Fa
         init {
             v.setOnClickListener(this)
             name = v.findViewById(R.id.facility_name)
-            waitTime = v.findViewById(R.id.facility_wait_time)
+            waitTimes = v.findViewById(R.id.facility_wait_time)
             firstBar = v.findViewById(R.id.first_bar)
             secondBar = v.findViewById(R.id.second_bar)
             thirdBar = v.findViewById(R.id.third_bar)
@@ -79,11 +79,11 @@ class FacilitiesListAdapter(data: List<FacilityClass>) : RecyclerView.Adapter<Fa
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.name.text = dataSet!![position].name
-        val waitTime = waitTimesMap?.get(dataSet!![position].id)?.toInt()
-        if (waitTime != null) {
-            holder.waitTime.text = "$waitTime min. wait"
+        val waitTimes = waitTimesMap?.get(dataSet!![position].id)?.toInt()
+        if (waitTimes != null) {
+            holder.waitTimes.text = "$waitTimes min. wait"
         } else {
-            holder.waitTime.text = "Unknown min. wait"
+            holder.waitTimes.text = "Unknown min. wait"
         }
         setBars(if (dataSet!![position].isOpen) dataSet!![position].occupancyRating else -1, holder)
     }
