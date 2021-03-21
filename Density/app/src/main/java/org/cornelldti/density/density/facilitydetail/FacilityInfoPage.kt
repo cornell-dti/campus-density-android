@@ -101,7 +101,7 @@ class FacilityInfoPage : BaseActivity() {
         waitTimes = findViewById(R.id.waitTimes)
         if (facilityClass!!.isOpen) {
             if (waitTimesValue != null) {
-            waitTimes.text = "$waitTimesValue min. wait"
+                waitTimes.text = "$waitTimesValue min. wait"
             } else {
                 waitTimes.text = "Unknown min. wait"
             }

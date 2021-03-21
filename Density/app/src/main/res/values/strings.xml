@@ -94,7 +94,7 @@
     <!-- failure page strings -->
     <string name="sorry_failure">Sorry, there\'s an error loading the data.</string>
     <string name="check_internet">Please check your internet connection.</string>
-    
+
     <!--  facility info page feedback strings  -->
     <string name="accuracy_feedback">Accuracy Feedback</string>
     <string name="question_accurate">Is this information accurate?</string>

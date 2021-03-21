@@ -30,9 +30,9 @@
             android:layout_marginEnd="8dp"
             android:singleLine="false"
             android:text="@string/facility_name"
+            app:layout_constraintEnd_toStartOf="@id/facility_wait_time"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/facility_wait_time"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/facility_wait_time"
@@ -49,8 +49,8 @@
             android:id="@+id/first_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:layout_marginStart="0dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="2.5dp"
             android:layout_marginBottom="4dp"
             android:adjustViewBounds="true"
