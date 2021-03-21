@@ -84,7 +84,7 @@ class FacilitiesListAdapter(data: List<FacilityClass>) : RecyclerView.Adapter<Fa
             if (waitTimes != null) {
                 holder.waitTimes.text = "$waitTimes min. wait"
             } else {
-                holder.waitTimes.text = "Unknown min. wait"
+                holder.waitTimes.text = "Unknown wait"
             }
         } else {
             holder.waitTimes.text = "Closed"
