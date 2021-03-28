@@ -14,4 +14,6 @@
     <dimen name="line_spacing_extra">@dimen/_2sdp</dimen>
     <dimen name="dialog_box_margin">@dimen/_2sdp</dimen>
     <dimen name="dialog_radio_margin">@dimen/_9sdp</dimen>
+    <dimen name="dialog_number_input_margin">@dimen/_17sdp</dimen>
+    <dimen name="dialog_checkbox">@dimen/_24sdp</dimen>
 </resources>

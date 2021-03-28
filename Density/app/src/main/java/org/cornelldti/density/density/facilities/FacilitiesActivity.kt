@@ -10,9 +10,12 @@ import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.ProgressBar
 import androidx.appcompat.widget.SearchView
+import androidx.cardview.widget.CardView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.VolleyError
@@ -26,6 +29,7 @@ import org.cornelldti.density.density.LockableAppBarLayoutBehavior
 import org.cornelldti.density.density.R
 import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.facilitydetail.FacilityInfoPage
+import org.cornelldti.density.density.facilities.mainfeedback.MainFeedbackDialogFragment
 import kotlin.math.absoluteValue
 
 /**
@@ -44,6 +48,8 @@ class FacilitiesActivity : BaseActivity() {
     private var layoutManager: RecyclerView.LayoutManager? = null
     private var searchView: SearchView? = null
     private var loaded: Boolean = false
+    private var feedbackButton: Button? = null
+    private var feedbackCard: CardView? = null
 
     private var filterChips: ChipGroup? = null
     private var all: Chip? = null
@@ -59,6 +65,7 @@ class FacilitiesActivity : BaseActivity() {
         setOnRefreshListener()
         setNestedScrollView()
         setToolbar()
+        setMainFeedbackOnClickListener()
 
         facilities.setHasFixedSize(true)
         layoutManager = LinearLayoutManager(this)
@@ -67,6 +74,19 @@ class FacilitiesActivity : BaseActivity() {
         covidPolicyButton.setBackgroundColor(resources.getColor(R.color.dark_grey))
         spinner = findViewById(R.id.progressBar)
         collapsingToolbarLayout = findViewById(R.id.collapsingToolbar)
+    }
+
+    /**
+     * This function sets a listener to open the main page feedback.
+     */
+    private fun setMainFeedbackOnClickListener() {
+        feedbackCard = findViewById(R.id.main_feedback_card)
+        feedbackCard!!.isVisible = false
+        feedbackButton = findViewById(R.id.main_feedback_card_button)
+        feedbackButton!!.setOnClickListener {
+            val mainFeedbackDialogFragment = MainFeedbackDialogFragment()
+            mainFeedbackDialogFragment.show(supportFragmentManager, "MainFeedbackDialogFragment")
+        }
     }
 
     /**
@@ -340,6 +360,8 @@ class FacilitiesActivity : BaseActivity() {
             this.facilities.adapter = adapter
             this.spinner.visibility = View.GONE
             this.facilities.visibility = View.VISIBLE
+
+            feedbackCard!!.isVisible = true
 
             success()
             setChipOnClickListener()

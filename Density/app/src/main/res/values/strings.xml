@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Flux</string>
-    <string name="search_title"></string>
     <string name="endpoint_url">https://flux.api.internal.cornelldti.org/v1/</string>
 
     <string name="all">All</string>
@@ -88,8 +87,6 @@
     <!-- facilities page strings -->
     <string name="covid_policy">Face Coverings Required at all dining halls.</string>
     <string name="covid_policy_button">View Dining Policies</string>
-    <string name="main_page_feedback">Have Feedback? We would love to hear from you!</string>
-    <string name="main_page_feedback_button">Leave Feedback</string>
 
     <!-- failure page strings -->
     <string name="sorry_failure">Sorry, there\'s an error loading the data.</string>
@@ -112,6 +109,28 @@
     <string name="icon_star">Star Icon</string>
     <string name="message_thank">Thank You!</string>
     <string name="message_help">This helps us fix any discrepancies and create a better experience for you.</string>
+
+    <!--  facilities page feedback strings  -->
+    <string name="main_page_feedback">Have Feedback? We\'d love to hear from you!</string>
+    <string name="main_page_feedback_button">Leave Feedback</string>
+    <string name="flux_feedback">Flux Feedback</string>
+    <string name="question_recommend">1. How willing are you to recommend Flux to your friends? (1–5)</string>
+    <string name="number_one">1</string>
+    <string name="number_two">2</string>
+    <string name="number_three">3</string>
+    <string name="number_four">4</string>
+    <string name="number_five">5</string>
+    <string name="question_features">2. Which features do you find useful?</string>
+    <string name="popular_times">Popular Times</string>
+    <string name="availability_breakdown">Availability Breakdown</string>
+    <string name="dining_areas">Dining Areas</string>
+    <string name="question_overall">3. How do you like Flux overall?</string>
+    <string name="not_like">I don\'t like it.</string>
+    <string name="very_like">Very much</string>
+    <string name="question_suggestion">4. Do you have any other suggestions?</string>
+    <string name="placeholder_suggestion">Please enter here. We really appreciate your feedback!</string>
+    <string name="message_suggestion">Your feedback would help us improve.</string>
+    <string name="back_home">Back to Home</string>
 
 
 </resources>
