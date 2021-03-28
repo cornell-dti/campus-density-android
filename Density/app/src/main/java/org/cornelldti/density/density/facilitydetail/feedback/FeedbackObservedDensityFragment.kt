@@ -86,7 +86,7 @@ class FeedbackObservedDensityFragment : Fragment() {
 
     private fun setButtonClose() {
         buttonClose.setOnClickListener {
-            val intent = Intent("BROADCAST_ACTION")
+            val intent = Intent("FEEDBACK_BROADCAST_ACTION")
             LocalBroadcastManager.getInstance(context!!).sendBroadcast(intent)
         }
     }

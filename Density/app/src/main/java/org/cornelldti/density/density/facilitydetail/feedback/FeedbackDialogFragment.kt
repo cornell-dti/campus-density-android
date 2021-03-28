@@ -19,7 +19,7 @@ import org.cornelldti.density.density.R
 class FeedbackDialogFragment : DialogFragment() {
 
     private lateinit var viewPager: ViewPager2
-    private val BROADCAST_ACTION = "BROADCAST_ACTION"
+    private val FEEDBACK_BROADCAST_ACTION = "FEEDBACK_BROADCAST_ACTION"
     var predictedWaitTime = 0
     var accuracyInput = 0
     var observedDensityInput = 0
@@ -61,9 +61,9 @@ class FeedbackDialogFragment : DialogFragment() {
     /**
      * This function receives the broadcast call to close the dialog.
      */
-    var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+    private var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
-            if (intent.action != null && intent.action == BROADCAST_ACTION) {
+            if (intent.action != null && intent.action == FEEDBACK_BROADCAST_ACTION) {
                 dialog!!.dismiss()
             }
         }
@@ -73,7 +73,7 @@ class FeedbackDialogFragment : DialogFragment() {
         super.onResume()
         context?.let {
             LocalBroadcastManager.getInstance(
-                    it).registerReceiver(broadcastReceiver, IntentFilter(BROADCAST_ACTION))
+                    it).registerReceiver(broadcastReceiver, IntentFilter(FEEDBACK_BROADCAST_ACTION))
         }
     }
 
