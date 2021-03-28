@@ -88,6 +88,8 @@
     <!-- facilities page strings -->
     <string name="covid_policy">Face Coverings Required at all dining halls.</string>
     <string name="covid_policy_button">View Dining Policies</string>
+    <string name="main_page_feedback">Have Feedback? We would love to hear from you!</string>
+    <string name="main_page_feedback_button">Leave Feedback</string>
 
     <!-- failure page strings -->
     <string name="sorry_failure">Sorry, there\'s an error loading the data.</string>
