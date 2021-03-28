@@ -80,21 +80,5 @@ class MainFeedbackThanksFragment : Fragment() {
         Log.d("TAG", overallInput.toString())
         Log.d("TAG", commentInput)
 
-
-//        if (accuracyInput == 1) {
-//            api.addFacilityInfoFeedback(
-//                    campusLocation,
-//                    predictedWaitTime,
-//                    predictedWaitTime,
-//                    commentInput
-//            )
-//        } else {
-//            api.addFacilityInfoFeedback(
-//                    campusLocation,
-//                    predictedWaitTime,
-//                    observedWaitTime,
-//                    commentInput
-//            )
-//        }
     }
 }
