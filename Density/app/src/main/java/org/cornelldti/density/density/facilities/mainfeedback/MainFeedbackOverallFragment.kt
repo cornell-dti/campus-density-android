@@ -56,10 +56,10 @@ class MainFeedbackOverallFragment : Fragment() {
                 setBars(i)
                 when (i) {
                     null -> selectedAnswer = -1
-                    R.id.first_radio -> selectedAnswer = 0
-                    R.id.second_radio -> selectedAnswer = 1
-                    R.id.third_radio -> selectedAnswer = 2
-                    R.id.fourth_radio -> selectedAnswer = 3
+                    R.id.first_radio -> selectedAnswer = 1
+                    R.id.second_radio -> selectedAnswer = 2
+                    R.id.third_radio -> selectedAnswer = 3
+                    R.id.fourth_radio -> selectedAnswer = 4
                 }
             }
         }

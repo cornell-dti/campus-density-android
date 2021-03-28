@@ -46,12 +46,12 @@ class MainFeedbackFeaturesFragment : Fragment() {
 
         for (i in 0..3) {
             checkBoxList[i].setOnCheckedChangeListener { checkBox, isChecked ->
-                if(isChecked && !selectedAnswer.contains(i)) {
-                    selectedAnswer.add(i)
+                if(isChecked && !selectedAnswer.contains(i+1)) {
+                    selectedAnswer.add(i+1)
                     selectedAnswer.sort()
                     Log.d("TAG", selectedAnswer.toString())
-                } else if (!isChecked && selectedAnswer.contains(i)) {
-                    selectedAnswer.remove(i)
+                } else if (!isChecked && selectedAnswer.contains(i+1)) {
+                    selectedAnswer.remove(i+1)
                     selectedAnswer.sort()
                     Log.d("TAG", selectedAnswer.toString())
                 }
@@ -71,7 +71,7 @@ class MainFeedbackFeaturesFragment : Fragment() {
 
     private fun setButtonNext() {
         buttonNext.setOnClickListener {
-            (parentFragment as MainFeedbackDialogFragment).featuresInput = selectedAnswer.toList()
+            (parentFragment as MainFeedbackDialogFragment).featuresInput = selectedAnswer
             viewPager.setCurrentItem((parentFragment as MainFeedbackDialogFragment).getPagerItem(1), false)
         }
     }
