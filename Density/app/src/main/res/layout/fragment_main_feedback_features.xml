@@ -29,8 +29,8 @@
 
     <TextView
         android:id="@+id/question_dialog"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dialog_text_height"
+        android:layout_width="@dimen/_270sdp"
+        android:layout_height="@dimen/dialog_text_height_alt"
         android:gravity="center"
         android:lineSpacingExtra="@dimen/line_spacing_extra"
         android:paddingLeft="@dimen/dialog_text_padding"
@@ -46,8 +46,8 @@
         android:id="@+id/features_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginStart="@dimen/_40sdp"
+        android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/question_dialog">
 
@@ -56,28 +56,28 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dialog_checkbox"
             android:text="@string/popular_times"
-            android:textColor="@color/radio_button_grey"/>
+            android:textColor="@color/radio_button_grey" />
 
         <CheckBox
             android:id="@+id/availability_breakdown"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dialog_checkbox"
             android:text="@string/availability_breakdown"
-            android:textColor="@color/radio_button_grey"/>
+            android:textColor="@color/radio_button_grey" />
 
         <CheckBox
             android:id="@+id/dining_area"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dialog_checkbox"
             android:text="@string/dining_areas"
-            android:textColor="@color/radio_button_grey"/>
+            android:textColor="@color/radio_button_grey" />
 
         <CheckBox
             android:id="@+id/menu"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dialog_checkbox"
             android:text="@string/menu"
-            android:textColor="@color/radio_button_grey"/>
+            android:textColor="@color/radio_button_grey" />
 
     </LinearLayout>
 
@@ -86,7 +86,7 @@
         android:layout_width="@dimen/dialog_button_width"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dialog_button_margin"
-        android:layout_marginTop="@dimen/_6sdp"
+        android:layout_marginTop="@dimen/_16sdp"
         android:background="@drawable/button_previous"
         android:text="@string/button_previous"
         android:textAllCaps="false"
@@ -99,7 +99,7 @@
         android:id="@+id/button_next"
         android:layout_width="@dimen/dialog_button_width"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_6sdp"
+        android:layout_marginTop="@dimen/_16sdp"
         android:layout_marginEnd="@dimen/dialog_button_margin"
         android:backgroundTint="@color/feedback_button"
         android:text="@string/button_next"

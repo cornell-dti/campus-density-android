@@ -3,6 +3,7 @@
     <dimen name="dialog_title_margin">@dimen/_13sdp</dimen>
     <dimen name="dialog_text">@dimen/_12ssp</dimen>
     <dimen name="dialog_text_height">@dimen/_42sdp</dimen>
+    <dimen name="dialog_text_height_alt">@dimen/_35sdp</dimen>
     <dimen name="dialog_text_margin">@dimen/_4sdp</dimen>
     <dimen name="dialog_text_padding">@dimen/_29sdp</dimen>
     <dimen name="dialog_answer_height">@dimen/_100sdp</dimen>

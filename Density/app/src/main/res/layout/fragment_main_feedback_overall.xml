@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -11,69 +10,68 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dialog_close_margin"
         android:layout_marginEnd="@dimen/dialog_close_margin"
-        android:src="@drawable/ic_close"
         android:contentDescription="@string/button_close"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        android:src="@drawable/ic_close"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/title_dialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/flux_feedback"
-        android:textSize="@dimen/dialog_title"
-        android:textColor="@color/feedback_title"
         android:layout_marginTop="@dimen/dialog_title_margin"
-        app:layout_constraintTop_toBottomOf="@+id/button_close"
+        android:text="@string/flux_feedback"
+        android:textColor="@color/feedback_title"
+        android:textSize="@dimen/dialog_title"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/button_close" />
 
     <TextView
         android:id="@+id/question_dialog"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dialog_text_height"
-        android:text="@string/question_overall"
-        android:textSize="@dimen/dialog_text"
-        android:textColor="@color/feedback_question"
+        android:layout_height="@dimen/dialog_text_height_alt"
+        android:gravity="center"
         android:lineSpacingExtra="@dimen/line_spacing_extra"
-        android:layout_marginTop="@dimen/dialog_text_margin"
         android:paddingLeft="@dimen/dialog_text_padding"
         android:paddingRight="@dimen/dialog_text_padding"
-        android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@+id/title_dialog"
+        android:text="@string/question_overall"
+        android:textColor="@color/feedback_question"
+        android:textSize="@dimen/dialog_text"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/title_dialog" />
 
     <TextView
         android:id="@+id/tv_not_like"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/_17sdp"
-        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginStart="@dimen/_15sdp"
         android:layout_marginTop="@dimen/_13sdp"
         android:text="@string/not_like"
-        app:layout_constraintTop_toBottomOf="@id/question_dialog"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/question_dialog" />
 
     <TextView
         android:id="@+id/tv_very_like"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/_17sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
         android:layout_marginTop="@dimen/_13sdp"
+        android:layout_marginEnd="@dimen/_15sdp"
         android:text="@string/very_like"
-        app:layout_constraintTop_toBottomOf="@id/question_dialog"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/question_dialog" />
 
     <LinearLayout
         android:id="@+id/answer_dialog_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_17sdp"
         android:layout_marginTop="@dimen/_4sdp"
-        android:orientation="horizontal"
         android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/tv_very_like"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/tv_very_like">
 
         <ImageView
             android:id="@+id/first_bar"
@@ -84,7 +82,7 @@
             android:adjustViewBounds="true"
             android:backgroundTint="@color/filler_boxes"
             android:contentDescription="@string/first_pill_content"
-            android:src="@drawable/rounded_box_dialog"/>
+            android:src="@drawable/rounded_box_dialog" />
 
         <ImageView
             android:id="@+id/second_bar"
@@ -95,7 +93,7 @@
             android:adjustViewBounds="true"
             android:backgroundTint="@color/filler_boxes"
             android:contentDescription="@string/second_pill_content"
-            android:src="@drawable/rounded_box_dialog"/>
+            android:src="@drawable/rounded_box_dialog" />
 
 
         <ImageView
@@ -107,7 +105,7 @@
             android:adjustViewBounds="true"
             android:backgroundTint="@color/filler_boxes"
             android:contentDescription="@string/third_pill_content"
-            android:src="@drawable/rounded_box_dialog"/>
+            android:src="@drawable/rounded_box_dialog" />
 
         <ImageView
             android:id="@+id/fourth_bar"
@@ -118,7 +116,7 @@
             android:adjustViewBounds="true"
             android:backgroundTint="@color/filler_boxes"
             android:contentDescription="@string/fourth_pill_content"
-            android:src="@drawable/rounded_box_dialog"/>
+            android:src="@drawable/rounded_box_dialog" />
 
     </LinearLayout>
 
@@ -130,36 +128,36 @@
         android:layout_marginTop="@dimen/_8sdp"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/answer_dialog_bar"
-        app:layout_constraintLeft_toLeftOf="parent">
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/answer_dialog_bar">
 
         <RadioButton
             android:id="@+id/first_radio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dialog_radio_margin"
-            android:layout_marginRight="@dimen/dialog_radio_margin"/>
+            android:layout_marginRight="@dimen/dialog_radio_margin" />
 
         <RadioButton
             android:id="@+id/second_radio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dialog_radio_margin"
-            android:layout_marginRight="@dimen/dialog_radio_margin"/>
+            android:layout_marginRight="@dimen/dialog_radio_margin" />
 
         <RadioButton
             android:id="@+id/third_radio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dialog_radio_margin"
-            android:layout_marginRight="@dimen/dialog_radio_margin"/>
+            android:layout_marginRight="@dimen/dialog_radio_margin" />
 
         <RadioButton
             android:id="@+id/fourth_radio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dialog_radio_margin"
-            android:layout_marginRight="@dimen/dialog_radio_margin"/>
+            android:layout_marginRight="@dimen/dialog_radio_margin" />
 
     </RadioGroup>
 
@@ -168,28 +166,28 @@
         android:layout_width="@dimen/dialog_button_width"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dialog_button_margin"
-        android:layout_marginTop="@dimen/_25sdp"
+        android:layout_marginTop="@dimen/_36sdp"
+        android:background="@drawable/button_previous"
         android:text="@string/button_previous"
-        android:textSize="@dimen/dialog_button"
         android:textAllCaps="false"
         android:textColor="@color/feedback_button"
-        android:background="@drawable/button_previous"
-        app:layout_constraintTop_toBottomOf="@+id/answer_dialog_radio"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        android:textSize="@dimen/dialog_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/answer_dialog_radio" />
 
     <Button
         android:id="@+id/button_next"
         android:layout_width="@dimen/dialog_button_width"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_36sdp"
         android:layout_marginEnd="@dimen/dialog_button_margin"
-        android:layout_marginTop="@dimen/_25sdp"
+        android:backgroundTint="@color/feedback_button"
         android:text="@string/button_next"
-        android:textSize="@dimen/dialog_button"
         android:textAllCaps="false"
         android:textColor="@color/colorPrimary"
-        android:backgroundTint="@color/feedback_button"
-        app:layout_constraintTop_toBottomOf="@+id/answer_dialog_radio"
-        app:layout_constraintRight_toRightOf="parent"/>
+        android:textSize="@dimen/dialog_button"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/answer_dialog_radio" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
