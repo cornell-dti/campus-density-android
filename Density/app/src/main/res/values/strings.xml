@@ -86,13 +86,15 @@
     <string name="no_operating_hours">No operating hours available.</string>
 
     <!-- facilities page strings -->
+    <string name="facility_name">Facility Name</string>
+    <string name="facility_wait_time">0 min. wait</string>
     <string name="covid_policy">Face Coverings Required at all dining halls.</string>
     <string name="covid_policy_button">View Dining Policies</string>
 
     <!-- failure page strings -->
     <string name="sorry_failure">Sorry, there\'s an error loading the data.</string>
     <string name="check_internet">Please check your internet connection.</string>
-    
+
     <!--  facility info page feedback strings  -->
     <string name="accuracy_feedback">Accuracy Feedback</string>
     <string name="question_accurate">Is this information accurate?</string>

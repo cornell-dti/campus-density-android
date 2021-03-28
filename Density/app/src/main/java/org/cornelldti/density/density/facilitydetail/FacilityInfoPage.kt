@@ -50,6 +50,7 @@ class FacilityInfoPage : BaseActivity() {
     private lateinit var menuItemListViewAdapter: RecyclerView.Adapter<*>
     private lateinit var menuItemListViewManager: RecyclerView.LayoutManager
     private lateinit var feedback: TextView
+    private lateinit var waitTimes: TextView
 
     /**
      * Ordered list of available meals (e.g., ["breakfast", "lunch", "dinner"]
@@ -60,7 +61,7 @@ class FacilityInfoPage : BaseActivity() {
     private var facilityClass: FacilityClass? = null
     private var wasCheckedDay: Int = -1
     private var densities: List<Double> = ArrayList() // KEEPS TRACK OF HISTORICAL DENSITIES
-    private var waitTimes: Int? = 0
+    private var waitTimesValue: Int? = 0
     private var selectedDay: String = FluxUtil.dayString
 
     private val maxCapacity: Int = 100
@@ -74,7 +75,7 @@ class FacilityInfoPage : BaseActivity() {
         val b = intent.extras
         if (b != null) {
             facilityClass = b.getSerializable(ARG_PARAM) as FacilityClass
-            waitTimes = b.getInt("waitTimes")
+            waitTimesValue = b.getInt("waitTimes")
         }
 
         densityChart.setNoDataText("")
@@ -90,6 +91,23 @@ class FacilityInfoPage : BaseActivity() {
         setDayChipOnClickListener()
         setDataLastUpdated()
         setOnTabSelectedListener()
+        setWaitTimes()
+    }
+
+    /**
+     * This function displays the wait time for the facility.
+     */
+    private fun setWaitTimes() {
+        waitTimes = findViewById(R.id.waitTimes)
+        if (facilityClass!!.isOpen) {
+            if (waitTimesValue != null) {
+                waitTimes.text = "$waitTimesValue min. wait"
+            } else {
+                waitTimes.text = "Unknown min. wait"
+            }
+        } else {
+            waitTimes.text = ""
+        }
     }
 
     /**

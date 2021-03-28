@@ -9,12 +9,11 @@ import android.widget.Filter
 import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
-
 import androidx.arch.core.util.Function
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.R
+import org.cornelldti.density.density.data.FacilityClass
 import java.util.*
 
 
@@ -27,13 +26,14 @@ class FacilitiesListAdapter(data: List<FacilityClass>) : RecyclerView.Adapter<Fa
     private var facilityClasses: List<FacilityClass>? = null
     var dataSet: List<FacilityClass>? = null
         private set
-
+    var waitTimesMap: Map<String, Double>? = null
+        private set
     private var clickListener: ClickListener? = null
     private var context: Context? = null
 
     open inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
         internal val name: TextView
-        internal val openStatus: TextView
+        internal val waitTimes: TextView
         internal val firstBar: ImageView
         internal val secondBar: ImageView
         internal val thirdBar: ImageView
@@ -42,7 +42,7 @@ class FacilitiesListAdapter(data: List<FacilityClass>) : RecyclerView.Adapter<Fa
         init {
             v.setOnClickListener(this)
             name = v.findViewById(R.id.facility_name)
-            openStatus = v.findViewById(R.id.openStatusDescription)
+            waitTimes = v.findViewById(R.id.facility_wait_time)
             firstBar = v.findViewById(R.id.first_bar)
             secondBar = v.findViewById(R.id.second_bar)
             thirdBar = v.findViewById(R.id.third_bar)
@@ -52,11 +52,6 @@ class FacilitiesListAdapter(data: List<FacilityClass>) : RecyclerView.Adapter<Fa
         override fun onClick(v: View) {
             clickListener!!.onItemClick(adapterPosition, v)
         }
-    }
-
-    inner class DescriptionViewHolder(v: View) : ViewHolder(v) {
-        internal var description: TextView = v.findViewById(R.id.description_phrase)
-
     }
 
     fun setOnItemClickListener(clickListener: ClickListener) {
@@ -84,12 +79,17 @@ class FacilitiesListAdapter(data: List<FacilityClass>) : RecyclerView.Adapter<Fa
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.name.text = dataSet!![position].name
-        holder.openStatus.setText(dataSet!![position].densityResId)
-        setBars(if (dataSet!![position].isOpen) dataSet!![position].occupancyRating else -1, holder)
-
-        if (holder is DescriptionViewHolder) {
-            holder.description.text = dataSet!![position].description
+        val waitTimes = waitTimesMap?.get(dataSet!![position].id)?.toInt()
+        if (dataSet!![position].isOpen) {
+            if (waitTimes != null) {
+                holder.waitTimes.text = "$waitTimes min. wait"
+            } else {
+                holder.waitTimes.text = "Unknown wait"
+            }
+        } else {
+            holder.waitTimes.text = "Closed"
         }
+        setBars(if (dataSet!![position].isOpen) dataSet!![position].occupancyRating else -1, holder)
     }
 
     /**
@@ -147,6 +147,11 @@ class FacilitiesListAdapter(data: List<FacilityClass>) : RecyclerView.Adapter<Fa
     fun setDataSet(f: List<FacilityClass>) {
         this.facilityClasses = f.sorted()
         this.dataSet = this.facilityClasses
+        notifyDataSetChanged()
+    }
+
+    fun setWaitTimesMap(map: Map<String, Double>) {
+        this.waitTimesMap = map
         notifyDataSetChanged()
     }
 

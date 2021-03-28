@@ -266,10 +266,11 @@ class FacilitiesActivity : BaseActivity() {
      * This function fetches a list of estimated wait times for all dining locations.
      * The returned values are real-time and are measured by our waitTimes algorithm.
      */
-    private fun fetchWaitTimes() {
+    private fun fetchWaitTimes(adapter: FacilitiesListAdapter) {
         api.fetchWaitTimes(
                 onDone = { map ->
                     waitTimesMap = map
+                    adapter.setWaitTimesMap(map)
                 },
                 onError = { error ->
                     Log.d("ERROR", error.toString())
@@ -323,15 +324,15 @@ class FacilitiesActivity : BaseActivity() {
             success: () -> Unit
     ) {
         if (!refresh) {
-            fetchWaitTimes()
             val adapter = FacilitiesListAdapter(list)
+            fetchWaitTimes(adapter)
             adapter.setOnItemClickListener(object : FacilitiesListAdapter.ClickListener {
                 override fun onItemClick(position: Int, v: View) {
                     val intent = Intent(this@FacilitiesActivity, FacilityInfoPage::class.java)
                     val b = Bundle()
                     b.putSerializable(FacilityInfoPage.ARG_PARAM, adapter.dataSet!![position])
                     intent.putExtras(b)
-                    intent.putExtra("waitTimes", waitTimesMap.get(adapter.dataSet!![position].id)?.toInt())
+                    intent.putExtra("waitTimes", waitTimesMap[adapter.dataSet!![position].id]?.toInt())
                     startActivity(intent)
                 }
             })
@@ -345,9 +346,9 @@ class FacilitiesActivity : BaseActivity() {
             setChipOnClickListener()
 
         } else {
-            fetchWaitTimes()
             val adapter = this.adapter!!
             adapter.setDataSet(list)
+            fetchWaitTimes(adapter)
             success()
 
             when (filterChips!!.checkedChipId) {
