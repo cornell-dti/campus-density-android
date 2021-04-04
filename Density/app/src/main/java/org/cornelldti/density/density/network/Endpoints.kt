@@ -12,6 +12,9 @@ const val OPERATING_HOURS_ENDPOINT = "https://flux.api.internal.cornelldti.org/v
 
 const val MENU_DATA_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/menuData"
 
+const val MAIN_FEEDBACK_ENDPOINT_DEV = "https://flux-backend-dev.herokuapp.com/v1/addGeneralFeedback"
+const val MAIN_FEEDBACK_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/addGeneralFeedback"
+
 const val FEEDBACK_ENDPOINT_DEV = "https://flux-backend-dev.herokuapp.com/v1/addFeedback"
 const val FEEDBACK_ENDPOINT = "https://flux.api.internal.cornelldti.org/v1/addFeedback"
 

@@ -14,7 +14,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import org.cornelldti.density.density.R
 import org.cornelldti.density.density.facilities.FacilitiesActivity
-import org.cornelldti.density.density.facilitydetail.FacilityInfoPage
 import org.cornelldti.density.density.network.API
 
 
@@ -75,10 +74,12 @@ class MainFeedbackThanksFragment : Fragment() {
         val overallInput = (parentFragment as MainFeedbackDialogFragment).overallInput
         val commentInput = (parentFragment as MainFeedbackDialogFragment).commentInput
 
-        Log.d("TAG", recommendInput.toString())
-        Log.d("TAG", featuresInput.toString())
-        Log.d("TAG", overallInput.toString())
-        Log.d("TAG", commentInput)
+        api.addFacilitiesFeedback(
+                recommendInput,
+                featuresInput,
+                overallInput,
+                commentInput
+        )
 
     }
 }

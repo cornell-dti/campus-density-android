@@ -194,6 +194,37 @@ class API(context: Context) {
     }
 
     /**
+     * This function submits the FacilitiesActivity feedback.
+     */
+    fun addFacilitiesFeedback(likelyToRecommend: Int,
+                              usefulFeatures: List<Int>,
+                              likeFluxOverall: Int,
+                              comment: String
+    ) {
+        val feedback = JSONObject()
+        try {
+            feedback.put("likelyToRecommend", likelyToRecommend)
+            feedback.put("usefulFeatures", JSONArray(usefulFeatures))
+            feedback.put("likeFluxOverall", likeFluxOverall)
+            feedback.put("comment", comment)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+        val feedbackRequest = postJsonObjectRequest(
+                url = MAIN_FEEDBACK_ENDPOINT,
+                body = feedback,
+                onResponse = { response ->
+                    Log.d("Success Response", response.toString())
+                },
+                onError = { error ->
+                    Log.d("Error Response", error.toString())
+                }
+        )
+        queue.add(feedbackRequest)
+    }
+
+    /**
      * This function fetches the waitTimes for all dining locations.
      */
     fun fetchWaitTimes(
