@@ -42,25 +42,27 @@ class MainFeedbackFeaturesFragment : Fragment() {
         checkBoxAvailable = view.findViewById(R.id.availability_breakdown)
         checkBoxDining = view.findViewById(R.id.dining_area)
         checkBoxMenu = view.findViewById(R.id.menu)
+
+        setCheckBox()
+        setButtonPrev()
+        setButtonNext()
+        setButtonClose()
+    }
+
+    private fun setCheckBox() {
         checkBoxList = listOf(checkBoxPopular, checkBoxAvailable, checkBoxDining, checkBoxMenu)
 
         for (i in 0..3) {
             checkBoxList[i].setOnCheckedChangeListener { checkBox, isChecked ->
-                if(isChecked && !selectedAnswer.contains(i+1)) {
-                    selectedAnswer.add(i+1)
+                if (isChecked && !selectedAnswer.contains(i + 1)) {
+                    selectedAnswer.add(i + 1)
                     selectedAnswer.sort()
-                    Log.d("TAG", selectedAnswer.toString())
-                } else if (!isChecked && selectedAnswer.contains(i+1)) {
-                    selectedAnswer.remove(i+1)
+                } else if (!isChecked && selectedAnswer.contains(i + 1)) {
+                    selectedAnswer.remove(i + 1)
                     selectedAnswer.sort()
-                    Log.d("TAG", selectedAnswer.toString())
                 }
             }
         }
-
-        setButtonPrev()
-        setButtonNext()
-        setButtonClose()
     }
 
     private fun setButtonPrev() {

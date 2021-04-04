@@ -9,13 +9,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.RadioGroup
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
 import org.cornelldti.density.density.R
-import org.cornelldti.density.density.facilitydetail.FacilityInfoPage
 
 
 class MainFeedbackOverallFragment : Fragment() {
@@ -50,17 +48,14 @@ class MainFeedbackOverallFragment : Fragment() {
 
     private fun setRadioGroup() {
         radioGroup.setOnCheckedChangeListener { radioGroup, i ->
-            if (i != null) {
-                buttonNext.isEnabled = true
-                buttonNext.setBackgroundColor(resources.getColor(R.color.feedback_button))
-                setBars(i)
-                when (i) {
-                    null -> selectedAnswer = -1
-                    R.id.first_radio -> selectedAnswer = 1
-                    R.id.second_radio -> selectedAnswer = 2
-                    R.id.third_radio -> selectedAnswer = 3
-                    R.id.fourth_radio -> selectedAnswer = 4
-                }
+            buttonNext.isEnabled = true
+            buttonNext.setBackgroundColor(resources.getColor(R.color.feedback_button))
+            setBars(i)
+            when (i) {
+                R.id.first_radio -> selectedAnswer = 1
+                R.id.second_radio -> selectedAnswer = 2
+                R.id.third_radio -> selectedAnswer = 3
+                R.id.fourth_radio -> selectedAnswer = 4
             }
         }
     }
