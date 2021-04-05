@@ -1,4 +1,4 @@
-package org.cornelldti.density.density.facilitydetail.feedback
+package org.cornelldti.density.density.facilities.mainfeedback
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -16,19 +16,18 @@ import androidx.viewpager2.widget.ViewPager2
 import org.cornelldti.density.density.R
 
 
-class FeedbackDialogFragment : DialogFragment() {
+class MainFeedbackDialogFragment : DialogFragment() {
 
     private lateinit var viewPager: ViewPager2
-    private val FEEDBACK_BROADCAST_ACTION = "FEEDBACK_BROADCAST_ACTION"
-    var predictedWaitTime = 0
-    var accuracyInput = 0
-    var observedDensityInput = 0
-    var observedWaitTime = 0
+    private val MAIN_FEEDBACK_BROADCAST_ACTION = "MAIN_FEEDBACK_BROADCAST_ACTION"
+    var recommendInput = 0
+    var featuresInput: List<Int> = ArrayList()
+    var overallInput = 0
     var commentInput = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_feedback_dialog, container, false)
+        return inflater.inflate(R.layout.fragment_main_feedback_dialog, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,16 +43,16 @@ class FeedbackDialogFragment : DialogFragment() {
     }
 
     /**
-     * This function sets up the feedback viewPager by appending fragments to the adapter.
+     * This function sets up the main feedback viewPager by appending fragments to the adapter.
      */
     private fun setUpViewPager() {
-        val adapter = FeedbackStateAdapter(childFragmentManager, lifecycle)
+        val adapter = MainFeedbackStateAdapter(childFragmentManager, lifecycle)
 
-        adapter.addFragment(FeedbackAccuracyFragment())
-        adapter.addFragment(FeedbackObservedDensityFragment())
-        adapter.addFragment(FeedbackWaitTimeFragment())
-        adapter.addFragment(FeedbackCommentFragment())
-        adapter.addFragment(FeedbackThanksFragment())
+        adapter.addFragment(MainFeedbackRecommendFragment())
+        adapter.addFragment(MainFeedbackFeaturesFragment())
+        adapter.addFragment(MainFeedbackOverallFragment())
+        adapter.addFragment(MainFeedbackCommentFragment())
+        adapter.addFragment(MainFeedbackThanksFragment())
 
         viewPager.adapter = adapter
     }
@@ -63,7 +62,7 @@ class FeedbackDialogFragment : DialogFragment() {
      */
     private var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
-            if (intent.action != null && intent.action == FEEDBACK_BROADCAST_ACTION) {
+            if (intent.action != null && intent.action == MAIN_FEEDBACK_BROADCAST_ACTION) {
                 dialog!!.dismiss()
             }
         }
@@ -73,7 +72,7 @@ class FeedbackDialogFragment : DialogFragment() {
         super.onResume()
         context?.let {
             LocalBroadcastManager.getInstance(
-                    it).registerReceiver(broadcastReceiver, IntentFilter(FEEDBACK_BROADCAST_ACTION))
+                    it).registerReceiver(broadcastReceiver, IntentFilter(MAIN_FEEDBACK_BROADCAST_ACTION))
         }
     }
 

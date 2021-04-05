@@ -29,4 +29,5 @@
     <color name="dark_grey">#979797</color>
     <color name="mid_grey">#CDCDCD</color>
     <color name="light_grey">#EFEFEF</color>
+    <color name="radio_button_grey">#6A6D72</color>
 </resources>

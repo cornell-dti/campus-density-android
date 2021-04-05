@@ -1,4 +1,4 @@
-package org.cornelldti.density.density.facilitydetail.feedback
+package org.cornelldti.density.density.facilities.mainfeedback
 
 import android.content.Intent
 import android.os.Bundle
@@ -16,7 +16,7 @@ import androidx.viewpager2.widget.ViewPager2
 import org.cornelldti.density.density.R
 
 
-class FeedbackCommentFragment : Fragment() {
+class MainFeedbackCommentFragment : Fragment() {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var editText: EditText
@@ -27,7 +27,7 @@ class FeedbackCommentFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_feedback_comment, container, false)
+        return inflater.inflate(R.layout.fragment_main_feedback_comment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,7 +53,7 @@ class FeedbackCommentFragment : Fragment() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 selectedAnswer = p0.toString()
-                (parentFragment as FeedbackDialogFragment).commentInput = selectedAnswer
+                (parentFragment as MainFeedbackDialogFragment).commentInput = selectedAnswer
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -63,23 +63,19 @@ class FeedbackCommentFragment : Fragment() {
 
     private fun setButtonPrev() {
         buttonPrev.setOnClickListener {
-            if ((parentFragment as FeedbackDialogFragment).accuracyInput == 1) {
-                viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(-3), false)
-            } else {
-                viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(-1), false)
-            }
+            viewPager.setCurrentItem((parentFragment as MainFeedbackDialogFragment).getPagerItem(-1), false)
         }
     }
 
     private fun setButtonSubmit() {
         buttonSubmit.setOnClickListener {
-            viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(1), false)
+            viewPager.setCurrentItem((parentFragment as MainFeedbackDialogFragment).getPagerItem(1), false)
         }
     }
 
     private fun setButtonClose() {
         buttonClose.setOnClickListener {
-            val intent = Intent("FEEDBACK_BROADCAST_ACTION")
+            val intent = Intent("MAIN_FEEDBACK_BROADCAST_ACTION")
             LocalBroadcastManager.getInstance(context!!).sendBroadcast(intent)
         }
     }

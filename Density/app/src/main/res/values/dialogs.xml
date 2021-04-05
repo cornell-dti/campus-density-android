@@ -3,6 +3,7 @@
     <dimen name="dialog_title_margin">@dimen/_13sdp</dimen>
     <dimen name="dialog_text">@dimen/_12ssp</dimen>
     <dimen name="dialog_text_height">@dimen/_42sdp</dimen>
+    <dimen name="dialog_text_height_alt">@dimen/_35sdp</dimen>
     <dimen name="dialog_text_margin">@dimen/_4sdp</dimen>
     <dimen name="dialog_text_padding">@dimen/_29sdp</dimen>
     <dimen name="dialog_answer_height">@dimen/_100sdp</dimen>
@@ -14,4 +15,6 @@
     <dimen name="line_spacing_extra">@dimen/_2sdp</dimen>
     <dimen name="dialog_box_margin">@dimen/_2sdp</dimen>
     <dimen name="dialog_radio_margin">@dimen/_9sdp</dimen>
+    <dimen name="dialog_number_input_margin">@dimen/_17sdp</dimen>
+    <dimen name="dialog_checkbox">@dimen/_24sdp</dimen>
 </resources>

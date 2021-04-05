@@ -1,4 +1,4 @@
-package org.cornelldti.density.density.facilitydetail.feedback
+package org.cornelldti.density.density.facilities.mainfeedback
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,42 +6,47 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import org.cornelldti.density.density.R
-import org.cornelldti.density.density.facilitydetail.FacilityInfoPage
+import org.cornelldti.density.density.facilities.FacilitiesActivity
 import org.cornelldti.density.density.network.API
 
 
-class FeedbackThanksFragment : Fragment() {
+class MainFeedbackThanksFragment : Fragment() {
 
     private lateinit var api: API
     private lateinit var buttonClose: ImageView
+    private lateinit var buttonHome: Button
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_feedback_thanks, container, false)
+        return inflater.inflate(R.layout.fragment_main_feedback_thanks, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         buttonClose = view.findViewById(R.id.button_close)
-        api = API(context = (activity as FacilityInfoPage))
+        buttonHome = view.findViewById(R.id.button_home)
+        api = API(context = (activity as FacilitiesActivity))
         val user = FirebaseAuth.getInstance().currentUser
 
-        setButtonClose()
+        setButtonClose(buttonClose)
+        setButtonClose(buttonHome)
         requestToken(user)
     }
 
-    private fun setButtonClose() {
-        buttonClose.setOnClickListener {
-            val intent = Intent("FEEDBACK_BROADCAST_ACTION")
+    private fun setButtonClose(v: View) {
+        v.setOnClickListener {
+            val intent = Intent("MAIN_FEEDBACK_BROADCAST_ACTION")
             LocalBroadcastManager.getInstance(context!!).sendBroadcast(intent)
         }
+
     }
 
     /**
@@ -61,31 +66,20 @@ class FeedbackThanksFragment : Fragment() {
     }
 
     /**
-     * This function submits the detail page feedback.
-     * If the user answered that the provided information was accurate, it replaces predictedWaitTime
-     * in place of observedWaitTime.
+     * This function submits the main page feedback.
      */
     private fun submitFeedback() {
-        val campusLocation = (activity as FacilityInfoPage).getCampusLocation()
-        val accuracyInput = (parentFragment as FeedbackDialogFragment).accuracyInput
-        val predictedWaitTime = (parentFragment as FeedbackDialogFragment).predictedWaitTime
-        val observedWaitTime = (parentFragment as FeedbackDialogFragment).observedWaitTime
-        val commentInput = (parentFragment as FeedbackDialogFragment).commentInput
+        val recommendInput = (parentFragment as MainFeedbackDialogFragment).recommendInput
+        val featuresInput = (parentFragment as MainFeedbackDialogFragment).featuresInput
+        val overallInput = (parentFragment as MainFeedbackDialogFragment).overallInput
+        val commentInput = (parentFragment as MainFeedbackDialogFragment).commentInput
 
-        if (accuracyInput == 1) {
-            api.addFacilityInfoFeedback(
-                    campusLocation,
-                    predictedWaitTime,
-                    predictedWaitTime,
-                    commentInput
-            )
-        } else {
-            api.addFacilityInfoFeedback(
-                    campusLocation,
-                    predictedWaitTime,
-                    observedWaitTime,
-                    commentInput
-            )
-        }
+        api.addFacilitiesFeedback(
+                recommendInput,
+                featuresInput,
+                overallInput,
+                commentInput
+        )
+
     }
 }

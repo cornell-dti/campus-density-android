@@ -1,20 +1,25 @@
-package org.cornelldti.density.density.facilitydetail.feedback
+package org.cornelldti.density.density.facilities.mainfeedback
 
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.RadioGroup
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
 import org.cornelldti.density.density.R
+import org.cornelldti.density.density.facilitydetail.FacilityInfoPage
 
 
-class FeedbackAccuracyFragment : Fragment() {
+class MainFeedbackRecommendFragment : Fragment() {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var radioGroup: RadioGroup
@@ -24,7 +29,7 @@ class FeedbackAccuracyFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_feedback_accuracy, container, false)
+        return inflater.inflate(R.layout.fragment_main_feedback_recommend, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,14 +48,17 @@ class FeedbackAccuracyFragment : Fragment() {
 
     private fun setRadioGroup() {
         radioGroup.setOnCheckedChangeListener { radioGroup, i ->
-            if (i == R.id.answer_yes) {
-                selectedAnswer = 1
+            if (i != null) {
                 buttonNext.isEnabled = true
                 buttonNext.setBackgroundColor(resources.getColor(R.color.feedback_button))
-            } else if (i == R.id.answer_no) {
-                selectedAnswer = 0
-                buttonNext.isEnabled = true
-                buttonNext.setBackgroundColor(resources.getColor(R.color.feedback_button))
+                when (i) {
+                    null -> selectedAnswer = -1
+                    R.id.first_radio -> selectedAnswer = 1
+                    R.id.second_radio -> selectedAnswer = 2
+                    R.id.third_radio -> selectedAnswer = 3
+                    R.id.fourth_radio -> selectedAnswer = 4
+                    R.id.fifth_radio -> selectedAnswer = 5
+                }
             }
         }
     }
@@ -60,21 +68,15 @@ class FeedbackAccuracyFragment : Fragment() {
         buttonNext.setBackgroundColor(resources.getColor(R.color.dark_grey))
 
         buttonNext.setOnClickListener {
-            if (selectedAnswer == 1) {
-                (parentFragment as FeedbackDialogFragment).accuracyInput = selectedAnswer
-                viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(3), false)
-            } else if (selectedAnswer == 0) {
-                (parentFragment as FeedbackDialogFragment).accuracyInput = selectedAnswer
-                viewPager.setCurrentItem((parentFragment as FeedbackDialogFragment).getPagerItem(1), false)
-            }
+            (parentFragment as MainFeedbackDialogFragment).recommendInput = selectedAnswer
+            viewPager.setCurrentItem((parentFragment as MainFeedbackDialogFragment).getPagerItem(1), false)
         }
     }
 
     private fun setButtonClose() {
         buttonClose.setOnClickListener {
-            val intent = Intent("FEEDBACK_BROADCAST_ACTION")
+            val intent = Intent("MAIN_FEEDBACK_BROADCAST_ACTION")
             LocalBroadcastManager.getInstance(context!!).sendBroadcast(intent)
         }
     }
-
 }

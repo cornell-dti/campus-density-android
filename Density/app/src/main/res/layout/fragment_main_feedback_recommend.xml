@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/button_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dialog_close_margin"
+        android:layout_marginEnd="@dimen/dialog_close_margin"
+        android:contentDescription="@string/button_close"
+        android:src="@drawable/ic_close"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/title_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dialog_title_margin"
+        android:text="@string/flux_feedback"
+        android:textColor="@color/feedback_title"
+        android:textSize="@dimen/dialog_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_close" />
+
+    <TextView
+        android:id="@+id/question_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dialog_text_margin"
+        android:gravity="center"
+        android:lineSpacingExtra="@dimen/line_spacing_extra"
+        android:paddingLeft="@dimen/dialog_text_padding"
+        android:paddingRight="@dimen/dialog_text_padding"
+        android:text="@string/question_recommend"
+        android:textColor="@color/feedback_question"
+        android:textSize="@dimen/dialog_text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_dialog" />
+
+    <LinearLayout
+        android:id="@+id/answer_dialog_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_17sdp"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/question_dialog">
+
+        <TextView
+            android:id="@+id/first_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dialog_number_input_margin"
+            android:layout_marginRight="@dimen/dialog_number_input_margin"
+            android:text="@string/number_one" />
+
+        <TextView
+            android:id="@+id/second_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dialog_number_input_margin"
+            android:layout_marginRight="@dimen/dialog_number_input_margin"
+            android:text="@string/number_two" />
+
+        <TextView
+            android:id="@+id/third_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dialog_number_input_margin"
+            android:layout_marginRight="@dimen/dialog_number_input_margin"
+            android:text="@string/number_three" />
+
+        <TextView
+            android:id="@+id/fourth_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dialog_number_input_margin"
+            android:layout_marginRight="@dimen/dialog_number_input_margin"
+            android:text="@string/number_four" />
+
+        <TextView
+            android:id="@+id/fifth_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dialog_number_input_margin"
+            android:layout_marginRight="@dimen/dialog_number_input_margin"
+            android:text="@string/number_five" />
+
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/answer_dialog_radio"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_17sdp"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/answer_dialog_bar">
+
+        <RadioButton
+            android:id="@+id/first_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RadioButton
+            android:id="@+id/second_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RadioButton
+            android:id="@+id/third_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RadioButton
+            android:id="@+id/fourth_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RadioButton
+            android:id="@+id/fifth_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/button_next"
+        android:layout_width="@dimen/dialog_button_width"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_38sdp"
+        android:layout_marginEnd="@dimen/dialog_button_margin"
+        android:backgroundTint="@color/feedback_button"
+        android:text="@string/button_next"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/dialog_button"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/answer_dialog_radio" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
