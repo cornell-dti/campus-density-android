@@ -62,6 +62,7 @@ class FacilityInfoPage : BaseActivity() {
     private var wasCheckedDay: Int = -1
     private var densities: List<Double> = ArrayList() // KEEPS TRACK OF HISTORICAL DENSITIES
     private var waitTimesValue: Int? = 0
+    private var receivedWait: Any? = null
     private var selectedDay: String = FluxUtil.dayString
 
     private val maxCapacity: Int = 100
@@ -75,7 +76,7 @@ class FacilityInfoPage : BaseActivity() {
         val b = intent.extras
         if (b != null) {
             facilityClass = b.getSerializable(ARG_PARAM) as FacilityClass
-            waitTimesValue = b.getInt("waitTimes")
+            receivedWait = b.get("waitTimes")
         }
 
         densityChart.setNoDataText("")
@@ -100,14 +101,16 @@ class FacilityInfoPage : BaseActivity() {
     private fun setWaitTimes() {
         waitTimes = findViewById(R.id.waitTimes)
         if (facilityClass!!.isOpen) {
-            if (waitTimesValue != null) {
+            if (receivedWait != null) {
+                waitTimesValue = receivedWait.toString().toInt()
                 waitTimes.text = "$waitTimesValue min. wait"
             } else {
-                waitTimes.text = "Unknown min. wait"
+                waitTimes.text = "Unknown wait"
             }
         } else {
             waitTimes.text = ""
         }
+
     }
 
     /**

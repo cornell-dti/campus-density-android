@@ -293,6 +293,7 @@ class FacilitiesActivity : BaseActivity() {
                     adapter.setWaitTimesMap(map)
                 },
                 onError = { error ->
+                    waitTimesMap = emptyMap()
                     Log.d("ERROR", error.toString())
                 }
         )
@@ -352,7 +353,9 @@ class FacilitiesActivity : BaseActivity() {
                     val b = Bundle()
                     b.putSerializable(FacilityInfoPage.ARG_PARAM, adapter.dataSet!![position])
                     intent.putExtras(b)
-                    intent.putExtra("waitTimes", waitTimesMap[adapter.dataSet!![position].id]?.toInt())
+                    if (waitTimesMap.isNotEmpty()) {
+                        intent.putExtra("waitTimes", waitTimesMap[adapter.dataSet!![position].id]?.toInt())
+                    }
                     startActivity(intent)
                 }
             })
