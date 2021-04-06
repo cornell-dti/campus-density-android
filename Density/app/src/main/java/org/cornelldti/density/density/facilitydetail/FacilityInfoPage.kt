@@ -1,6 +1,5 @@
 package org.cornelldti.density.density.facilitydetail
 
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -16,25 +15,16 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.mikephil.charting.charts.Chart
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.facility_info_page.*
 import org.cornelldti.density.density.BaseActivity
 import org.cornelldti.density.density.DensityApplication
 import org.cornelldti.density.density.R
-import org.cornelldti.density.density.colorbarutil.ColorBarChartRenderer
-import org.cornelldti.density.density.colorbarutil.ColorBarDataSet
-import org.cornelldti.density.density.colorbarutil.ColorBarMarkerView
 import org.cornelldti.density.density.data.FacilityClass
 import org.cornelldti.density.density.data.MenuClass
 import org.cornelldti.density.density.data.OperatingHoursClass
 import org.cornelldti.density.density.facilitydetail.feedback.FeedbackDialogFragment
 import org.cornelldti.density.density.util.FluxUtil
-import org.cornelldti.density.density.util.ValueFormatter
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -209,103 +199,6 @@ class FacilityInfoPage : BaseActivity() {
             chip.text = HtmlCompat.fromHtml(chip.text.toString() + "<br>" + "<br>" +
                     "<b>" + date.date + "</b>", HtmlCompat.FROM_HTML_MODE_LEGACY)
         }
-    }
-
-    /**
-     * TODO: Decide whether we're going to use or remove this function
-     */
-    private fun setupBarChart() {
-        Log.d("SETUP", "BARCHART")
-        val entries = ArrayList<BarEntry>()
-        var isClosed = true
-        for (i in densities.indices) {
-            if (densities[i] != (-1).toDouble()) {
-                entries.add(BarEntry(i.toFloat(), densities[i].toFloat()))
-                isClosed = false
-            } else {
-                entries.add(BarEntry(i.toFloat(), 0f))
-            }
-        }
-
-        val dataSet = ColorBarDataSet(entries, "Results")
-        dataSet.setDrawValues(false)
-
-        val colors = ArrayList<Int>()
-        colors.add(ContextCompat.getColor(applicationContext, R.color.very_empty))
-        colors.add(ContextCompat.getColor(applicationContext, R.color.pretty_empty))
-        colors.add(ContextCompat.getColor(applicationContext, R.color.pretty_crowded))
-        colors.add(ContextCompat.getColor(applicationContext, R.color.very_crowded))
-        colors.add(ContextCompat.getColor(applicationContext, R.color.light_grey))
-
-        dataSet.colors = colors
-        dataSet.valueTextColor = Color.DKGRAY
-        dataSet.valueFormatter = ValueFormatter
-
-        val data = BarData(dataSet)
-        data.setValueTextSize(13f)
-        // adjusts the width of the data bars
-        data.barWidth = 1f
-
-        val is24 = DateFormat.is24HourFormat(applicationContext)
-        val xAxis = ArrayList<String>()
-
-        val timeFormat24 = SimpleDateFormat("HH:mm", Locale.US)
-        val timeFormat = SimpleDateFormat("ha", Locale.US)
-
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR, 9)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.AM_PM, Calendar.AM)
-
-        for (i in 1..17) {
-            if (i % 3 == 0) {
-                xAxis.add(
-                        if (is24) timeFormat24.format(calendar.time)
-                        else timeFormat.format(calendar.time)
-                )
-                calendar.add(Calendar.HOUR, 3)
-            } else {
-                xAxis.add("")
-            }
-        }
-
-        densityChart.description.isEnabled = false
-        densityChart.legend.isEnabled = false
-        densityChart.setScaleEnabled(false)
-        densityChart.setTouchEnabled(true)
-
-        // sets gap between graph and the x-axis
-        densityChart.axisLeft.spaceBottom = 0.5f
-        densityChart.axisLeft.isEnabled = false
-        densityChart.axisRight.isEnabled = false
-
-        densityChart.xAxis.setDrawGridLines(false)
-        densityChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-        densityChart.xAxis.valueFormatter = IndexAxisValueFormatter(xAxis)
-        densityChart.xAxis.labelCount = xAxis.size
-        densityChart.xAxis.textColor = ContextCompat.getColor(this, R.color.dark_grey)
-        densityChart.xAxis.textSize = 10f
-        densityChart.xAxis.yOffset = 10f
-        densityChart.xAxis.axisLineWidth = 1.5f
-        densityChart.xAxis.axisLineColor = ContextCompat.getColor(this, R.color.mid_grey)
-
-        if (!isClosed) {
-            // allows rounded bars on graph
-            densityChart.renderer = ColorBarChartRenderer(densityChart, densityChart.animator, densityChart.viewPortHandler)
-            val marker = ColorBarMarkerView(applicationContext, R.layout.marker_layout)
-            densityChart.marker = marker
-            densityChart.data = data
-        } else {
-            densityChart.data = null
-            val p = densityChart.getPaint(Chart.PAINT_INFO)
-            p.textSize = 36f
-            p.color = Color.BLACK
-            p.isFakeBoldText = true
-            densityChart.setNoDataText("Closed")
-        }
-        densityChart.invalidate()
-        densityChart.animateY(400)
-
     }
 
     /**
