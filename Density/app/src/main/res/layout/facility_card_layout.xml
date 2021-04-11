@@ -41,8 +41,10 @@
             android:layout_height="wrap_content"
             android:text="@string/facility_wait_time"
             android:textColor="@color/dark_grey"
+            android:textSize="@dimen/_11ssp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/facility_name" />
+            app:layout_constraintTop_toTopOf="@id/facility_name"
+            app:layout_constraintBottom_toBottomOf="@id/facility_name"/>
 
 
         <ImageView
