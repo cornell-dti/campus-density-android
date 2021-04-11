@@ -135,7 +135,7 @@ class API(context: Context) {
             fetchMenuJSONOnResponse: ((menu: MenuClass?) -> Unit)
     ) {
         val menuRequest = getJsonArrayRequest(
-                url = "$MENU_DATA_ENDPOINT?facility=$facilityId&date=$day",
+                url = "$MENU_DATA_ENDPOINT?facility=$facilityId",
                 onResponse = { response ->
                     fetchMenuJSONOnResponse(JsonParser.parseMenu(response, day))
                 },
