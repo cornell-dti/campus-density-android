@@ -40,8 +40,8 @@ import kotlin.math.absoluteValue
 class FacilitiesActivity : BaseActivity() {
 
     private lateinit var spinner: ProgressBar
-    private lateinit var waitTimesMap: Map<String, Double>
 
+    private var waitTimesMap: Map<String, Double> = emptyMap()
     private var adapter: FacilitiesListAdapter? = null
     private var collapsingToolbarLayout: CollapsingToolbarLayout? = null
     private var appBarLayout: AppBarLayout? = null
@@ -293,7 +293,6 @@ class FacilitiesActivity : BaseActivity() {
                     adapter.setWaitTimesMap(map)
                 },
                 onError = { error ->
-                    waitTimesMap = emptyMap()
                     Log.d("ERROR", error.toString())
                 }
         )

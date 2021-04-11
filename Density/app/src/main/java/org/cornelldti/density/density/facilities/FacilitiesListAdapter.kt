@@ -50,7 +50,9 @@ class FacilitiesListAdapter(data: List<FacilityClass>) : RecyclerView.Adapter<Fa
         }
 
         override fun onClick(v: View) {
-            clickListener!!.onItemClick(adapterPosition, v)
+            if(adapterPosition != -1) {
+                clickListener!!.onItemClick(adapterPosition, v)
+            }
         }
     }
 
