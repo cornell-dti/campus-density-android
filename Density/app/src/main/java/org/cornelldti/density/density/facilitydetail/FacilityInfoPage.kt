@@ -27,7 +27,6 @@ import org.cornelldti.density.density.facilitydetail.feedback.FeedbackDialogFrag
 import org.cornelldti.density.density.util.FluxUtil
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * This class holds the detail page activity for each individual dining location.
@@ -50,7 +49,6 @@ class FacilityInfoPage : BaseActivity() {
     private var currentMenu: MenuClass? = null
     private var facilityClass: FacilityClass? = null
     private var wasCheckedDay: Int = -1
-    private var densities: List<Double> = ArrayList() // KEEPS TRACK OF HISTORICAL DENSITIES
     private var waitTimesValue: Int? = 0
     private var receivedWait: Any? = null
     private var selectedDay: String = FluxUtil.dayString
@@ -411,10 +409,22 @@ class FacilityInfoPage : BaseActivity() {
         if (menu != null) {
             menuItemListViewManager = LinearLayoutManager(this)
             menuItemListViewAdapter = when (mealOfDay) {
-                "breakfast" -> MenuListAdapter(menu.breakfastItems, this)
-                "brunch" -> MenuListAdapter(menu.brunchItems, this)
-                "lunch" -> MenuListAdapter(menu.lunchItems, this)
-                "dinner" -> MenuListAdapter(menu.dinnerItems, this)
+                "breakfast" -> {
+                    defaultMenuText.isVisible = menu.breakfastItems.isEmpty()
+                    MenuListAdapter(menu.breakfastItems, this)
+                }
+                "brunch" -> {
+                    defaultMenuText.isVisible = menu.brunchItems.isEmpty()
+                    MenuListAdapter(menu.brunchItems, this)
+                }
+                "lunch" -> {
+                    defaultMenuText.isVisible = menu.lunchItems.isEmpty()
+                    MenuListAdapter(menu.lunchItems, this)
+                }
+                "dinner" -> {
+                    defaultMenuText.isVisible = menu.dinnerItems.isEmpty()
+                    MenuListAdapter(menu.dinnerItems, this)
+                }
                 else -> MenuListAdapter(listOf(), this)
             }
 
@@ -433,7 +443,7 @@ class FacilityInfoPage : BaseActivity() {
                 menuHours.text = menu.operatingHours[availableMenus.indexOf(mealOfDay)]
                 clock_image.visibility = View.VISIBLE
             } else {
-                menuHours.text = ""
+                menuHours.visibility = View.GONE
                 clock_image.visibility = View.GONE
             }
 
