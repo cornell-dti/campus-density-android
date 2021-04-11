@@ -277,9 +277,7 @@
                         android:visibility="invisible"
                         app:layout_constraintRight_toLeftOf="@id/menuHours"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/menuTabs">
-
-                    </ImageView>
+                        app:layout_constraintTop_toBottomOf="@id/menuTabs"/>
 
                     <TextView
                         android:id="@+id/menuHours"
@@ -335,81 +333,6 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <TextView
-                android:id="@+id/popular_times"
-                style="@style/DTI.CardHeader"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/popular"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/menuCard" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/historicalDataCard"
-                style="@style/MyCardView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:clickable="false"
-                android:focusable="false"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/popular_times">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:orientation="vertical"
-                    android:padding="8dp"
-                    android:paddingBottom="16dp">
-
-                    <com.github.mikephil.charting.charts.BarChart
-                        android:id="@+id/densityChart"
-                        android:layout_width="match_parent"
-                        android:layout_height="275dp"
-                        android:layout_marginTop="12dp"
-                        android:layout_marginBottom="4dp"
-                        app:layout_constraintBottom_toTopOf="@+id/todayHours"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/todayHours"
-                        style="@style/DTI.Subtitle2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toTopOf="@id/todayDate"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/densityChart" />
-
-                    <TextView
-                        android:id="@+id/todayDate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:gravity="center"
-                        android:textColor="@color/dark_grey"
-                        android:textSize="14sp"
-                        app:layout_constraintBottom_toTopOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/todayHours" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

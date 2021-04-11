@@ -69,8 +69,6 @@ class FacilityInfoPage : BaseActivity() {
             receivedWait = b.get("waitTimes")
         }
 
-        densityChart.setNoDataText("")
-
         topBar.title = facilityClass!!.name
         topBar.setNavigationOnClickListener { onBackPressed() }
 
