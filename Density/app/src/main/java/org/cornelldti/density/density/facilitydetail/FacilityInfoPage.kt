@@ -38,6 +38,8 @@ class FacilityInfoPage : BaseActivity() {
     private lateinit var menuItemList: RecyclerView
     private lateinit var menuItemListViewAdapter: RecyclerView.Adapter<*>
     private lateinit var menuItemListViewManager: RecyclerView.LayoutManager
+    private lateinit var cafeMenuItemListViewAdapter: RecyclerView.Adapter<*>
+    private lateinit var cafeMenuItemListViewManager: RecyclerView.LayoutManager
     private lateinit var feedback: TextView
     private lateinit var waitTimes: TextView
 
@@ -72,6 +74,7 @@ class FacilityInfoPage : BaseActivity() {
 
         setFeedbackOnClickListener()
 
+        dayChips.isVisible = false
         setAvailability()
         setToday(FluxUtil.dayString)
         setDayChipsDate()
@@ -327,52 +330,65 @@ class FacilityInfoPage : BaseActivity() {
             // once loaded, hide the loader
             menuProgressBar.isGone = true
 
-            val dayAvailableMenus = mutableListOf<String>()
-            val dayAvailableMenuTabs = mutableListOf<TabLayout.Tab>()
+            if (currentMenu?.facilityType == "dining-hall") {
 
-            if (menu?.breakfastItems?.size != 0) {
-                dayAvailableMenuTabs.add(menuTabs.newTab().setText(R.string.breakfast))
-                dayAvailableMenus.add("breakfast")
-            }
-            if (menu?.brunchItems?.size != 0) {
-                dayAvailableMenuTabs.add(menuTabs.newTab().setText(R.string.brunch))
-                dayAvailableMenus.add("brunch")
-            }
-            if (menu?.lunchItems?.size != 0) {
-                dayAvailableMenuTabs.add(menuTabs.newTab().setText(R.string.lunch))
-                dayAvailableMenus.add("lunch")
-            }
-            if (menu?.dinnerItems?.size != 0) {
-                dayAvailableMenuTabs.add(menuTabs.newTab().setText(R.string.dinner))
-                dayAvailableMenus.add("dinner")
-            }
+                dayChips.isVisible = true
+                val dayAvailableMenus = mutableListOf<String>()
+                val dayAvailableMenuTabs = mutableListOf<TabLayout.Tab>()
 
-            if (menu?.breakfastItems?.isEmpty() == true
-                    && menu.brunchItems.isEmpty()
-                    && menu.lunchItems.isEmpty()
-                    && menu.dinnerItems.isEmpty()) {
-                menuTabs.isGone = true
-                defaultMenuText.isVisible = true
-                showMenu(menu, "")
+                if (menu?.breakfastItems?.size != 0) {
+                    dayAvailableMenuTabs.add(menuTabs.newTab().setText(R.string.breakfast))
+                    dayAvailableMenus.add("breakfast")
+                }
+                if (menu?.brunchItems?.size != 0) {
+                    dayAvailableMenuTabs.add(menuTabs.newTab().setText(R.string.brunch))
+                    dayAvailableMenus.add("brunch")
+                }
+                if (menu?.lunchItems?.size != 0) {
+                    dayAvailableMenuTabs.add(menuTabs.newTab().setText(R.string.lunch))
+                    dayAvailableMenus.add("lunch")
+                }
+                if (menu?.dinnerItems?.size != 0) {
+                    dayAvailableMenuTabs.add(menuTabs.newTab().setText(R.string.dinner))
+                    dayAvailableMenus.add("dinner")
+                }
+
+                if (menu?.breakfastItems?.isEmpty() == true
+                        && menu.brunchItems.isEmpty()
+                        && menu.lunchItems.isEmpty()
+                        && menu.dinnerItems.isEmpty()) {
+                    menuTabs.isGone = true
+                    defaultMenuText.isVisible = true
+                    showMenu(menu, "")
+                } else {
+                    menuTabs.isVisible = true
+                    defaultMenuText.isGone = true
+
+                    var lastSelectedMeal = ""
+                    if (availableMenus.isNotEmpty())
+                        lastSelectedMeal = availableMenus[menuTabs.selectedTabPosition]
+
+                    availableMenus = dayAvailableMenus
+                    menuTabs.removeAllTabs()
+                    for (tab in dayAvailableMenuTabs)
+                        menuTabs.addTab(tab)
+
+                    var selectedMealIndex = availableMenus.indexOf(lastSelectedMeal)
+
+                    if (selectedMealIndex == -1)
+                        selectedMealIndex = 0
+                    menuTabs.selectTab(menuTabs.getTabAt(selectedMealIndex))
+                    showMenu(menu, availableMenus[selectedMealIndex])
+                }
+
             } else {
-                menuTabs.isVisible = true
-                defaultMenuText.isGone = true
-
-                var lastSelectedMeal = ""
-                if (availableMenus.isNotEmpty())
-                    lastSelectedMeal = availableMenus[menuTabs.selectedTabPosition]
-
-                availableMenus = dayAvailableMenus
-                menuTabs.removeAllTabs()
-                for (tab in dayAvailableMenuTabs)
-                    menuTabs.addTab(tab)
-
-                var selectedMealIndex = availableMenus.indexOf(lastSelectedMeal)
-
-                if (selectedMealIndex == -1)
-                    selectedMealIndex = 0
-                menuTabs.selectTab(menuTabs.getTabAt(selectedMealIndex))
-                showMenu(menu, availableMenus[selectedMealIndex])
+                cafeMenuItemListViewManager = LinearLayoutManager(this)
+                cafeMenuItemListViewAdapter = CafeMenuListAdapter(menu!!.cafeMenuItems, this)
+                menuItemList = findViewById<RecyclerView>(R.id.menuItemsList).apply {
+                    setHasFixedSize(true)
+                    layoutManager = cafeMenuItemListViewManager
+                    adapter = cafeMenuItemListViewAdapter
+                }
             }
         }
     }
