@@ -54,6 +54,7 @@ class FacilityInfoPage : BaseActivity() {
     private var waitTimesValue: Int? = 0
     private var receivedWait: Any? = null
     private var selectedDay: String = FluxUtil.dayString
+    private var hoursTimeStampsList: OperatingHoursClass? = null
 
     private val maxCapacity: Int = 100
     private val months = listOf("January", "February", "March", "April", "May", "June",
@@ -211,6 +212,7 @@ class FacilityInfoPage : BaseActivity() {
         api.facilityHours(facilityId = facilityClass!!.id, startDate = FluxUtil.convertDateObjectToString(date),
                 endDate = FluxUtil.convertDateObjectToString(nextDay),
                 facilityHoursTimeStampsOnResponse = { hoursTimeStampsList ->
+                    this.hoursTimeStampsList = hoursTimeStampsList
                     setOpenOrClosedOnToolbar(hoursTimeStampsList)
                 }
         )
@@ -382,6 +384,15 @@ class FacilityInfoPage : BaseActivity() {
                 }
 
             } else {
+                if (hoursTimeStampsList != null) {
+                    val startHour = FluxUtil.parseTime(hoursTimeStampsList!!.todayOperatingHours[0].first)
+                    val endHour = FluxUtil.parseTime(hoursTimeStampsList!!.todayOperatingHours[0].second)
+                    menuHours.text = startHour + " - " + endHour
+                    clock_image.visibility = View.VISIBLE
+                } else {
+                    menuHours.visibility = View.GONE
+                    clock_image.visibility = View.GONE
+                }
                 cafeMenuItemListViewManager = LinearLayoutManager(this)
                 cafeMenuItemListViewAdapter = CafeMenuListAdapter(menu!!.cafeMenuItems, this)
                 menuItemList = findViewById<RecyclerView>(R.id.menuItemsList).apply {
