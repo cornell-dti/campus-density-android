@@ -9,7 +9,9 @@ data class MenuClass(
         val brunchItems: List<MenuItem>,
         val lunchItems: List<MenuItem>,
         val dinnerItems: List<MenuItem>,
-        val operatingHours: List<String>
+        val cafeMenuItems: List<String>,
+        val operatingHours: List<String>,
+        val facilityType: String
 )
 
 abstract class MenuItem {
