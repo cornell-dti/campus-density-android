@@ -468,6 +468,7 @@ class FacilityInfoPage : BaseActivity() {
             // This is where the operating hours for the selected meal of day is set!
             if (availableMenus.isNotEmpty() && menu.operatingHours.isNotEmpty()) {
                 menuHours.text = menu.operatingHours[availableMenus.indexOf(mealOfDay)]
+                menuHours.visibility = View.VISIBLE
                 clock_image.visibility = View.VISIBLE
             } else {
                 menuHours.visibility = View.GONE
