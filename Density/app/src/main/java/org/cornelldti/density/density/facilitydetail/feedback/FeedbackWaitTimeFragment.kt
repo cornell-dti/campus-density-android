@@ -52,8 +52,8 @@ class FeedbackWaitTimeFragment : Fragment() {
         waitTimePicker.maxValue = options.size - 1
         waitTimePicker.displayedValues = options
         waitTimePicker.wrapSelectorWheel = false
-        waitTimePicker.setOnValueChangedListener{ picker, oldVal, newVal ->
-            selectedAnswer = newVal*2
+        waitTimePicker.setOnValueChangedListener { picker, oldVal, newVal ->
+            selectedAnswer = newVal * 2
         }
     }
 

@@ -45,7 +45,7 @@ open class BaseActivity :
         // TODO DISPLAY ERROR SCREEN AND ATTEMPT TO RE SIGN IN
     }
 
-    protected open fun updateUI() { }
+    protected open fun updateUI() {}
 
     protected fun refreshToken() {
         requestToken(FirebaseAuth.getInstance().currentUser!!)

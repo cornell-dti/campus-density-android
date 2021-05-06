@@ -33,53 +33,79 @@ object JsonParser {
      */
     fun parseMenu(jsonArray: JSONArray, day: String): MenuClass? {
         try {
-            val dayMenus = getDayMenu(jsonArray, day)
-            val breakfast = arrayListOf<MenuItem>()
-            val brunch = arrayListOf<MenuItem>()
-            val lunch = arrayListOf<MenuItem>()
-            val liteLunch = arrayListOf<MenuItem>()
-            val dinner = arrayListOf<MenuItem>()
-            val operatingHoursList = arrayListOf<String>()
-            if (dayMenus != null) {
-                for (i in 0 until dayMenus.length()) {
-                    val categoryItemsJSONArray = dayMenus.getJSONObject(i).getJSONArray("menu")
-                    val menuItems = arrayListOf<MenuItem>()
-                    // Menu is empty in API response, but there is still a meal.
-                    if (categoryItemsJSONArray.length() == 0) {
-                        menuItems.add(CategoryItem(""))
-                    } else {
-                        for (j in 0 until categoryItemsJSONArray.length()) {
-                            val category = categoryItemsJSONArray.getJSONObject(j).getString("category")
-                            val categoryItem = CategoryItem(category)
-                            menuItems.add(categoryItem)
-                            val foodItemJSONArray = categoryItemsJSONArray.getJSONObject(j).getJSONArray("items")
-                            for (k in 0 until foodItemJSONArray.length()) {
-                                val food = foodItemJSONArray.getString(k)
-                                val foodItem = FoodItem(food)
-                                menuItems.add(foodItem)
-                            }
+            val facilityType = jsonArray.getJSONObject(0).getString("type")
+            if (facilityType == "dining-hall") {
 
+                val dayMenus = getDayMenu(jsonArray, day)
+                val breakfast = arrayListOf<MenuItem>()
+                val brunch = arrayListOf<MenuItem>()
+                val lunch = arrayListOf<MenuItem>()
+                val liteLunch = arrayListOf<MenuItem>()
+                val dinner = arrayListOf<MenuItem>()
+                val operatingHoursList = arrayListOf<String>()
+
+                if (dayMenus != null) {
+                    for (i in 0 until dayMenus.length()) {
+                        val categoryItemsJSONArray = dayMenus.getJSONObject(i).getJSONArray("menu")
+                        val menuItems = arrayListOf<MenuItem>()
+                        // Menu is empty in API response, but there is still a meal.
+                        if (categoryItemsJSONArray.length() == 0) {
+                            menuItems.add(CategoryItem(""))
+                        } else {
+                            for (j in 0 until categoryItemsJSONArray.length()) {
+                                val category = categoryItemsJSONArray.getJSONObject(j).getString("category")
+                                val categoryItem = CategoryItem(category)
+                                menuItems.add(categoryItem)
+                                val foodItemJSONArray = categoryItemsJSONArray.getJSONObject(j).getJSONArray("items")
+                                for (k in 0 until foodItemJSONArray.length()) {
+                                    val food = foodItemJSONArray.getString(k)
+                                    val foodItem = FoodItem(food)
+                                    menuItems.add(foodItem)
+                                }
+                            }
                         }
+                        when (dayMenus.getJSONObject(i).getString("description")) {
+                            "Breakfast" -> breakfast.addAll(menuItems)
+                            "Brunch" -> brunch.addAll(menuItems)
+                            "Lunch" -> lunch.addAll(menuItems)
+                            "Lite Lunch" -> liteLunch.addAll(menuItems)
+                            "Dinner" -> dinner.addAll(menuItems)
+                        }
+                        val start = dayMenus.getJSONObject(i).getLong("startTime")
+                        val end = dayMenus.getJSONObject(i).getLong("endTime")
+                        operatingHoursList.add(FluxUtil.parseTime(start) + " – " + FluxUtil.parseTime(end))
                     }
-                    when (dayMenus.getJSONObject(i).getString("description")) {
-                        "Breakfast" -> breakfast.addAll(menuItems)
-                        "Brunch" -> brunch.addAll(menuItems)
-                        "Lunch" -> lunch.addAll(menuItems)
-                        "Lite Lunch" -> liteLunch.addAll(menuItems)
-                        "Dinner" -> dinner.addAll(menuItems)
-                    }
-                    val start = dayMenus.getJSONObject(i).getLong("startTime")
-                    val end = dayMenus.getJSONObject(i).getLong("endTime")
-                    operatingHoursList.add(FluxUtil.parseTime(start) + " – " + FluxUtil.parseTime(end))
                 }
+
+                return MenuClass(
+                        breakfastItems = breakfast,
+                        brunchItems = brunch,
+                        lunchItems = lunch,
+                        dinnerItems = dinner,
+                        cafeMenuItems = emptyList(),
+                        operatingHours = operatingHoursList,
+                        facilityType = facilityType
+                )
+
+            } else {
+
+                val cafeMenu = jsonArray.getJSONObject(0).getJSONArray("weeksMenus")
+                val cafeMenuItems = arrayListOf<String>()
+                for (i in 0 until cafeMenu.length()) {
+                    cafeMenuItems.add(cafeMenu.get(i).toString())
+                }
+
+                return MenuClass(
+                        breakfastItems = emptyList(),
+                        brunchItems = emptyList(),
+                        lunchItems = emptyList(),
+                        dinnerItems = emptyList(),
+                        cafeMenuItems = cafeMenuItems,
+                        operatingHours = emptyList(),
+                        facilityType = facilityType
+                )
             }
-            return MenuClass(
-                    breakfastItems = breakfast,
-                    brunchItems = brunch,
-                    lunchItems = lunch,
-                    dinnerItems = dinner,
-                    operatingHours = operatingHoursList
-            )
+
         } catch (e: JSONException) {
             e.printStackTrace()
             return null

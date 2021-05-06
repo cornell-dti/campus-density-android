@@ -16,7 +16,6 @@ import org.cornelldti.density.density.data.FoodItem
 class MenuListAdapter(private val menuItems: List<MenuItem>, private val context: Context)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-
     open inner class CategoryViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         private val categoryName = v.category_name
 
@@ -59,5 +58,31 @@ class MenuListAdapter(private val menuItems: List<MenuItem>, private val context
     }
 
     override fun getItemCount(): Int = menuItems.size
+
+}
+
+class CafeMenuListAdapter(private val cafeMenuItems: List<String>, private val context: Context)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+        private val foodName = v.food_name
+
+        fun bind(foodItem: String) {
+            foodName.text = foodItem
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val view = LayoutInflater.from(context).inflate(R.layout.menu_food_list_item, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun getItemCount(): Int = cafeMenuItems.size
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val foodItem = cafeMenuItems[position]
+        (holder as ViewHolder).bind(foodItem)
+    }
+
 
 }
