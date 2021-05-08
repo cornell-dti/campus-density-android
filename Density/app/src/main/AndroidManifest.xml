@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="org.cornelldti.density.density">
+    package="org.cornelldti.density.flux">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:usesCleartextTraffic="true"
-        android:name=".DensityApplication"
+        android:name="org.cornelldti.density.flux.DensityApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".BaseActivity" />
+        <activity android:name="org.cornelldti.density.flux.BaseActivity" />
 
         <activity
-            android:name=".facilities.FacilitiesActivity"
-            android:parentActivityName=".BaseActivity">
+            android:name="org.cornelldti.density.flux.facilities.FacilitiesActivity"
+            android:parentActivityName="org.cornelldti.density.flux.BaseActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -33,7 +33,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".facilitydetail.FacilityInfoPage">
+        <activity android:name="org.cornelldti.density.flux.facilitydetail.FacilityInfoPage">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
