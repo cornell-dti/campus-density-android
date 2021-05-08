@@ -16,7 +16,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 30
     defaultConfig {
-        applicationId "org.cornelldti.density.density"
+        applicationId "org.cornelldti.density.flux"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 15
